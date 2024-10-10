@@ -1,0 +1,47 @@
+name: Cypress Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Stylelint
+        run: npm run stylelint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check test coverage
+        run: |
+          COVERAGE=$(npm test -- --coverage | grep 'All tests pass' | sed -E 's/.*\[(.*)%\].*/\1/')
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Test coverage is below 80%: $COVERAGE%"
+            exit 1
+          fi
+
+      - name: Start React app
+        run: npm start &
+
+      - name: Wait for React app to start
+        run: sleep 30
+
+      - name: Run Cypress tests
+        run: npm run test:e2e:run
