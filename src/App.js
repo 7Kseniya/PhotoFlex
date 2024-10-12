@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <button onClick={handleClick}>
-          {click ? 'Ура' : 'Нажми на меня'}
+          {click ? 'Ура' : "Нажми на меня"}
         </button>
       </header>
     </div>
