@@ -30,7 +30,7 @@ const ToolBar = ({ onRotate }) => {
           data-testid={`icon-${index}`}
           key={index}
           className={`${styles.icon} ${
-            activeIcon === index ? styles.clicked : styles.default
+            activeIcon === index ? styles.clicked : styles.notClicked
           }`}
           onClick={() => {
             setActiveIcon(index);
