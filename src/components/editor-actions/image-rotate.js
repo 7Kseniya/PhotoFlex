@@ -37,7 +37,7 @@ const ImageRotate = ({ imageSrc, rotation }) => {
   }, [imageSrc, rotation]);
 
   return (
-    <div>
+    <div data-testid="image-rotate">
       <canvas ref={canvasRef} />
     </div>
   );

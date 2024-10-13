@@ -9,12 +9,26 @@ import '@testing-library/jest-dom';
 import App from './../src/components/app/app';
 import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
+import MainPage from "../src/components/pages/main-page/main-page";
 
-test('renders MainPage component', () => {
+test('App renders MainPage component', () => {
   render(<App />);
   const mainPageElement = screen.getByTestId('main-page');
   expect(mainPageElement).toBeInTheDocument();
 });
+
+test('MainPage updates rotation when Rotate icon is clicked', () => {
+  render(<MainPage />);
+
+  const rotateIcon = screen.getByTestId('icon-2');
+
+  fireEvent.click(rotateIcon);
+
+  const imageRotateCanvas = screen.getByTestId('image-rotate');
+  expect(imageRotateCanvas).toBeInTheDocument();
+
+});
+
 
 describe('Editor-actions tools', () => {
   it('ImageRotate Component correctly sets canvas dimensions based on rotation', async () => {
@@ -51,7 +65,7 @@ describe('ToolBar component', () => {
     const mockRotate = jest.fn();
     const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
 
-    fireEvent.click(getByTestId('icon-2')); // Rotate90DegreesCcwIcon
+    fireEvent.click(getByTestId('icon-2'));
 
     expect(mockRotate).toHaveBeenCalled();
   });
@@ -60,7 +74,7 @@ describe('ToolBar component', () => {
     const mockRotate = jest.fn();
     const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
 
-    fireEvent.click(getByTestId('icon-0')); // TuneIcon (no action)
+    fireEvent.click(getByTestId('icon-0'));
 
     expect(mockRotate).not.toHaveBeenCalled();
   });
