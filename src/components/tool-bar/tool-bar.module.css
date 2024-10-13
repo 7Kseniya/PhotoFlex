@@ -9,11 +9,26 @@
   margin-right: 2px;
 }
 
-.icon.tune {
+.icon {
   margin-top: 30px;
   margin-left: 12px;
   margin-right: 30px;
+  margin-bottom: 20px;
   font-size: 70px;
-  transform: scaleX(-1);
+  transition:
+    transform 0.3s,
+    color 0.3s;
+}
+
+.default {
+  color: #f5f5f5;
+}
+
+.clicked {
   color: #884f9f;
+}
+
+.icon:hover {
+  color: rgba(197, 124, 228, 0.75);
+  transform: scale(0.9);
 }
