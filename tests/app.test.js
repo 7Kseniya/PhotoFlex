@@ -1,9 +1,15 @@
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import App from './../src/components/app/app';
 import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
+
 test('renders MainPage component', () => {
   render(<App />);
   const mainPageElement = screen.getByTestId('main-page');
@@ -21,7 +27,7 @@ describe('Editor-actions tools', () => {
     };
 
     const { container } = render(
-        <ImageRotate imageSrc="placeholder.jpeg" rotation={90} />
+      <ImageRotate imageSrc="placeholder.jpeg" rotation={90} />
     );
     const canvas = container.querySelector('canvas');
 
@@ -30,8 +36,7 @@ describe('Editor-actions tools', () => {
       expect(canvas.height).toBeGreaterThan(0);
     });
   });
-})
-
+});
 
 describe('ToolBar component', () => {
   it('should render all icons', () => {
@@ -59,5 +64,4 @@ describe('ToolBar component', () => {
 
     expect(mockRotate).not.toHaveBeenCalled();
   });
-
 });
