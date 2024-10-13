@@ -1,4 +1,4 @@
-import {render, screen, waitFor} from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import App from './../src/components/app/app';
@@ -8,7 +8,6 @@ test('renders MainPage component', () => {
   const mainPageElement = screen.getByTestId('main-page');
   expect(mainPageElement).toBeInTheDocument();
 });
-
 
 test('ImageRotate Component correctly sets canvas dimensions based on rotation', async () => {
   global.Image = class {
@@ -20,7 +19,7 @@ test('ImageRotate Component correctly sets canvas dimensions based on rotation',
   };
 
   const { container } = render(
-      <ImageRotate imageSrc="test-image.jpg" rotation={45} />
+    <ImageRotate imageSrc="test-image.jpg" rotation={45} />
   );
   const canvas = container.querySelector('canvas');
 

@@ -27,7 +27,7 @@ const ToolBar = ({ onRotate }) => {
     <div className={styles.mainContainer}>
       {icons.map(({ component: IconComponent, action }, index) => (
         <IconComponent
-            data-testid={`icon-${index}`}
+          data-testid={`icon-${index}`}
           key={index}
           className={`${styles.icon} ${
             activeIcon === index ? styles.clicked : styles.default
