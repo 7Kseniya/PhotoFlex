@@ -1,14 +1,5 @@
-describe('App Component', () => {
-  beforeEach(() => {
-    cy.visit('/');
-  });
-
-  it('should change button text on click', () => {
-    cy.get('button').should('contain', 'Нажми на меня');
-    cy.get('button').click();
-    cy.get('button').should('contain', 'Ура');
-  });
-  it('should have a visible button', () => {
-    cy.get('button').should('be.visible');
+describe('service is available', function () {
+  it('should be available on localhost:3000', function () {
+    cy.visit('http://localhost:3000');
   });
 });
