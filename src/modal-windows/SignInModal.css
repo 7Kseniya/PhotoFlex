@@ -1,0 +1,46 @@
+.modal-dialog {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .text-field {
+    background-color: #2a2a2a;
+    color: white;
+  }
+  
+  .text-field label {
+    color: white;
+  }
+  
+  .text-field input {
+    color: white;
+  }
+  
+  .social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .footer-text {
+    text-align: center;
+    font-size: 14px;
+    color: white;
+  }
+  
+  .footer-link {
+    color: white;
+    text-decoration: underline;
+  }
+  

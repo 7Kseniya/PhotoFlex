@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import Modal from '@mui/joy/Modal';
+import {
+  Modal,
+  TextField,
+  Button,
+  IconButton,
+  Stack,
+  DialogTitle,
+  InputLabel,
+  InputAdornment,
+  OutlinedInput,
+} from '@mui/material';
 import ModalDialog from '@mui/joy/ModalDialog';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import ModalClose from '@mui/joy/ModalClose';
-import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
-import { DialogTitle } from '@mui/material';
-import Stack from '@mui/joy/Stack';
-import TextField from '@mui/material/TextField';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
+import './SignInModal.css';
 
 export default function SingIn() {
   const [open, setOpen] = React.useState(false);
@@ -56,8 +59,10 @@ export default function SingIn() {
                 <TextField
                   required
                   id="outlined-required"
+                  className="text-field"
                   label="Enter your phone number/email/login"
-                  defaultValue=""
+                  value={login}
+                  onChange={(e) => setLogin(e.target.value)}
                 />
               </FormControl>
               <FormControl variant="outlined">
@@ -67,6 +72,9 @@ export default function SingIn() {
                 <OutlinedInput
                   id="outlined-adornment-password"
                   type={showPassword ? 'text' : 'password'}
+                  className="text-field"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -92,6 +100,7 @@ export default function SingIn() {
                 direction="row"
                 justifyContent="center"
                 spacing={1}
+                className="social-buttons"
               >
                 <span>login via:</span>
                 <Button
@@ -112,8 +121,11 @@ export default function SingIn() {
                 justifyContent="center"
                 spacing={1}
               >
-                <span>don&apos;t have an account?</span>
+                <span className="footer-text">
+                  don&apos;t have an account?
+                </span>
                 <Button
+                  className="footer-link"
                   onClick={() => {
                     /*redirect to sing up form*/
                   }}
@@ -127,6 +139,7 @@ export default function SingIn() {
                 spacing={1}
               >
                 <Button
+                  className="footer-link"
                   onClick={() => {
                     /*redirect to recover password form*/
                   }}

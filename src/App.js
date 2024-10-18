@@ -10,11 +10,11 @@ function App() {
   };
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <button onClick={handleClick}>
           {click ? 'Ура' : 'Нажми на меня'}
         </button>
-      </header>
+      </header> */}
       <SingIn />
     </div>
   );
