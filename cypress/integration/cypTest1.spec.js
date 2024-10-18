@@ -3,7 +3,7 @@ describe('App Component', () => {
     cy.visit('/');
   });
 
-  it('should change button text on click', () => {
+  it.only('should change button text on click', () => {
     cy.get('button').should('contain', 'Нажми на меня');
     cy.get('button').click();
     cy.get('button').should('contain', 'Ура');
