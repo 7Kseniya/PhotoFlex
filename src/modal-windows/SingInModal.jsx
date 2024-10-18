@@ -2,17 +2,37 @@ import React, { useState } from 'react';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import GoogleIcon from '@mui/icons-material/Google';
+import TelegramIcon from '@mui/icons-material/Telegram';
 import ModalClose from '@mui/joy/ModalClose';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import { DialogTitle, IconButton, Input } from '@mui/material';
+import { DialogTitle } from '@mui/material';
 import Stack from '@mui/joy/Stack';
+import TextField from '@mui/material/TextField';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
 
 export default function SingIn() {
   const [open, setOpen] = React.useState(false);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () =>
+    setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -31,26 +51,67 @@ export default function SingIn() {
               setOpen(false);
             }}
           >
-            <Stack direction="column" spacing={2}>
+            <Stack spacing={2}>
               <FormControl>
-                <FormLabel>
-                  Enter your phone number/email/login
-                </FormLabel>
-                <Input required />
+                <TextField
+                  required
+                  id="outlined-required"
+                  label="Enter your phone number/email/login"
+                  defaultValue=""
+                />
               </FormControl>
-              <FormControl>
-                <FormLabel>Enter your password</FormLabel>
-                <Input required type="password" />
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Enter your password"
+                />
               </FormControl>
-              <div>
-                <span>or</span>
+              <Button type="submit">submit</Button>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                spacing={1}
+              >
                 <span>login via:</span>
-                <IconButton></IconButton>
-                <IconButton>
-                  <GoogleIcon />
-                </IconButton>
-              </div>
-              <div>
+                <Button
+                  variant="outlined"
+                  startDecorator={<GoogleIcon />}
+                >
+                  Google
+                </Button>
+                <Button
+                  variant="outlined"
+                  startDecorator={<TelegramIcon />}
+                >
+                  Telegram
+                </Button>
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                spacing={1}
+              >
                 <span>don&apos;t have an account?</span>
                 <Button
                   onClick={() => {
@@ -59,8 +120,20 @@ export default function SingIn() {
                 >
                   sing up
                 </Button>
-              </div>
-              <Button type="submit">Submit</Button>
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                spacing={1}
+              >
+                <Button
+                  onClick={() => {
+                    /*redirect to recover password form*/
+                  }}
+                >
+                  recover password
+                </Button>
+              </Stack>
             </Stack>
           </form>
           <ModalClose />

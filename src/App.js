@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
+import SingIn from './modal-windows/SingInModal';
 
 function App() {
   const [click, setClick] = useState(false);
@@ -14,6 +15,7 @@ function App() {
           {click ? 'Ура' : 'Нажми на меня'}
         </button>
       </header>
+      <SingIn />
     </div>
   );
 }
