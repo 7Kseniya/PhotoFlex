@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
-import SingIn from './modal-windows/SingInModal';
+import SingIn from './modal-windows/SignInModal';
 
 function App() {
   const [click, setClick] = useState(false);

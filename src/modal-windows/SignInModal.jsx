@@ -17,7 +17,8 @@ import ModalClose from '@mui/joy/ModalClose';
 import FormControl from '@mui/joy/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import './SignInModal.css';
+import '../modal-windows-styles/SignInModal.css';
+import '../modal-windows-styles/ModalWindows.css';
 
 export default function SingIn() {
   const [open, setOpen] = React.useState(false);
@@ -100,7 +101,7 @@ export default function SingIn() {
                 direction="row"
                 justifyContent="center"
                 spacing={1}
-                className="social-buttons"
+                className="social-btns"
               >
                 <span>login via:</span>
                 <Button
