@@ -6,7 +6,6 @@ function App() {
 
   const handleClick = () => {
     setClick((prevClick) => !prevClick);
-    console.log('');
   };
   return (
     <div className="App">
