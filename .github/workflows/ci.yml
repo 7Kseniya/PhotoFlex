@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,6 +27,13 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Check for .only in tests
+        run: |
+          if grep -r --include "*.test.js" -E "\.only\(" src/ tests/; then
+            echo "Error: .only found in tests"
+            exit 1
+          fi
 
       - name: Check test coverage
         run: |
