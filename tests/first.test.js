@@ -3,7 +3,7 @@ import App from './../src/App';
 import React from 'react';
 import '@testing-library/jest-dom';
 
-test('renders button and toggles text on click', () => {
+test.only('renders button and toggles text on click', () => {
   render(<App />);
   const buttonElement = screen.getByText(/Нажми на меня/i);
   expect(buttonElement).toBeInTheDocument();
