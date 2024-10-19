@@ -17,25 +17,6 @@ import FormControl from '@mui/joy/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-// import '../modal-windows-styles/SignInModal.css';
-// import '../modal-windows-styles/ModalWindows.css';
-// import { transform } from 'framer-motion/dom';
-// import { className } from 'postcss-selector-parser';
-// import { createTheme } from '@mui/material/styles';
-
-// const theme = createTheme({
-//   palette: {
-//     primary: {
-//       light: '#686868',
-//       main: '#884f9f',
-//       dark: '#191919',
-//       contrastText: '#fff',
-//     },
-//     secondary: {
-//       contrastText: '#000',
-//     },
-//   },
-// });
 
 export default function SignUp() {
   const [open, setOpen] = React.useState(false);
