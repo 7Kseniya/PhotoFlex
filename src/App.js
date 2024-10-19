@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useState } from 'react';
 import SingIn from './modal-windows/SignInModal';
+import SingUp from './modal-windows/SignUpModal';
 
 function App() {
   const [click, setClick] = useState(false);
@@ -16,6 +17,7 @@ function App() {
         </button>
       </header> */}
       <SingIn />
+      <SingUp />
     </div>
   );
 }
