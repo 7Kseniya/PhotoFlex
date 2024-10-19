@@ -9,7 +9,7 @@ import '@testing-library/jest-dom';
 import App from './../src/components/app/app';
 import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
-import MainPage from "../src/components/pages/main-page/main-page";
+import MainPage from '../src/components/pages/main-page/main-page';
 
 test('App renders MainPage component', () => {
   render(<App />);
@@ -26,9 +26,7 @@ test('MainPage updates rotation when Rotate icon is clicked', () => {
 
   const imageRotateCanvas = screen.getByTestId('image-rotate');
   expect(imageRotateCanvas).toBeInTheDocument();
-
 });
-
 
 describe('Editor-actions tools', () => {
   it('ImageRotate Component correctly sets canvas dimensions based on rotation', async () => {
