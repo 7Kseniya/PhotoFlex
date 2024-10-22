@@ -56,7 +56,7 @@ const Tools = ({ activeTool }) => {
             min={min}
             max={max}
             onChange={handleSlider(name)}
-            className={styles.slider}
+            style={{ color: 'white' }}
           />
         </div>
       ))}
