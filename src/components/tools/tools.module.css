@@ -6,12 +6,15 @@
   width: 350px;
   border: solid black 1px;
 }
+
 .filterContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 20px;
   align-items: center;
+  height: 980px;
+  overflow-y: scroll;
 }
 
 .filterItem {
