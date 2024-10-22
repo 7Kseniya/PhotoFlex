@@ -1,7 +1,7 @@
 import styles from './tools.module.css';
 import React from 'react';
 
-const Tools = () => {
+const Tools = ({ activeTool }) => {
   const filters = [
     { name: 'nebula' },
     { name: 'outerspace' },
@@ -12,14 +12,16 @@ const Tools = () => {
   ];
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.filterContainer}>
-        {filters.map((filter, index) => (
-          <div key={index} className={styles.filterItem}>
-            <div className={styles.filterBlock}></div>
-            <p className={styles.filterLabel}>{filter.name}</p>
-          </div>
-        ))}
-      </div>
+      {activeTool === 4 && ( // типо передала идекс PhotoFilterIcon
+        <div className={styles.filterContainer}>
+          {filters.map((filter, index) => (
+            <div key={index} className={styles.filterItem}>
+              <div className={styles.filterBlock}></div>
+              <p className={styles.filterLabel}>{filter.name}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
