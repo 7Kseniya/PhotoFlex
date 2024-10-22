@@ -33,9 +33,25 @@
   align-items: center;
 }
 
-.filterLabel {
+.label {
   margin-top: 5px;
   color: white;
   font-size: 25px;
   text-align: center;
+}
+
+.tuneContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.tuneItem {
+  margin: 10px 0;
+  width: 300px;
+}
+
+.slider {
+  color: #fff;
 }
