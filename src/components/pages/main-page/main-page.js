@@ -19,7 +19,9 @@ const MainPage = () => {
       <div className={styles.toolContainer}>
         <ToolBar onRotate={handleRotate} />
         <Tools />
-        <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+        <div className={styles.imageContainer}>
+          <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+        </div>
       </div>
     </div>
   );

@@ -11,3 +11,11 @@
   flex-direction: row;
   margin-top: 2px;
 }
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
