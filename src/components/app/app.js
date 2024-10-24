@@ -1,12 +1,23 @@
 import './app.css';
 import React from 'react';
 import MainPage from './../pages/main-page/main-page';
+import PersonalAccount from '../personal-account/personal-account';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <MainPage />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/personal" element={<PersonalAccount />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

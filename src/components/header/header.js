@@ -5,8 +5,13 @@ import FlipIcon from '@mui/icons-material/Flip';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
+  const goToPersonalAccount = () => {
+    navigate('/personal');
+  };
   return (
     <div className={styles.mainContainer}>
       <img src={logoImg} className={styles.logoContainer} />
@@ -16,6 +21,8 @@ const Header = () => {
       <SaveIcon className={`${styles.icon} ${styles.save}`} />
       <PersonAddIcon
         className={`${styles.icon} ${styles.personAdd}`}
+        onClick={goToPersonalAccount}
+        style={{ cursor: 'pointer' }}
       />
     </div>
   );
