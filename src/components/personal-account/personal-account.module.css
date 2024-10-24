@@ -12,7 +12,8 @@
   margin-top: 20px;
   width: 300px;
   height: 60px;
-}
+  cursor: pointer;
+} /* дай бог мне здоровья и много денег */
 
 .photosContainer {
   margin-top: 100px;
@@ -41,6 +42,7 @@
   height: 200px;
   border-radius: 60px;
   border: solid black 1px;
+  align-items: center;
 }
 
 .mainContainer {
@@ -58,4 +60,61 @@
   margin-right: 30px;
   font-size: 70px;
   color: #884f9f;
+  cursor: pointer;
+}
+
+.userName {
+  margin-left: 60px;
+  font-size: 36px;
+  color: white;
+}
+
+.editSection {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.nameInput {
+  font-size: 30px;
+  padding: 10px;
+  border: 2px dashed white;
+  border-radius: 10px;
+  margin-right: 20px;
+  background-color: #1e1e1e;
+  color: white;
+  width: auto;
+  min-width: 200px;
+  max-width: 100%;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.nameInput:focus {
+  border-color: #884f9f;
+  transition: 0.2s ease;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #884f9f;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.saveButton:hover {
+  background-color: #6f3f7f;
+}
+
+.editIcon {
+  font-size: 30px;
+  color: #884f9f;
+  margin-left: 10px;
+  cursor: pointer;
 }
