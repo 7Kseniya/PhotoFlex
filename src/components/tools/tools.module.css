@@ -7,7 +7,14 @@
   border: solid black 1px;
 }
 
-.filterContainer {
+.label {
+  margin-top: 5px;
+  color: white;
+  font-size: 25px;
+  text-align: center;
+}
+
+.sharedContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -17,6 +24,7 @@
   overflow-y: scroll;
 }
 
+/* фильтры */
 .filterItem {
   display: flex;
   flex-direction: column;
@@ -31,27 +39,58 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
-.label {
-  margin-top: 5px;
-  color: white;
-  font-size: 25px;
-  text-align: center;
+/* резкость и всякая штука */
+.tuneItem {
+  margin: 10px 0;
+  width: 250px;
 }
 
-.tuneContainer {
+/* обрезание */
+.cropItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.tuneItem {
-  margin: 10px 0;
-  width: 300px;
+/* надо будет потом понять, почему именно при использовании иконок @mui/material, сбрасывается размер
+(приходится для каждой иконки отдельный стиль прописывать) ╭∩╮( •̀_·́ )╭∩╮ */
+.cropIcon {
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
 }
 
-.slider {
-  color: #fff;
+.cropIcon.crop916 {
+  transform: rotate(90deg);
+}
+
+.dimensionInputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.dimensionInput {
+  padding: 5px;
+  font-size: 30px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #1e1e1e;
+  color: white;
+  outline: none;
+  width: 100px;
+  transition: 0.2s;
+  margin-top: 10px;
+}
+
+.label > input {
+  margin-left: 20px;
+}
+
+.dimensionInput:focus {
+  border-color: #884f9f;
 }
