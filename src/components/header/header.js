@@ -22,7 +22,6 @@ const Header = () => {
       <PersonAddIcon
         className={`${styles.icon} ${styles.personAdd}`}
         onClick={goToPersonalAccount}
-        style={{ cursor: 'pointer' }}
       />
     </div>
   );
