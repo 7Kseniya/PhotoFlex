@@ -14,7 +14,11 @@ const Header = () => {
   };
   return (
     <div className={styles.mainContainer}>
-      <img src={logoImg} className={styles.logoContainer} />
+      <img
+        src={logoImg}
+        className={styles.logoContainer}
+        alt={'kek'}
+      />
       <RedoIcon className={`${styles.icon} ${styles.redo}`} />
       <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
       <FlipIcon className={`${styles.icon} ${styles.flip}`} />
