@@ -23,7 +23,9 @@ const MainPage = () => {
           setActiveTool={setActiveTool}
         />
         <Tools activeTool={activeTool} />
-        <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+        <div className={styles.imageContainer}>
+          <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+        </div>
       </div>
     </div>
   );
