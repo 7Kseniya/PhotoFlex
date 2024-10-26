@@ -12,12 +12,13 @@
   border-radius: 40px;
   border: 1px;
   background-color: #1e1e1e;
-  width: 500px;
-  height: 600px;
+  width: 550px;
+  height: 700px;
 }
 
 .clearIcon {
-  margin-left: 400px;
-  font-size: 70px;
+  margin-left: 445px;
+  margin-top: 35px;
   color: #884f9f;
+  cursor: pointer;
 }
