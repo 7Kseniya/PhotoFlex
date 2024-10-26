@@ -58,7 +58,14 @@
 
 /* надо будет потом понять, почему именно при использовании иконок @mui/material, сбрасывается размер
 (приходится для каждой иконки отдельный стиль прописывать) ╭∩╮( •̀_·́ )╭∩╮ */
-.cropIcon {
+
+.cropIcon.crop169 {
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
+
+.cropIcon.square {
   font-size: 80px;
   color: white;
   cursor: pointer;
@@ -66,6 +73,30 @@
 
 .cropIcon.crop916 {
   transform: rotate(90deg);
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
+
+.cropIcon.crop32 {
+  transform: rotate(90deg);
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
+
+.cropIcon.crop54 {
+  transform: rotate(90deg);
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
+
+.cropIcon.crop75 {
+  transform: rotate(90deg);
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
 }
 
 .dimensionInputContainer {

@@ -70,12 +70,16 @@ const Tools = ({ activeTool }) => {
 
   // обрезание
   const crop = [
-    { component: Crop169, name: '16:9' },
-    { component: CropSquare, name: 'Квадрат' },
+    { component: Crop169, name: '16:9', className: styles.crop169 },
+    {
+      component: CropSquare,
+      name: 'Квадрат',
+      className: styles.square,
+    },
     { component: Crop169, name: '9:16', className: styles.crop916 },
-    { component: Crop32, name: '3:2' },
-    { component: Crop54, name: '5:4' },
-    { component: Crop75, name: '7:5' },
+    { component: Crop32, name: '3:2', className: styles.crop32 },
+    { component: Crop54, name: '5:4', className: styles.crop54 },
+    { component: Crop75, name: '7:5', className: styles.crop75 },
   ];
   const [dimensions, setDimensions] = useState({
     width: '',
