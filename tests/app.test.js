@@ -10,6 +10,7 @@ import App from './../src/components/app/app';
 import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
 import MainPage from '../src/components/pages/main-page/main-page';
+import UploadContainer from '../src/components/upload-container/upload-container';
 
 test('App renders MainPage component', () => {
   render(<App />);
@@ -18,7 +19,8 @@ test('App renders MainPage component', () => {
 });
 
 test('MainPage updates rotation when Rotate icon is clicked', () => {
-  render(<MainPage />);
+  render(<MainPage initialImageSrc="/placeholder.jpeg" />);
+
   const rotateIcon = screen.getByTestId('icon-2');
 
   fireEvent.click(rotateIcon);
@@ -74,5 +76,96 @@ describe('ToolBar component', () => {
     fireEvent.click(getByTestId('icon-0'));
 
     expect(mockRotate).not.toHaveBeenCalled();
+  });
+});
+
+describe('UploadContainer', () => {
+  it('calls onImageUpload when a file is selected via input', async () => {
+    const mockOnImageUpload = jest.fn();
+
+    render(<UploadContainer onImageUpload={mockOnImageUpload} />);
+
+    const file = new File(['dummy content'], 'example.png', {
+      type: 'image/png',
+    });
+
+    const fileInput = screen.getByTestId('file-input');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const fileReaderMock = {
+      readAsDataURL: jest.fn(),
+      onload: null,
+      result: 'data:image/png;base64,dummyImageData',
+    };
+    window.FileReader = jest.fn(() => fileReaderMock);
+
+    fileReaderMock.onload = function () {
+      mockOnImageUpload(fileReaderMock.result);
+    };
+    fileReaderMock.onload();
+
+    expect(mockOnImageUpload).toHaveBeenCalledWith(
+      'data:image/png;base64,dummyImageData'
+    );
+  });
+
+  it('does not call onImageUpload when no file is selected via input', () => {
+    const mockOnImageUpload = jest.fn();
+
+    render(<UploadContainer onImageUpload={mockOnImageUpload} />);
+
+    const fileInput = screen.getByTestId('file-input');
+    fireEvent.change(fileInput, { target: { files: [] } });
+
+    expect(mockOnImageUpload).not.toHaveBeenCalled();
+  });
+
+  it('calls onImageUpload when a file is dropped', async () => {
+    const mockOnImageUpload = jest.fn();
+
+    render(<UploadContainer onImageUpload={mockOnImageUpload} />);
+
+    const uploadArea = screen.getByText(
+      /choose or drag file/i
+    ).parentElement;
+
+    const file = new File(['dummy content'], 'example.png', {
+      type: 'image/png',
+    });
+
+    const fileReaderMock = {
+      readAsDataURL: jest.fn(),
+      onload: jest.fn(),
+      result: 'data:image/png;base64,dummyImageData',
+    };
+    window.FileReader = jest.fn(() => fileReaderMock);
+
+    fireEvent.drop(uploadArea, {
+      dataTransfer: {
+        files: [file],
+      },
+    });
+
+    fileReaderMock.onload();
+
+    expect(mockOnImageUpload).toHaveBeenCalledWith(
+      'data:image/png;base64,dummyImageData'
+    );
+  });
+
+  it('does not call onImageUpload when no file is dropped', () => {
+    const mockOnImageUpload = jest.fn();
+
+    render(<UploadContainer onImageUpload={mockOnImageUpload} />);
+
+    const uploadArea = screen.getByRole('button');
+
+    fireEvent.drop(uploadArea, {
+      dataTransfer: {
+        files: [],
+      },
+    });
+
+    expect(mockOnImageUpload).not.toHaveBeenCalled();
   });
 });

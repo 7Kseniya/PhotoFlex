@@ -46,6 +46,7 @@ const UploadContainer = ({ onImageUpload }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      role="button"
     >
       <p className={styles.uploadText}>choose or drag file</p>
       <input
@@ -54,6 +55,7 @@ const UploadContainer = ({ onImageUpload }) => {
         id="fileInput"
         onChange={handleFileSelect}
         style={{ display: 'none' }}
+        data-testid="file-input"
       />
       <label htmlFor="fileInput" className={styles.uploadLabel}>
         <CloudUploadIcon className={styles.uploadIcon} />
