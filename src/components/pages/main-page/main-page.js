@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import UploadContainer from '../../upload-container/upload-container';
 
 const MainPage = () => {
-  const [imageSrc, setImageSrc] = useState('placeholder.jpeg');
+  const [imageSrc, setImageSrc] = useState(null);
   const [rotation, setRotation] = useState(0);
 
   const handleRotate = () => {
