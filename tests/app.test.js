@@ -19,7 +19,6 @@ test('App renders MainPage component', () => {
 
 test('MainPage updates rotation when Rotate icon is clicked', () => {
   render(<MainPage />);
-
   const rotateIcon = screen.getByTestId('icon-2');
 
   fireEvent.click(rotateIcon);
