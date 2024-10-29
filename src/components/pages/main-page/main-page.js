@@ -4,13 +4,20 @@ import ToolBar from '../../tool-bar/tool-bar';
 import Tools from '../../tools/tools';
 import ImageRotate from '../../editor-actions/image-rotate';
 import React, { useState } from 'react';
+import UploadContainer from '../../upload-container/upload-container';
+import PropTypes from 'prop-types';
 
-const MainPage = () => {
-  const [imageSrc, setImageSrc] = useState('/placeholder.jpeg');
+const MainPage = ({ initialImageSrc = null }) => {
+  const [imageSrc, setImageSrc] = useState(initialImageSrc);
   const [rotation, setRotation] = useState(0);
 
   const handleRotate = () => {
     setRotation((prevRotation) => prevRotation + 90);
+  };
+
+  const handleImageUpload = (src) => {
+    setImageSrc(src);
+    setRotation(0);
   };
 
   return (
@@ -20,11 +27,18 @@ const MainPage = () => {
         <ToolBar onRotate={handleRotate} />
         <Tools />
         <div className={styles.imageContainer}>
-          <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+          {imageSrc ? (
+            <ImageRotate imageSrc={imageSrc} rotation={rotation} />
+          ) : (
+            <UploadContainer onImageUpload={handleImageUpload} />
+          )}
         </div>
       </div>
     </div>
   );
 };
 
+MainPage.propTypes = {
+  initialImageSrc: PropTypes.string,
+};
 export default MainPage;
