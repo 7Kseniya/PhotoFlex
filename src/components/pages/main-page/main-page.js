@@ -6,7 +6,7 @@ import ImageRotate from '../../editor-actions/image-rotate';
 import React, { useState } from 'react';
 
 const MainPage = () => {
-  const [imageSrc, setImageSrc] = useState('/placeholder.jpeg');
+  const [imageSrc] = useState('/placeholder.jpeg');
   const [rotation, setRotation] = useState(0);
 
   const handleRotate = () => {
