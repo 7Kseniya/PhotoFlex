@@ -1,6 +1,68 @@
+:root {
+  --primary-color: #884f9f;
+  --secondary-color: #686868;
+  --dark-color: #191919;
+  --light-color: #c3c3c3;
+}
+
 .mainContainer {
   display: flex;
   flex-direction: column;
-  height: 600px;
-  width: 500px;
+  height: 700px;
+  width: 550px;
+}
+
+.modalTitle {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.stack {
+  display: flex;
+  justify-content: center;
+  margin: 0 50px;
+}
+
+.visability {
+  color: var(--dark-color);
+}
+
+.visability:hover {
+  color: var(--primary-color);
+}
+
+.inputLabel {
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+.btn:hover {
+  background-color: rgba(136, 79, 159, 0.1);
+  color: #fff;
+}
+
+.loginvia {
+  color: var(--light-color);
+  text-align: center;
+  text-decoration: underline;
+}
+
+.footerText {
+  color: var(--light-color);
+  text-align: center;
+  text-decoration: underline;
+}
+
+.footerStack {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.socialBtn:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(136, 79, 159, 0.1);
+  color: #fff;
 }

@@ -23,9 +23,7 @@ const Modal = ({ children, onClose }) => {
       <ModalOverlay onClose={onClose} />
       <div className={styles.modal}>
         <div onClick={onClose}>
-          <p>
-            <ClearIcon className={styles.clearIcon} />
-          </p>
+          <ClearIcon className={styles.clearIcon} />
         </div>
         {children}
       </div>
