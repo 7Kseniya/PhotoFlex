@@ -1,0 +1,41 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #272727;
+  height: 980px;
+  width: 350px;
+  border: solid black 1px;
+}
+
+.filterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  align-items: center;
+  height: 980px;
+  overflow-y: scroll;
+}
+
+.filterItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filterBlock {
+  width: 250px;
+  height: 180px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filterLabel {
+  margin-top: 5px;
+  color: white;
+  font-size: 25px;
+  text-align: center;
+}

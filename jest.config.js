@@ -1,6 +1,10 @@
 module.exports = {
   roots: ['<rootDir>/src', '<rootDir>/tests'],
-  testPathIgnorePatterns: ['/node_modules/', '/cypress/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/cypress/',
+    'src/images',
+  ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
   },
@@ -21,5 +25,8 @@ module.exports = {
   },
   moduleNameMapper: {
     '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__mocks__/fileMock.js',
+    '^@mui/icons-material/(.*)$':
+      '<rootDir>/node_modules/@mui/icons-material/$1',
   },
 };

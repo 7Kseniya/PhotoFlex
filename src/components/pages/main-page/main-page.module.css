@@ -1,0 +1,21 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #191919;
+  height: 1080px;
+  width: 1920px;
+}
+
+.toolContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2px;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
