@@ -25,11 +25,8 @@ const MainPage = ({ initialImageSrc = null }) => {
     <div className={styles.mainContainer} data-testid="main-page">
       <Header />
       <div className={styles.toolContainer}>
-        <ToolBar
-          onRotate={handleRotate}
-          setActiveTool={setActiveTool}
-        />
-        <Tools activeTool={activeTool} />
+        <ToolBar setActiveTool={setActiveTool} />
+        <Tools onRotate={handleRotate} activeTool={activeTool} />
         <div className={styles.imageContainer}>
           {imageSrc ? (
             <ImageRotate imageSrc={imageSrc} rotation={rotation} />

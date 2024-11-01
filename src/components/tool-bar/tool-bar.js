@@ -9,7 +9,7 @@ import TextureIcon from '@mui/icons-material/Texture';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import TitleIcon from '@mui/icons-material/Title';
 
-const ToolBar = ({ onRotate, setActiveTool }) => {
+const ToolBar = ({ setActiveTool }) => {
   const [activeIcon, setActiveIcon] = useState(-1);
 
   const icons = [
@@ -18,7 +18,6 @@ const ToolBar = ({ onRotate, setActiveTool }) => {
     {
       component: Rotate90DegreesCcwIcon,
       className: styles.rotate,
-      action: onRotate,
     },
     {
       component: SettingsOverscanIcon,
