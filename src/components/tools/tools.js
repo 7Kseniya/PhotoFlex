@@ -3,6 +3,7 @@ import Tunes from './tune-tool/tunes-tools';
 import Filters from './filter-tool/filters-tools';
 import Crop from './crop-tool/crop-tools';
 import Rotate from './rotate-tool/rotate-tools';
+import Text from './text-tool/text-tools';
 import React from 'react';
 
 const Tools = ({ activeTool, onRotate }) => {
@@ -12,6 +13,7 @@ const Tools = ({ activeTool, onRotate }) => {
       {activeTool === 1 && <Crop />}
       {activeTool === 2 && <Rotate onRotate={onRotate} />}
       {activeTool === 4 && <Filters />}
+      {activeTool === 7 && <Text />}
     </div>
   );
 };
