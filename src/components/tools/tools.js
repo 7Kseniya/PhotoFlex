@@ -1,25 +1,15 @@
 import styles from './tools.module.css';
+import Tunes from './tune-tool/tunes-tools';
+import Filters from './filter-tool/filters-tools';
+import Crop from './crop-tool/crop-tools';
 import React from 'react';
 
-const Tools = () => {
-  const filters = [
-    { name: 'nebula' },
-    { name: 'outerspace' },
-    { name: 'refulgence' },
-    { name: 'grayscale' },
-    { name: 'grayscale' },
-    { name: 'grayscale' },
-  ];
+const Tools = ({ activeTool }) => {
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.filterContainer}>
-        {filters.map((filter, index) => (
-          <div key={index} className={styles.filterItem}>
-            <div className={styles.filterBlock}></div>
-            <p className={styles.filterLabel}>{filter.name}</p>
-          </div>
-        ))}
-      </div>
+      {activeTool === 0 && <Tunes />}
+      {activeTool === 1 && <Crop />}
+      {activeTool === 4 && <Filters />}
     </div>
   );
 };
