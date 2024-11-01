@@ -20,10 +20,11 @@ const Text = () => {
       className={styles.sharedContainer}
       data-testid="text-settings"
     >
-      <div className={styles.textItem}>
+      <div className={styles.textItem} data-testid="add-text-item">
         <AddCircleOutlineIcon
           className={styles.circle}
           style={{ fontSize: '80px' }}
+          data-testid="add-text-icon"
         />
         <p className={styles.label}>Добавить текст</p>
       </div>
@@ -32,10 +33,15 @@ const Text = () => {
           {color.map((color, index) => {
             const ColorIcon = color.component;
             return (
-              <div key={index} className={styles.colorBlock}>
+              <div
+                key={index}
+                className={styles.colorBlock}
+                data-testid={`color-block-${index}`}
+              >
                 <ColorIcon
                   className={color.className}
                   style={{ fontSize: '40px' }}
+                  data-testid={`color-icon-${index}`}
                 />
               </div>
             );

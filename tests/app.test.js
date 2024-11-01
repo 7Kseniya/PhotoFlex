@@ -14,6 +14,7 @@ import UploadContainer from '../src/components/upload-container/upload-container
 import Crop from '../src/components/tools/crop-tool/crop-tools';
 import Tunes from '../src/components/tools/tune-tool/tunes-tools';
 import Filters from '../src/components/tools/filter-tool/filters-tools';
+import Text from '../src/components/tools/text-tool/text-tools';
 
 test('App renders MainPage component', () => {
   render(<App />);
@@ -62,50 +63,13 @@ describe('ToolBar component', () => {
       expect(getByTestId(`icon-${i}`)).toBeInTheDocument();
     }
   });
-  // it('should call setActiveTool with correct index on icon click', () => {
-  //   const mockSetActiveTool = jest.fn();
-  //   const mockOnRotate = jest.fn();
-  //   const { getByTestId } = render(
-  //     <ToolBar onRotate={mockOnRotate} setActiveTool={mockSetActiveTool} />
-  //   );
-  //   for (let i = 0; i < 8; i++) {
-  //     const icon = getByTestId(`icon-${i}`);
-  //     fireEvent.click(icon);
-  //     expect(mockSetActiveTool).toHaveBeenCalledWith(i);
-  //     if (i === 2) {
-  //       expect(mockOnRotate).toHaveBeenCalled();
-  //     } else {
-  //       expect(mockOnRotate).not.toHaveBeenCalled();
-  //     }
-  //     mockSetActiveTool.mockClear();
-  //     mockOnRotate.mockClear();
-  //   }
-  // });
-
-  // it('should call onRotate action when Rotate icon is clicked', () => {
-  //   const mockRotate = jest.fn();
-  //   const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
-  //
-  //   fireEvent.click(getByTestId('icon-2'));
-  //
-  //   expect(mockRotate).toHaveBeenCalled();
-  // });
-
-  // it('should not call action for icons without action', () => {
-  //   const mockRotate = jest.fn();
-  //   const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
-  //
-  //   fireEvent.click(getByTestId('icon-0'));
-  //
-  //   expect(mockRotate).not.toHaveBeenCalled();
-  // });
 });
 
 describe('Crop component', () => {
   it('allows input for width and height with non-negative values only', () => {
     render(<Crop />);
-    const widthInput = screen.getByLabelText(/width:/i);
-    const heightInput = screen.getByLabelText(/height:/i);
+    const widthInput = screen.getByLabelText(/width/i);
+    const heightInput = screen.getByLabelText(/height/i);
 
     fireEvent.change(widthInput, { target: { value: '-50' } });
     expect(widthInput.value).toBe('0');
@@ -176,6 +140,35 @@ describe('Filters component', () => {
         expect(label).toBeInTheDocument();
       });
     });
+  });
+});
+
+describe('Text component', () => {
+  it('renders the add text icon and label', () => {
+    render(<Text />);
+    const addTextIcon = screen.getByTestId('add-text-icon');
+    const addTextLabel = screen.getByText(/добавить текст/i);
+    expect(addTextIcon).toBeInTheDocument();
+    expect(addTextLabel).toBeInTheDocument();
+  });
+
+  it('renders color selection icons and label', () => {
+    render(<Text />);
+    const colorBlocks = screen.getAllByTestId(/color-block-/);
+    const colorLabel = screen.getByText(/выбор цвета/i);
+    expect(colorBlocks.length).toBe(8);
+    expect(colorLabel).toBeInTheDocument();
+    colorBlocks.forEach((block, index) => {
+      expect(
+        screen.getByTestId(`color-icon-${index}`)
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders correct labels for color icons', () => {
+    render(<Text />);
+    const label = screen.getByText('Выбор цвета');
+    expect(label).toBeInTheDocument();
   });
 });
 

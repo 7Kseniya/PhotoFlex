@@ -80,26 +80,24 @@ const Crop = () => {
   return (
     <div style={styles.sharedContainer} data-testid="crop-area">
       <div style={styles.dimensionInputContainer}>
-        <label style={styles.label}>
-          Width:
-          <input
-            type="number"
-            name="width"
-            value={dimensions.width}
-            onChange={handleDimensionChange}
-            style={styles.dimensionInput}
-          />
-        </label>
-        <label style={styles.label}>
-          Height:
-          <input
-            type="number"
-            name="height"
-            value={dimensions.height}
-            onChange={handleDimensionChange}
-            style={styles.dimensionInput}
-          />
-        </label>
+        <input
+          type="number"
+          aria-label="Width"
+          name="width"
+          value={dimensions.width}
+          onChange={handleDimensionChange}
+          style={styles.dimensionInput}
+        />
+        <p style={styles.label}>With: </p>
+        <input
+          type="number"
+          aria-label="Height"
+          name="height"
+          value={dimensions.height}
+          onChange={handleDimensionChange}
+          style={styles.dimensionInput}
+        />
+        <p style={styles.label}>Height: </p>
       </div>
       {crop.map((cropItem, index) => {
         const CropComponent = cropItem.component;
