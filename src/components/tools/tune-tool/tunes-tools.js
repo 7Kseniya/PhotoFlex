@@ -24,17 +24,19 @@ const Tunes = () => {
   };
 
   return (
-    <div className={styles.sharedContainer}>
-      {tunes.map(({ name, min, max }, index) => (
-        <div key={index} className={styles.tuneItem}>
+    <div className={styles.sharedContainer} data-testid="settings">
+      {tunes.map((tune) => (
+        <div key={tune.name} className={styles.tuneItem}>
           <p className={styles.label}>
-            {name.charAt(0).toUpperCase() + name.slice(1)}
+            {tune.name.charAt(0).toUpperCase() + tune.name.slice(1)}
           </p>
           <Slider
-            value={settings[name]}
-            min={min}
-            max={max}
-            onChange={handleSlider(name)}
+            aria-label={tune.name}
+            value={settings[tune.name]}
+            min={tune.min}
+            max={tune.max}
+            onChange={handleSlider(tune.name)}
+            valueLabelDisplay="auto"
             style={{ color: 'white' }}
           />
         </div>

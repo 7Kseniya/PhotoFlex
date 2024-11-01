@@ -11,6 +11,8 @@ import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
 import MainPage from '../src/components/pages/main-page/main-page';
 import UploadContainer from '../src/components/upload-container/upload-container';
+import Crop from '../src/components/tools/crop-tool/crop-tools';
+import Tunes from '../src/components/tools/tune-tool/tunes-tools';
 
 test('App renders MainPage component', () => {
   render(<App />);
@@ -59,25 +61,93 @@ describe('ToolBar component', () => {
       expect(getByTestId(`icon-${i}`)).toBeInTheDocument();
     }
   });
-
-  it('should call onRotate action when Rotate icon is clicked', () => {
-    const mockRotate = jest.fn();
-    const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
-
-    fireEvent.click(getByTestId('icon-2'));
-
-    expect(mockRotate).toHaveBeenCalled();
+  it('should call setActiveTool with correct index on icon click', () => {
+    const mockSetActiveTool = jest.fn();
+    const mockOnRotate = jest.fn();
+    const { getByTestId } = render(
+      <ToolBar onRotate={mockOnRotate} setActiveTool={mockSetActiveTool} />
+    );
+    for (let i = 0; i < 8; i++) {
+      const icon = getByTestId(`icon-${i}`);
+      fireEvent.click(icon);
+      expect(mockSetActiveTool).toHaveBeenCalledWith(i);
+      if (i === 2) {
+        expect(mockOnRotate).toHaveBeenCalled();
+      } else {
+        expect(mockOnRotate).not.toHaveBeenCalled();
+      }
+      mockSetActiveTool.mockClear();
+      mockOnRotate.mockClear();
+    }
   });
 
-  it('should not call action for icons without action', () => {
-    const mockRotate = jest.fn();
-    const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
+  // it('should call onRotate action when Rotate icon is clicked', () => {
+  //   const mockRotate = jest.fn();
+  //   const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
+  //
+  //   fireEvent.click(getByTestId('icon-2'));
+  //
+  //   expect(mockRotate).toHaveBeenCalled();
+  // });
 
-    fireEvent.click(getByTestId('icon-0'));
+  // it('should not call action for icons without action', () => {
+  //   const mockRotate = jest.fn();
+  //   const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
+  //
+  //   fireEvent.click(getByTestId('icon-0'));
+  //
+  //   expect(mockRotate).not.toHaveBeenCalled();
+  // });
+});
 
-    expect(mockRotate).not.toHaveBeenCalled();
+describe('Crop component', () => {
+  it('allows input for width and height with non-negative values only', () => {
+    render(<Crop />);
+    const widthInput = screen.getByLabelText(/width:/i);
+    const heightInput = screen.getByLabelText(/height:/i);
+
+    fireEvent.change(widthInput, { target: { value: '-50' } });
+    expect(widthInput.value).toBe('0');
+
+    fireEvent.change(heightInput, { target: { value: '-50' } });
+    expect(heightInput.value).toBe('0');
+
+    fireEvent.change(widthInput, { target: { value: '100' } });
+    expect(widthInput.value).toBe('100');
+
+    fireEvent.change(heightInput, { target: { value: '200' } });
+    expect(heightInput.value).toBe('200');
   });
 });
+describe('Tunes component', () => {
+  it('renders all sliders with correct labels', () => {
+    render(<Tunes />);
+    const labels = ['Brightness', 'Contrast', 'Saturation', 'Sharpness'];
+    labels.forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
+  });
+
+  it('updates settings when sliders are changed', () => {
+    render(<Tunes />);
+    const brightnessSlider = screen.getByRole('slider', { name: /brightness/i });
+    const contrastSlider = screen.getByRole('slider', { name: /contrast/i });
+    const saturationSlider = screen.getByRole('slider', { name: /saturation/i });
+    const sharpnessSlider = screen.getByRole('slider', { name: /sharpness/i });
+
+    expect(brightnessSlider).toHaveValue('50');
+    expect(contrastSlider).toHaveValue('50');
+    expect(saturationSlider).toHaveValue('50');
+    expect(sharpnessSlider).toHaveValue('50');
+    fireEvent.change(brightnessSlider, { target: { value: '80' } });
+    expect(brightnessSlider).toHaveValue('80');
+    expect(contrastSlider).toHaveValue('50');
+    expect(saturationSlider).toHaveValue('50');
+    expect(sharpnessSlider).toHaveValue('50');
+  });
+
+});
+
 
 describe('UploadContainer', () => {
   it('calls onImageUpload when a file is selected via input', async () => {
