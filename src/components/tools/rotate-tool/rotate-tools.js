@@ -10,11 +10,13 @@ const Rotate = ({ onRotate }) => {
       component: RotateLeftIcon,
       className: styles.left90,
       action: () => onRotate(-90),
+      testId: 'rotate-left-icon',
     },
     {
       component: RotateRightIcon,
       className: styles.right90,
       action: () => onRotate(90),
+      testId: 'rotate-right-icon',
     },
   ];
 
@@ -25,6 +27,7 @@ const Rotate = ({ onRotate }) => {
       min: 0,
       max: 360,
       defaultValue: 50,
+      testId: 'rotation-slider',
     },
   ];
 
@@ -47,7 +50,11 @@ const Rotate = ({ onRotate }) => {
       {icons.map((icon, index) => {
         const IconComponent = icon.component;
         return (
-          <div key={index} onClick={icon.action}>
+          <div
+            key={index}
+            onClick={icon.action}
+            data-testid={icon.testId}
+          >
             <IconComponent
               className={`${styles.rotateIcon} ${icon.className}`}
             />
@@ -64,6 +71,7 @@ const Rotate = ({ onRotate }) => {
             onChange={handleSliderChange(slider.name)}
             valueLabelDisplay="auto"
             style={{ color: 'white' }}
+            data-testid={`slider-${slider.name}`}
           />
         </div>
       ))}

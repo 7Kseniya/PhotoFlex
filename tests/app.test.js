@@ -15,13 +15,13 @@ import Crop from '../src/components/tools/crop-tool/crop-tools';
 import Tunes from '../src/components/tools/tune-tool/tunes-tools';
 import Filters from '../src/components/tools/filter-tool/filters-tools';
 import Text from '../src/components/tools/text-tool/text-tools';
+import Rotate from '../src/components/tools/rotate-tool/rotate-tools';
 
 test('App renders MainPage component', () => {
   render(<App />);
   const mainPageElement = screen.getByTestId('main-page');
   expect(mainPageElement).toBeInTheDocument();
 });
-
 test('MainPage updates rotation when Rotate icon is clicked', () => {
   render(<MainPage initialImageSrc="/placeholder.jpeg" />);
 
@@ -84,6 +84,7 @@ describe('Crop component', () => {
     expect(heightInput.value).toBe('200');
   });
 });
+
 describe('Tunes component', () => {
   it('renders all sliders with correct labels', () => {
     render(<Tunes />);
@@ -124,6 +125,7 @@ describe('Tunes component', () => {
     expect(sharpnessSlider).toHaveValue('50');
   });
 });
+
 describe('Filters component', () => {
   test('renders all filters with correct labels', () => {
     render(<Filters />);
@@ -169,6 +171,27 @@ describe('Text component', () => {
     render(<Text />);
     const label = screen.getByText('Выбор цвета');
     expect(label).toBeInTheDocument();
+  });
+});
+
+describe('Rotate Component', () => {
+  let mockOnRotate;
+  beforeEach(() => {
+    mockOnRotate = jest.fn();
+    render(<Rotate onRotate={mockOnRotate} />);
+  });
+  it('renders rotate left icon', () => {
+    const leftIcon = screen.getByTestId('rotate-left-icon');
+    expect(leftIcon).toBeInTheDocument();
+    fireEvent.click(leftIcon);
+    expect(mockOnRotate).toHaveBeenCalledWith(-90);
+  });
+
+  it('renders rotate right icon', () => {
+    const rightIcon = screen.getByTestId('rotate-right-icon');
+    expect(rightIcon).toBeInTheDocument();
+    fireEvent.click(rightIcon);
+    expect(mockOnRotate).toHaveBeenCalledWith(90);
   });
 });
 

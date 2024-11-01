@@ -88,7 +88,7 @@ const Crop = () => {
           onChange={handleDimensionChange}
           style={styles.dimensionInput}
         />
-        <p style={styles.label}>With: </p>
+        <p style={styles.label}>Width: </p>
         <input
           type="number"
           aria-label="Height"
