@@ -6,16 +6,36 @@ import { Slider } from '@mui/material';
 
 const Rotate = ({ onRotate }) => {
   const icons = [
-    { component: RotateLeftIcon, className: styles.left90, action: onRotate },
-    { component: RotateRightIcon, className: styles.right90 },
+    {
+      component: RotateLeftIcon,
+      className: styles.left90,
+      action: () => onRotate(-90),
+    },
+    {
+      component: RotateRightIcon,
+      className: styles.right90,
+      action: () => onRotate(90),
+    },
   ];
 
   const sliders = [
-    { name: 'rotateHandle', label: 'Rotation', min: 0, max: 360, defaultValue: 50 },
+    {
+      name: 'rotateHandle',
+      label: 'Rotation',
+      min: 0,
+      max: 360,
+      defaultValue: 50,
+    },
   ];
 
   const [settings, setSettings] = useState(
-    sliders.reduce((acc, slider) => ({ ...acc, [slider.name]: slider.defaultValue }), {})
+    sliders.reduce(
+      (acc, slider) => ({
+        ...acc,
+        [slider.name]: slider.defaultValue,
+      }),
+      {}
+    )
   );
 
   const handleSliderChange = (name) => (event, newValue) => {
@@ -28,7 +48,9 @@ const Rotate = ({ onRotate }) => {
         const IconComponent = icon.component;
         return (
           <div key={index} onClick={icon.action}>
-            <IconComponent className={`${styles.rotateIcon} ${icon.className}`} />
+            <IconComponent
+              className={`${styles.rotateIcon} ${icon.className}`}
+            />
           </div>
         );
       })}

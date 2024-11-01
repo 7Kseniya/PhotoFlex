@@ -78,7 +78,7 @@ const Crop = () => {
   };
 
   return (
-    <div style={styles.sharedContainer } data-testid="crop-area">
+    <div style={styles.sharedContainer} data-testid="crop-area">
       <div style={styles.dimensionInputContainer}>
         <label style={styles.label}>
           Width:
@@ -105,7 +105,10 @@ const Crop = () => {
         const CropComponent = cropItem.component;
         return (
           <div key={index} style={styles.cropItemStyle}>
-            <CropComponent style={styles.cropIconStyle} className={cropItem.className} />
+            <CropComponent
+              style={styles.cropIconStyle}
+              className={cropItem.className}
+            />
             <p style={styles.label}>{cropItem.name}</p>
           </div>
         );

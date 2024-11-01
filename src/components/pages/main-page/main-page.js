@@ -12,8 +12,8 @@ const MainPage = ({ initialImageSrc = null }) => {
   const [rotation, setRotation] = useState(0);
   const [activeTool, setActiveTool] = useState(-1);
 
-  const handleRotate = () => {
-    setRotation((prevRotation) => prevRotation + 90);
+  const handleRotate = (angle) => {
+    setRotation((prevRotation) => prevRotation + angle);
   };
 
   const handleImageUpload = (src) => {

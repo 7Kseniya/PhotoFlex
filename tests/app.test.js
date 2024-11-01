@@ -123,7 +123,12 @@ describe('Crop component', () => {
 describe('Tunes component', () => {
   it('renders all sliders with correct labels', () => {
     render(<Tunes />);
-    const labels = ['Brightness', 'Contrast', 'Saturation', 'Sharpness'];
+    const labels = [
+      'Brightness',
+      'Contrast',
+      'Saturation',
+      'Sharpness',
+    ];
     labels.forEach((label) => {
       expect(screen.getByText(label)).toBeInTheDocument();
     });
@@ -131,10 +136,18 @@ describe('Tunes component', () => {
 
   it('updates settings when sliders are changed', () => {
     render(<Tunes />);
-    const brightnessSlider = screen.getByRole('slider', { name: /brightness/i });
-    const contrastSlider = screen.getByRole('slider', { name: /contrast/i });
-    const saturationSlider = screen.getByRole('slider', { name: /saturation/i });
-    const sharpnessSlider = screen.getByRole('slider', { name: /sharpness/i });
+    const brightnessSlider = screen.getByRole('slider', {
+      name: /brightness/i,
+    });
+    const contrastSlider = screen.getByRole('slider', {
+      name: /contrast/i,
+    });
+    const saturationSlider = screen.getByRole('slider', {
+      name: /saturation/i,
+    });
+    const sharpnessSlider = screen.getByRole('slider', {
+      name: /sharpness/i,
+    });
 
     expect(brightnessSlider).toHaveValue('50');
     expect(contrastSlider).toHaveValue('50');
@@ -146,16 +159,20 @@ describe('Tunes component', () => {
     expect(saturationSlider).toHaveValue('50');
     expect(sharpnessSlider).toHaveValue('50');
   });
-
 });
 describe('Filters component', () => {
   test('renders all filters with correct labels', () => {
     render(<Filters />);
-    const filterNames = ['nebula', 'outerspace', 'refulgence', 'grayscale'];
-    filterNames.forEach(name => {
+    const filterNames = [
+      'nebula',
+      'outerspace',
+      'refulgence',
+      'grayscale',
+    ];
+    filterNames.forEach((name) => {
       const filterLabels = screen.getAllByText(name);
       expect(filterLabels.length).toBeGreaterThan(0);
-      filterLabels.forEach(label => {
+      filterLabels.forEach((label) => {
         expect(label).toBeInTheDocument();
       });
     });
