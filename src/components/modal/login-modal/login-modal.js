@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Alert,
 } from '@mui/material';
 import FormControl from '@mui/joy/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
@@ -19,6 +20,8 @@ const LoginModal = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [alert, setAlert] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
@@ -29,8 +32,43 @@ const LoginModal = () => {
     event.preventDefault();
   };
 
+  const validateLogin = (login) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^\+?[1-9]\d{1,14}$/;
+    return (
+      emailPattern.test(login) ||
+      (phonePattern.test(login) && login.length > 0)
+    );
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 8;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setShowAlert(false);
+    setAlert('');
+
+    if (!validateLogin(login)) {
+      setAlert('please enter valid email or phone number');
+      setShowAlert(true);
+      return;
+    }
+    if (!validatePassword(password)) {
+      setAlert('password must be at least 8 characters long');
+      setShowAlert(true);
+      return;
+    }
+    console.log('login: ', login);
+    console.log('password: ', password);
+
+    setLogin('');
+    setPassword('');
+    setShowAlert(false);
+  };
+
   return (
-    // <Modal>
     <div className={styles.mainContainer}>
       <DialogTitle
         className={styles.modalTitle}
@@ -41,22 +79,18 @@ const LoginModal = () => {
       >
         sign in
       </DialogTitle>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-        }}
-      >
+      <form onClick={handleSubmit}>
         <Stack spacing={2} className={styles.stack}>
           <FormControl variant="outlined">
             <InputLabel
-              htmlFor="outlined-adornment-password"
+              htmlFor="login-input"
               sx={{ color: '#fff', marginBottom: '3px' }}
             >
               Enter your phone number/email/login
             </InputLabel>
             <OutlinedInput
               required
-              id="outlined-adornment-password"
+              id="login-input"
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               label="Login"
@@ -79,14 +113,14 @@ const LoginModal = () => {
           </FormControl>
           <FormControl variant="outlined">
             <InputLabel
-              htmlFor="outlined-adornment-password"
+              htmlFor="password-input"
               sx={{ color: '#fff', marginBottom: '3px' }}
             >
               Enter your password
             </InputLabel>
             <OutlinedInput
               required
-              id="outlined-adornment-password"
+              id="password-input"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -136,6 +170,17 @@ const LoginModal = () => {
           >
             submit
           </Button>
+          {showAlert && (
+            <Alert
+              severity="warning"
+              onClose={() => {
+                console.log('Alert closed');
+                setShowAlert(false);
+              }}
+            >
+              {alert}
+            </Alert>
+          )}
           <span className={styles.loginvia}>login via:</span>
           <Stack
             direction="row"
@@ -210,7 +255,6 @@ const LoginModal = () => {
         </Stack>
       </form>
     </div>
-    // </Modal>
   );
 };
 export default LoginModal;
