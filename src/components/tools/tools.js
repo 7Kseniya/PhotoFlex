@@ -9,11 +9,15 @@ import React from 'react';
 const Tools = ({ activeTool, onRotate }) => {
   return (
     <div className={styles.mainContainer}>
-      {activeTool === 0 && <Tunes />}
-      {activeTool === 1 && <Crop />}
-      {activeTool === 2 && <Rotate onRotate={onRotate} />}
-      {activeTool === 4 && <Filters />}
-      {activeTool === 7 && <Text />}
+      {activeTool === 0 && <Tunes data-testid="tunes-component" />}
+      {activeTool === 1 && <Crop data-testid="crop-component" />}
+      {activeTool === 2 && (
+        <Rotate onRotate={onRotate} data-testid="rotate-component" />
+      )}
+      {activeTool === 4 && (
+        <Filters data-testid="filters-component" />
+      )}
+      {activeTool === 7 && <Text data-testid="text-component" />}
     </div>
   );
 };
