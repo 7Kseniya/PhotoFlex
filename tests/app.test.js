@@ -11,13 +11,18 @@ import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
 import MainPage from '../src/components/pages/main-page/main-page';
 import UploadContainer from '../src/components/upload-container/upload-container';
+import Crop from '../src/components/tools/crop-tool/crop-tools';
+import Tunes from '../src/components/tools/tune-tool/tunes-tools';
+import Filters from '../src/components/tools/filter-tool/filters-tools';
+import Text from '../src/components/tools/text-tool/text-tools';
+import Rotate from '../src/components/tools/rotate-tool/rotate-tools';
+import Tools from '../src/components/tools/tools';
 
 test('App renders MainPage component', () => {
   render(<App />);
   const mainPageElement = screen.getByTestId('main-page');
   expect(mainPageElement).toBeInTheDocument();
 });
-
 test('MainPage updates rotation when Rotate icon is clicked', () => {
   render(<MainPage initialImageSrc="/placeholder.jpeg" />);
 
@@ -59,23 +64,135 @@ describe('ToolBar component', () => {
       expect(getByTestId(`icon-${i}`)).toBeInTheDocument();
     }
   });
+});
 
-  it('should call onRotate action when Rotate icon is clicked', () => {
-    const mockRotate = jest.fn();
-    const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
+describe('Crop component', () => {
+  it('allows input for width and height with non-negative values only', () => {
+    render(<Crop />);
+    const widthInput = screen.getByLabelText(/width/i);
+    const heightInput = screen.getByLabelText(/height/i);
 
-    fireEvent.click(getByTestId('icon-2'));
+    fireEvent.change(widthInput, { target: { value: '-50' } });
+    expect(widthInput.value).toBe('0');
 
-    expect(mockRotate).toHaveBeenCalled();
+    fireEvent.change(heightInput, { target: { value: '-50' } });
+    expect(heightInput.value).toBe('0');
+
+    fireEvent.change(widthInput, { target: { value: '100' } });
+    expect(widthInput.value).toBe('100');
+
+    fireEvent.change(heightInput, { target: { value: '200' } });
+    expect(heightInput.value).toBe('200');
+  });
+});
+
+describe('Tunes component', () => {
+  it('renders all sliders with correct labels', () => {
+    render(<Tunes />);
+    const labels = [
+      'Brightness',
+      'Contrast',
+      'Saturation',
+      'Sharpness',
+    ];
+    labels.forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
   });
 
-  it('should not call action for icons without action', () => {
-    const mockRotate = jest.fn();
-    const { getByTestId } = render(<ToolBar onRotate={mockRotate} />);
+  it('updates settings when sliders are changed', () => {
+    render(<Tunes />);
+    const brightnessSlider = screen.getByRole('slider', {
+      name: /brightness/i,
+    });
+    const contrastSlider = screen.getByRole('slider', {
+      name: /contrast/i,
+    });
+    const saturationSlider = screen.getByRole('slider', {
+      name: /saturation/i,
+    });
+    const sharpnessSlider = screen.getByRole('slider', {
+      name: /sharpness/i,
+    });
 
-    fireEvent.click(getByTestId('icon-0'));
+    expect(brightnessSlider).toHaveValue('50');
+    expect(contrastSlider).toHaveValue('50');
+    expect(saturationSlider).toHaveValue('50');
+    expect(sharpnessSlider).toHaveValue('50');
+    fireEvent.change(brightnessSlider, { target: { value: '80' } });
+    expect(brightnessSlider).toHaveValue('80');
+    expect(contrastSlider).toHaveValue('50');
+    expect(saturationSlider).toHaveValue('50');
+    expect(sharpnessSlider).toHaveValue('50');
+  });
+});
 
-    expect(mockRotate).not.toHaveBeenCalled();
+describe('Filters component', () => {
+  test('renders all filters with correct labels', () => {
+    render(<Filters />);
+    const filterNames = [
+      'nebula',
+      'outerspace',
+      'refulgence',
+      'grayscale',
+    ];
+    filterNames.forEach((name) => {
+      const filterLabels = screen.getAllByText(name);
+      expect(filterLabels.length).toBeGreaterThan(0);
+      filterLabels.forEach((label) => {
+        expect(label).toBeInTheDocument();
+      });
+    });
+  });
+});
+
+describe('Text component', () => {
+  it('renders the add text icon and label', () => {
+    render(<Text />);
+    const addTextIcon = screen.getByTestId('add-text-icon');
+    const addTextLabel = screen.getByText(/добавить текст/i);
+    expect(addTextIcon).toBeInTheDocument();
+    expect(addTextLabel).toBeInTheDocument();
+  });
+
+  it('renders color selection icons and label', () => {
+    render(<Text />);
+    const colorBlocks = screen.getAllByTestId(/color-block-/);
+    const colorLabel = screen.getByText(/выбор цвета/i);
+    expect(colorBlocks.length).toBe(8);
+    expect(colorLabel).toBeInTheDocument();
+    colorBlocks.forEach((block, index) => {
+      expect(
+        screen.getByTestId(`color-icon-${index}`)
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders correct labels for color icons', () => {
+    render(<Text />);
+    const label = screen.getByText('Выбор цвета');
+    expect(label).toBeInTheDocument();
+  });
+});
+
+describe('Rotate Component', () => {
+  let mockOnRotate;
+  beforeEach(() => {
+    mockOnRotate = jest.fn();
+    render(<Rotate onRotate={mockOnRotate} />);
+  });
+  it('renders rotate left icon', () => {
+    const leftIcon = screen.getByTestId('rotate-left-icon');
+    expect(leftIcon).toBeInTheDocument();
+    fireEvent.click(leftIcon);
+    expect(mockOnRotate).toHaveBeenCalledWith(-90);
+  });
+
+  it('renders rotate right icon', () => {
+    const rightIcon = screen.getByTestId('rotate-right-icon');
+    expect(rightIcon).toBeInTheDocument();
+    fireEvent.click(rightIcon);
+    expect(mockOnRotate).toHaveBeenCalledWith(90);
   });
 });
 
@@ -167,5 +284,34 @@ describe('UploadContainer', () => {
     });
 
     expect(mockOnImageUpload).not.toHaveBeenCalled();
+  });
+});
+describe('Tools Component', () => {
+  it('renders Tunes component when activeTool is 0', () => {
+    render(<Tools activeTool={0} />);
+    expect(screen.getByText('Brightness')).toBeInTheDocument();
+  });
+
+  it('renders Crop component when activeTool is 1', () => {
+    render(<Tools activeTool={1} />);
+    expect(screen.getByLabelText(/width/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/height/i)).toBeInTheDocument();
+  });
+
+  it('renders Rotate component when activeTool is 2', () => {
+    render(<Tools activeTool={2} onRotate={jest.fn()} />);
+    expect(
+      screen.getByTestId('rotate-left-icon')
+    ).toBeInTheDocument();
+  });
+
+  it('renders Filters component when activeTool is 4', () => {
+    render(<Tools activeTool={4} />);
+    expect(screen.getByText('nebula')).toBeInTheDocument();
+  });
+
+  it('renders Text component when activeTool is 7', () => {
+    render(<Tools activeTool={7} />);
+    expect(screen.getByText(/добавить текст/i)).toBeInTheDocument();
   });
 });
