@@ -6,7 +6,7 @@ import Crop from './crop-tool/crop-tools';
 import Rotate from './rotate-tool/rotate-tools';
 import Text from './text-tool/text-tools';
 
-const Tools = ({ activeTool, onRotate, onCropChange, imageSrc }) => {
+const Tools = ({ activeTool, onRotate, onCropChange }) => {
   return (
     <div className={styles.mainContainer}>
       {activeTool === 0 && <Tunes data-testid="tunes-component" />}
