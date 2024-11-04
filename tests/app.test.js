@@ -17,21 +17,51 @@ import Filters from '../src/components/tools/filter-tool/filters-tools';
 import Text from '../src/components/tools/text-tool/text-tools';
 import Rotate from '../src/components/tools/rotate-tool/rotate-tools';
 import Tools from '../src/components/tools/tools';
+import ImageCrop from '../src/components/editor-actions/image-crop';
 
 test('App renders MainPage component', () => {
   render(<App />);
   const mainPageElement = screen.getByTestId('main-page');
   expect(mainPageElement).toBeInTheDocument();
 });
-test('MainPage updates rotation when Rotate icon is clicked', () => {
-  render(<MainPage initialImageSrc="/placeholder.jpeg" />);
 
-  const rotateIcon = screen.getByTestId('icon-2');
+describe('MainPage component', () => {
+  it('MainPage updates rotation when Rotate icon is clicked', () => {
+    render(<MainPage initialImageSrc="/placeholder.jpeg" />);
 
-  fireEvent.click(rotateIcon);
+    const rotateIcon = screen.getByTestId('icon-2');
 
-  const imageRotateCanvas = screen.getByTestId('image-rotate');
-  expect(imageRotateCanvas).toBeInTheDocument();
+    fireEvent.click(rotateIcon);
+
+    const imageRotateCanvas = screen.getByTestId('image-rotate');
+    expect(imageRotateCanvas).toBeInTheDocument();
+  });
+
+  it('renders UploadContainer when no image is uploaded', () => {
+    render(<MainPage />);
+    const uploadContainer = screen.getByTestId('file-input');
+    expect(uploadContainer).toBeInTheDocument();
+  });
+
+  it('renders ImageRotate component when image is uploaded and activeTool is 2', () => {
+    render(<MainPage initialImageSrc="test-image.jpg" />);
+    const rotateIcon = screen.getByTestId('icon-2');
+
+    fireEvent.click(rotateIcon);
+
+    const imageRotateCanvas = screen.getByTestId('image-rotate');
+    expect(imageRotateCanvas).toBeInTheDocument();
+  });
+
+  it('renders ImageCrop component when image is uploaded and activeTool is 1', () => {
+    render(<MainPage initialImageSrc="test-image.jpg" />);
+    const cropIcon = screen.getByTestId('icon-1');
+
+    fireEvent.click(cropIcon);
+
+    const imageCropCanvas = screen.getByTestId('image-crop');
+    expect(imageCropCanvas).toBeInTheDocument();
+  });
 });
 
 describe('Editor-actions tools', () => {
@@ -68,7 +98,8 @@ describe('ToolBar component', () => {
 
 describe('Crop component', () => {
   it('allows input for width and height with non-negative values only', () => {
-    render(<Crop />);
+    const mockOnCropChange = jest.fn(); // Создаем mock-функцию
+    render(<Crop onCropChange={mockOnCropChange} />); // Передаем ее в компонент
     const widthInput = screen.getByLabelText(/width/i);
     const heightInput = screen.getByLabelText(/height/i);
 
@@ -313,5 +344,64 @@ describe('Tools Component', () => {
   it('renders Text component when activeTool is 7', () => {
     render(<Tools activeTool={7} />);
     expect(screen.getByText(/добавить текст/i)).toBeInTheDocument();
+  });
+});
+describe('ImageCrop Component', () => {
+  const defaultProps = {
+    imageSrc: 'test-image.jpg',
+    cropX: 10,
+    cropY: 10,
+    cropWidth: 100,
+    cropHeight: 100,
+  };
+
+  beforeAll(() => {
+    global.Image = class {
+      constructor() {
+        setTimeout(() => {
+          if (this.onload) this.onload();
+        }, 0);
+      }
+    };
+  });
+
+  beforeEach(() => {
+    const mockGetContext = jest.fn(() => ({
+      clearRect: jest.fn(),
+      drawImage: jest.fn(),
+    }));
+    HTMLCanvasElement.prototype.getContext = mockGetContext;
+  });
+
+  it('renders canvas element', () => {
+    render(<ImageCrop {...defaultProps} />);
+    const canvasElement = screen.getByTestId('image-crop');
+    expect(canvasElement).toBeInTheDocument();
+  });
+
+  it('renders canvas with correct dimensions based on cropWidth and cropHeight', async () => {
+    const { container } = render(<ImageCrop {...defaultProps} />);
+    const canvas = container.querySelector('canvas');
+
+    await waitFor(() => {
+      expect(canvas.width).toBe(100);
+      expect(canvas.height).toBe(100);
+    });
+  });
+
+  it('updates canvas dimensions when cropWidth and cropHeight change', async () => {
+    const { rerender, container } = render(
+      <ImageCrop {...defaultProps} />
+    );
+    const canvas = container.querySelector('canvas');
+
+    rerender(
+      <ImageCrop {...defaultProps} cropWidth={200} cropHeight={200} />
+    );
+
+    await waitFor(() => {
+      expect(canvas.width).toBe(200);
+      expect(canvas.height).toBe(200);
+    });
   });
 });

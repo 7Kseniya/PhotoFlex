@@ -53,28 +53,35 @@ const styles = {
   },
 };
 
-const Crop = () => {
-  const crop = [
-    { component: Crop169, name: '16:9' },
-    { component: CropSquare, name: '4:4' },
-    { component: Crop169, name: '9:16' },
-    { component: Crop32, name: '3:2' },
-    { component: Crop54, name: '5:4' },
-    { component: Crop75, name: '7:5' },
+const Crop = ({ onCropChange }) => {
+  const cropPresets = [
+    { component: Crop169, name: '16:9', width: 400, height: 225 },
+    { component: CropSquare, name: '4:4', width: 250, height: 250 },
+    { component: Crop169, name: '9:16', width: 225, height: 400 },
+    { component: Crop32, name: '3:2', width: 375, height: 250 },
+    { component: Crop54, name: '5:4', width: 312, height: 250 },
+    { component: Crop75, name: '7:5', width: 400, height: 250 },
   ];
 
   const [dimensions, setDimensions] = useState({
-    width: '',
-    height: '',
+    cropX: 0,
+    cropY: 0,
+    cropWidth: 1000,
+    cropHeight: 1000,
   });
 
-  const handleDimensionChange = (e) => {
-    const { name, value } = e.target;
-    const newValue = Math.max(0, value);
-    setDimensions((prevDimensions) => ({
-      ...prevDimensions,
-      [name]: newValue,
+  const handlePresetSelect = (width, height) => {
+    setDimensions((prev) => ({
+      ...prev,
+      cropWidth: width,
+      cropHeight: height,
     }));
+    onCropChange({
+      cropX: 0,
+      cropY: 0,
+      cropWidth: width,
+      cropHeight: height,
+    });
   };
 
   return (
@@ -84,8 +91,11 @@ const Crop = () => {
           type="number"
           aria-label="Width"
           name="width"
-          value={dimensions.width}
-          onChange={handleDimensionChange}
+          value={dimensions.cropWidth}
+          onChange={(e) => {
+            const width = Math.max(0, e.target.value);
+            handlePresetSelect(width, dimensions.cropHeight);
+          }}
           style={styles.dimensionInput}
         />
         <p style={styles.label}>Width: </p>
@@ -93,20 +103,26 @@ const Crop = () => {
           type="number"
           aria-label="Height"
           name="height"
-          value={dimensions.height}
-          onChange={handleDimensionChange}
+          value={dimensions.cropHeight}
+          onChange={(e) => {
+            const height = Math.max(0, e.target.value);
+            handlePresetSelect(dimensions.cropWidth, height);
+          }}
           style={styles.dimensionInput}
         />
         <p style={styles.label}>Height: </p>
       </div>
-      {crop.map((cropItem, index) => {
+      {cropPresets.map((cropItem, index) => {
         const CropComponent = cropItem.component;
         return (
-          <div key={index} style={styles.cropItemStyle}>
-            <CropComponent
-              style={styles.cropIconStyle}
-              className={cropItem.className}
-            />
+          <div
+            key={index}
+            style={styles.cropItemStyle}
+            onClick={() =>
+              handlePresetSelect(cropItem.width, cropItem.height)
+            }
+          >
+            <CropComponent style={styles.cropIconStyle} />
             <p style={styles.label}>{cropItem.name}</p>
           </div>
         );
