@@ -68,7 +68,8 @@ describe('ToolBar component', () => {
 
 describe('Crop component', () => {
   it('allows input for width and height with non-negative values only', () => {
-    render(<Crop />);
+    const mockOnCropChange = jest.fn(); // Создаем mock-функцию
+    render(<Crop onCropChange={mockOnCropChange} />); // Передаем ее в компонент
     const widthInput = screen.getByLabelText(/width/i);
     const heightInput = screen.getByLabelText(/height/i);
 

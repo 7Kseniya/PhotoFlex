@@ -92,9 +92,10 @@ const Crop = ({ onCropChange }) => {
           aria-label="Width"
           name="width"
           value={dimensions.cropWidth}
-          onChange={(e) =>
-            handlePresetSelect(e.target.value, dimensions.cropHeight)
-          }
+          onChange={(e) => {
+            const width = Math.max(0, e.target.value);
+            handlePresetSelect(width, dimensions.cropHeight);
+          }}
           style={styles.dimensionInput}
         />
         <p style={styles.label}>Width: </p>
@@ -103,9 +104,10 @@ const Crop = ({ onCropChange }) => {
           aria-label="Height"
           name="height"
           value={dimensions.cropHeight}
-          onChange={(e) =>
-            handlePresetSelect(dimensions.cropWidth, e.target.value)
-          }
+          onChange={(e) => {
+            const height = Math.max(0, e.target.value);
+            handlePresetSelect(dimensions.cropWidth, height);
+          }}
           style={styles.dimensionInput}
         />
         <p style={styles.label}>Height: </p>

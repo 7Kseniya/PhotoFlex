@@ -33,7 +33,7 @@ const MainPage = ({ initialImageSrc = null }) => {
   };
 
   return (
-    <div className={styles.mainContainer}>
+    <div className={styles.mainContainer} data-testid="main-page">
       <Header />
       <div className={styles.toolContainer}>
         <ToolBar setActiveTool={setActiveTool} />
