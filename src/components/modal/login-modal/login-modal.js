@@ -60,6 +60,9 @@ const LoginModal = () => {
       setShowAlert(true);
       return;
     }
+    setAlert('login succesful');
+    setShowAlert(true);
+
     console.log('login: ', login);
     console.log('password: ', password);
 
@@ -79,7 +82,7 @@ const LoginModal = () => {
       >
         sign in
       </DialogTitle>
-      <form onClick={handleSubmit}>
+      <form>
         <Stack spacing={2} className={styles.stack}>
           <FormControl variant="outlined">
             <InputLabel
@@ -160,16 +163,6 @@ const LoginModal = () => {
               }}
             />
           </FormControl>
-
-          <Button
-            type="submit"
-            className={styles.btn}
-            sx={{
-              color: '#c3c3c3',
-            }}
-          >
-            submit
-          </Button>
           {showAlert && (
             <Alert
               severity="warning"
@@ -181,6 +174,16 @@ const LoginModal = () => {
               {alert}
             </Alert>
           )}
+          <Button
+            type="submit"
+            className={styles.btn}
+            sx={{
+              color: '#c3c3c3',
+            }}
+            onClick={handleSubmit}
+          >
+            submit
+          </Button>
           <span className={styles.loginvia}>login via:</span>
           <Stack
             direction="row"
