@@ -269,7 +269,8 @@ describe('UploadContainer', () => {
       'data:image/png;base64,dummyImageData'
     );
   });
-  it('does not call onImageUpload when no file is dropped', () => {
+
+  it('doesnt call onImageUpload when no file is dropped', () => {
     const mockOnImageUpload = jest.fn();
 
     render(<UploadContainer onImageUpload={mockOnImageUpload} />);
