@@ -5,7 +5,7 @@
 `React + Node.js`
 
 - bundler: `vite`
-- components: [material ui](https://mui.com/material-ui/) 
+- components: [material ui](https://mui.com/material-ui/)
 
 ### Links
 
