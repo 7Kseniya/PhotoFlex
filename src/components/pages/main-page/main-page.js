@@ -10,9 +10,10 @@ import PropTypes from 'prop-types';
 const MainPage = ({ initialImageSrc = null }) => {
   const [imageSrc, setImageSrc] = useState(initialImageSrc);
   const [rotation, setRotation] = useState(0);
+  const [activeTool, setActiveTool] = useState(-1);
 
-  const handleRotate = () => {
-    setRotation((prevRotation) => prevRotation + 90);
+  const handleRotate = (angle) => {
+    setRotation((prevRotation) => prevRotation + angle);
   };
 
   const handleImageUpload = (src) => {
@@ -24,8 +25,8 @@ const MainPage = ({ initialImageSrc = null }) => {
     <div className={styles.mainContainer} data-testid="main-page">
       <Header />
       <div className={styles.toolContainer}>
-        <ToolBar onRotate={handleRotate} />
-        <Tools />
+        <ToolBar setActiveTool={setActiveTool} />
+        <Tools onRotate={handleRotate} activeTool={activeTool} />
         <div className={styles.imageContainer}>
           {imageSrc ? (
             <ImageRotate imageSrc={imageSrc} rotation={rotation} />
