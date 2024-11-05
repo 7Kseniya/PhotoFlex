@@ -31,12 +31,18 @@ const MainPage = () => {
       </div>
       {modalType == 'login' && (
         <Modal onClose={closeModal}>
-          <LoginModal onSignUpClick={openRegisterModal} />
+          <LoginModal
+            onSignUpClick={openRegisterModal}
+            onSubmited={closeModal}
+          />
         </Modal>
       )}
       {modalType == 'register' && (
-        <Modal>
-          <RegisterModal onClose={closeModal} />
+        <Modal onClose={closeModal}>
+          <RegisterModal
+            onSignInClick={openLoginModal}
+            onSubmited={closeModal}
+          />
         </Modal>
       )}
     </div>

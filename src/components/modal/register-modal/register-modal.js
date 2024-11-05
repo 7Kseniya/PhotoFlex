@@ -16,7 +16,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
 
-const RegisterModal = () => {
+const RegisterModal = ({ onSignInClick, onSubmited }) => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -72,14 +72,16 @@ const RegisterModal = () => {
       setShowAlert(true);
       return;
     }
-    setAlert('login succesful');
+    setAlert('register succesful');
     setShowAlert(true);
 
     console.log('login: ', login);
     console.log('password: ', password);
+    console.log('username: ', username);
 
     setLogin('');
     setPassword('');
+    setUsername('');
     setShowAlert(false);
   };
 
@@ -221,7 +223,7 @@ const RegisterModal = () => {
           <Button
             type="submit"
             className={styles.btn}
-            onClick={handleSubmit}
+            onClick={(handleSubmit, onSubmited)}
             sx={{
               color: '#c3c3c3',
             }}
@@ -272,9 +274,7 @@ const RegisterModal = () => {
             </span>
             <Button
               className={styles.btn}
-              onClick={() => {
-                /*redirect to sign in form*/
-              }}
+              onClick={onSignInClick}
               sx={{
                 color: '#c3c3c3',
               }}

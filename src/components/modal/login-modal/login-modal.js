@@ -16,7 +16,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
 
-const LoginModal = ({ onSignUpClick }) => {
+const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -180,7 +180,7 @@ const LoginModal = ({ onSignUpClick }) => {
             sx={{
               color: '#c3c3c3',
             }}
-            onClick={handleSubmit}
+            onClick={(handleSubmit, onSubmited)}
           >
             submit
           </Button>
@@ -228,9 +228,7 @@ const LoginModal = ({ onSignUpClick }) => {
             </span>
             <Button
               className={styles.btn}
-              onClick={() => {
-                /*redirect to sign up form*/
-              }}
+              onClick={onSignUpClick}
               sx={{
                 color: '#c3c3c3',
               }}
