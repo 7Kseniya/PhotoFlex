@@ -8,7 +8,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:jest/recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -17,12 +18,13 @@
     "ecmaVersion": 2023,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "jest"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "no-unused-vars": "warn",
     "react/prop-types": "off",
-    "no-undef": "error"
+    "no-undef": "error",
+    "jest/no-focused-tests": "error"
   },
   "settings": {
     "react": {

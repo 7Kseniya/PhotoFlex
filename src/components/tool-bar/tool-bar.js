@@ -9,35 +9,46 @@ import TextureIcon from '@mui/icons-material/Texture';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import TitleIcon from '@mui/icons-material/Title';
 
-const ToolBar = ({ onRotate }) => {
+const ToolBar = ({ setActiveTool }) => {
   const [activeIcon, setActiveIcon] = useState(-1);
 
   const icons = [
-    { component: TuneIcon },
-    { component: CropIcon },
-    { component: Rotate90DegreesCcwIcon, action: onRotate },
-    { component: SettingsOverscanIcon },
-    { component: PhotoFilterIcon },
-    { component: TextureIcon },
-    { component: WallpaperIcon },
-    { component: TitleIcon },
+    { component: TuneIcon, className: styles.tune },
+    { component: CropIcon, className: styles.crop },
+    {
+      component: Rotate90DegreesCcwIcon,
+      className: styles.rotate,
+    },
+    {
+      component: SettingsOverscanIcon,
+      className: styles.settings,
+    },
+    { component: PhotoFilterIcon, className: styles.photoFilter },
+    { component: TextureIcon, className: styles.texture },
+    { component: WallpaperIcon, className: styles.wallpaper },
+    { component: TitleIcon, className: styles.title },
   ];
 
   return (
     <div className={styles.mainContainer}>
-      {icons.map(({ component: IconComponent, action }, index) => (
-        <IconComponent
-          data-testid={`icon-${index}`}
-          key={index}
-          className={`${styles.icon} ${
-            activeIcon === index ? styles.clicked : styles.notClicked
-          }`}
-          onClick={() => {
-            setActiveIcon(index);
-            if (action) action();
-          }}
-        />
-      ))}
+      {icons.map(
+        ({ component: IconComponent, action, className }, index) => (
+          <IconComponent
+            data-testid={`icon-${index}`}
+            key={index}
+            className={`${styles.icon} ${
+              activeIcon === index
+                ? styles.clicked
+                : styles.notClicked
+            } ${className}`}
+            onClick={() => {
+              setActiveIcon(index);
+              setActiveTool(index);
+              if (action) action();
+            }}
+          />
+        )
+      )}
     </div>
   );
 };

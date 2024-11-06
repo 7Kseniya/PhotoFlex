@@ -1,9 +1,14 @@
 name: Cypress Tests
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   build:
@@ -26,7 +31,7 @@ jobs:
       - name: Run Stylelint
         run: npm run stylelint
 
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
 
       - name: Check test coverage
@@ -37,11 +42,15 @@ jobs:
             exit 1
           fi
 
-      - name: Start React app
-        run: npm start &
+      - name: Build React app
+        run: npm run build
 
-      - name: Wait for React app to start
-        run: sleep 30
+      - name: Start React app for Cypress
+        run: |
+          npx serve -s build -l 3000 &
+          sleep 5
+        env:
+          CI: true
 
       - name: Run Cypress tests
-        run: npm run test:e2e:run
+        run: npx cypress run
