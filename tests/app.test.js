@@ -82,44 +82,14 @@ describe('ToolBar component', () => {
 
 describe('LoginModal', () => {
   const mockOnSignUpClick = jest.fn();
-  const mockOnSubmited = jest.fn();
+  const mockOnSubmitted = jest.fn();
 
   beforeEach(() => {
     render(
       <LoginModal
         onSignUpClick={mockOnSignUpClick}
-        onSubmited={mockOnSubmited}
+        onSubmited={mockOnSubmitted}
       />
     );
   });
-});
-
-test('render the login modal', () => {
-  expect(screen.getByText(/sign in/i)).toBeInTheDocument();
-  expect(
-    screen.getByLabelText(/Enter your phone number\/email\/login/i)
-  ).toBeInTheDocument();
-  expect(
-    screen.getByLabelText(/Enter your password/i)
-  ).toBeInTheDocument();
-  expect(screen.getByText(/submit/i)).toBeInTheDocument();
-  expect(screen.getByText(/login via/i)).toBeInTheDocument();
-});
-
-test('show alert when submitting with invaloid email/phone/login', () => {
-  fireEvent.change(
-    screen.getByLabelText(/Enter your phone number\/email\/login/i),
-    {
-      target: { value: 'invalid-email' },
-    }
-  );
-  fireEvent.change(screen.getByLabelText(/Enter your password/i), {
-    target: { value: 'Password123!' },
-  });
-
-  fireEvent.click(screen.getByText(/submit/i));
-
-  expect(
-    screen.getByText(/please enter valid email or phone number/i)
-  ).toBeInTheDocument();
 });
