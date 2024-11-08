@@ -21,7 +21,7 @@ const Modal = ({ children, onClose }) => {
   return ReactDOM.createPortal(
     <>
       <ModalOverlay onClose={onClose} />
-      <div className={styles.modal}>
+      <div className={styles.modal} data-testid="modal-content">
         <div onClick={onClose}>
           <ClearIcon className={styles.clearIcon} />
         </div>
