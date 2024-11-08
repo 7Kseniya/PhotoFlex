@@ -41,3 +41,4 @@ describe('MainPage component', () => {
     expect(imageCropCanvas).toBeInTheDocument();
   });
 });
+//yyyyyy
