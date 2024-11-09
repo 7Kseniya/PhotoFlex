@@ -68,13 +68,13 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
     console.log('login: ', login);
     console.log('password: ', password);
 
-    setLogin('');
-    setPassword('');
-    setShowAlert(false);
-
     if (onSubmited) {
       onSubmited();
     }
+
+    setLogin('');
+    setPassword('');
+    setShowAlert(false);
   };
 
   return (

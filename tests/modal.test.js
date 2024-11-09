@@ -15,7 +15,7 @@ describe('Modal', () => {
     onClose.mockClear();
   });
 
-  test('рендерится корректно и отображает переданный контент', () => {
+  test('renders correct', () => {
     render(
       <Modal onClose={onClose}>
         <div>Modal Content</div>
@@ -26,7 +26,7 @@ describe('Modal', () => {
     expect(screen.getByTestId('ClearIcon')).toBeInTheDocument();
   });
 
-  test('вызывает onClose при нажатии на клавишу Escape', () => {
+  test('calls onClose while Escape is clicked', () => {
     render(
       <Modal onClose={onClose}>
         <div>Modal Content</div>
@@ -38,7 +38,7 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  test('вызывает onClose при клике на иконку закрытия', () => {
+  test('calls onClose on click on close icon', () => {
     render(
       <Modal onClose={onClose}>
         <div>Modal Content</div>

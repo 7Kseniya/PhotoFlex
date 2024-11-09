@@ -1,4 +1,4 @@
-import styles from './register-modal.module.css';
+import { styles } from './register-modal-styles';
 import React, { useState } from 'react';
 import {
   DialogTitle,
@@ -79,6 +79,10 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
     console.log('password: ', password);
     console.log('username: ', username);
 
+    if (onSubmited) {
+      onSubmited();
+    }
+
     setLogin('');
     setPassword('');
     setUsername('');
@@ -86,23 +90,12 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
   };
 
   return (
-    <div className={styles.mainContainer}>
-      <DialogTitle
-        className={styles.modalTitle}
-        sx={{
-          fontSize: '2rem',
-          marginBottom: '16px',
-        }}
-      >
-        sign up
-      </DialogTitle>
+    <div style={styles.mainContainer}>
+      <DialogTitle sx={styles.modalTitle}>sign up</DialogTitle>
       <form>
-        <Stack spacing={2} className={styles.stack}>
+        <Stack spacing={2} sx={styles.stack}>
           <FormControl variant="outlined">
-            <InputLabel
-              htmlFor="login-input"
-              sx={{ color: '#fff', marginBottom: '3px' }}
-            >
+            <InputLabel htmlFor="login-input" sx={styles.inputLabel}>
               Enter your phone number/email/login
             </InputLabel>
             <OutlinedInput
@@ -111,27 +104,13 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               label="Login"
-              sx={{
-                backgroundColor: '#c3c3c3',
-                borderRadius: '30px',
-                input: { color: '#191919' },
-                label: { color: '#686868' },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#686868',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-              }}
+              sx={styles.loginInputStyle}
             />
           </FormControl>
           <FormControl variant="outlined">
             <InputLabel
               htmlFor="password-input"
-              sx={{ color: '#fff', marginBottom: '3px' }}
+              sx={styles.inputLabel}
             >
               Come up with a password
             </InputLabel>
@@ -149,7 +128,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
-                    className={styles.visability}
+                    sx={styles.visability}
                   >
                     {showPassword ? (
                       <VisibilityOff />
@@ -160,52 +139,23 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
                 </InputAdornment>
               }
               label="Password"
-              sx={{
-                backgroundColor: '#c3c3c3',
-                borderRadius: '30px',
-                input: { color: '#191919' },
-                label: { color: '#686868' },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#686868',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-              }}
+              sx={styles.passwordInputStyle}
             />
           </FormControl>
           <FormControl variant="outlined">
             <InputLabel
               htmlFor="username-input"
-              sx={{ color: '#fff', marginBottom: '3px' }}
+              sx={styles.inputLabel}
             >
               Come up with username
             </InputLabel>
             <OutlinedInput
               required
               id="username-input"
-              className="text-field"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               label="Username"
-              sx={{
-                backgroundColor: '#c3c3c3',
-                borderRadius: '30px',
-                input: { color: '#191919' },
-                label: { color: '#686868' },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#686868',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-              }}
+              sx={styles.userInputStyle}
             />
           </FormControl>
           {showAlert && (
@@ -222,68 +172,35 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
 
           <Button
             type="submit"
-            className={styles.btn}
-            onClick={(handleSubmit, onSubmited)}
-            sx={{
-              color: '#c3c3c3',
-            }}
+            sx={styles.btn}
+            onClick={handleSubmit}
           >
             submit
           </Button>
-          <span className={styles.loginvia}>login via:</span>
+          <span style={styles.loginvia}>login via:</span>
           <Stack
             direction="row"
             spacing={1}
-            className={styles.footerStack}
+            sx={styles.footerStack}
             marginBottom="5px"
           >
-            <Button
-              variant="outlined"
-              className={styles.socialBtn}
-              sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '30px',
-                borderColor: '#c3c3c3',
-                color: '#c3c3c3',
-              }}
-            >
+            <Button variant="outlined" sx={styles.socialBtn}>
               <GoogleIcon />
             </Button>
-            <Button
-              variant="outlined"
-              className={styles.socialBtn}
-              sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '30px',
-                borderColor: '#c3c3c3',
-                color: '#c3c3c3',
-              }}
-            >
+            <Button variant="outlined" sx={styles.socialBtn}>
               <TelegramIcon />
             </Button>
           </Stack>
-          <Stack
-            className={styles.footerStack}
-            direction="row"
-            spacing={1}
-          >
-            <span className={styles.footerText}>
+          <Stack sx={styles.footerStack} direction="row" spacing={1}>
+            <span style={styles.footerText}>
               already have an account?
             </span>
-            <Button
-              className={styles.btn}
-              onClick={onSignInClick}
-              sx={{
-                color: '#c3c3c3',
-              }}
-            >
+            <Button sx={styles.btn} onClick={onSignInClick}>
               sign in
             </Button>
           </Stack>
           <Stack
-            className={styles.footerStack}
+            sx={styles.footerStack}
             direction="row"
             spacing={1}
           ></Stack>
