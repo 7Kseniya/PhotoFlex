@@ -1,4 +1,4 @@
-import styles from './login-modal.module.css';
+import { styles } from './login-modal-styles';
 import React, { useState } from 'react';
 import {
   DialogTitle,
@@ -71,26 +71,19 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
     setLogin('');
     setPassword('');
     setShowAlert(false);
+
+    if (onSubmited) {
+      onSubmited();
+    }
   };
 
   return (
-    <div className={styles.mainContainer}>
-      <DialogTitle
-        className={styles.modalTitle}
-        sx={{
-          fontSize: '2rem',
-          marginBottom: '16px',
-        }}
-      >
-        sign in
-      </DialogTitle>
+    <div style={styles.mainContainer}>
+      <DialogTitle sx={styles.modalTitle}>sign in</DialogTitle>
       <form>
-        <Stack spacing={2} className={styles.stack}>
+        <Stack spacing={2} sx={styles.stack}>
           <FormControl variant="outlined">
-            <InputLabel
-              htmlFor="login-input"
-              sx={{ color: '#fff', marginBottom: '3px' }}
-            >
+            <InputLabel htmlFor="login-input" sx={styles.inputLabel}>
               Enter your phone number/email/login
             </InputLabel>
             <OutlinedInput
@@ -99,27 +92,13 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               label="Login"
-              sx={{
-                backgroundColor: '#c3c3c3',
-                borderRadius: '30px',
-                input: { color: '#191919' },
-                label: { color: '#686868' },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#686868',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-              }}
+              sx={styles.loginInputStyle}
             />
           </FormControl>
           <FormControl variant="outlined">
             <InputLabel
               htmlFor="password-input"
-              sx={{ color: '#fff', marginBottom: '3px' }}
+              sx={styles.inputLabel}
             >
               Enter your password
             </InputLabel>
@@ -137,7 +116,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
-                    className={styles.visability}
+                    sx={styles.visability}
                   >
                     {showPassword ? (
                       <VisibilityOff />
@@ -148,21 +127,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
                 </InputAdornment>
               }
               label="Password"
-              sx={{
-                backgroundColor: '#c3c3c3',
-                borderRadius: '30px',
-                input: { color: '#191919' },
-                label: { color: '#686868' },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#686868',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#884f9f',
-                },
-              }}
+              sx={styles.passwordInputStyle}
             />
           </FormControl>
           {showAlert && (
@@ -178,78 +143,38 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
           )}
           <Button
             type="submit"
-            className={styles.btn}
-            sx={{
-              color: '#c3c3c3',
-            }}
-            onClick={(handleSubmit, onSubmited)}
+            sx={styles.btn}
+            onClick={handleSubmit}
           >
             submit
           </Button>
-          <span className={styles.loginvia}>login via:</span>
+          <span style={styles.loginvia}>login via:</span>
           <Stack
             direction="row"
             spacing={1}
-            className={styles.footerStack}
+            sx={styles.footerStack}
             marginBottom="5px"
           >
-            <Button
-              variant="outlined"
-              className={styles.socialBtn}
-              sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '30px',
-                borderColor: '#c3c3c3',
-                color: '#c3c3c3',
-              }}
-            >
+            <Button variant="outlined" sx={styles.socialBtn}>
               <GoogleIcon />
             </Button>
-            <Button
-              variant="outlined"
-              className={styles.socialBtn}
-              sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '30px',
-                borderColor: '#c3c3c3',
-                color: '#c3c3c3',
-              }}
-            >
+            <Button variant="outlined" sx={styles.socialBtn}>
               <TelegramIcon />
             </Button>
           </Stack>
-          <Stack
-            className={styles.footerStack}
-            direction="row"
-            spacing={1}
-          >
-            <span className={styles.footerText}>
+          <Stack sx={styles.footerStack} direction="row" spacing={1}>
+            <span style={styles.footerText}>
               don&apos;t have an account?
             </span>
-            <Button
-              className={styles.btn}
-              onClick={onSignUpClick}
-              sx={{
-                color: '#c3c3c3',
-              }}
-            >
+            <Button onClick={onSignUpClick} sx={styles.btn}>
               sign up
             </Button>
           </Stack>
-          <Stack
-            className={styles.footerStack}
-            direction="row"
-            spacing={1}
-          >
+          <Stack sx={styles.footerStack} direction="row" spacing={1}>
             <Button
-              className={styles.btn}
+              sx={styles.btn}
               onClick={() => {
                 /*redirect to recover password form*/
-              }}
-              sx={{
-                color: '#c3c3c3',
               }}
             >
               recover password
