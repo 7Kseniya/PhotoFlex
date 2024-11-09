@@ -1,17 +1,10 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import App from './../src/components/app/app';
 import ImageRotate from './../src/components/editor-actions/image-rotate';
 import ToolBar from './../src/components/tool-bar/tool-bar';
 import MainPage from '../src/components/pages/main-page/main-page';
-import RegisterModal from '../src/components/modal/register-modal/register-modal';
-import LoginModal from '../src/components/modal/login-modal/login-modal';
 import UploadContainer from '../src/components/upload-container/upload-container';
 import Crop from '../src/components/tools/crop-tool/crop-tools';
 import Tunes from '../src/components/tools/tune-tool/tunes-tools';
@@ -408,16 +401,3 @@ describe('ImageCrop Component', () => {
   });
 });
 
-describe('LoginModal', () => {
-  const mockOnSignUpClick = jest.fn();
-  const mockOnSubmitted = jest.fn();
-
-  beforeEach(() => {
-    render(
-      <LoginModal
-        onSignUpClick={mockOnSignUpClick}
-        onSubmited={mockOnSubmitted}
-      />
-    );
-  });
-});
