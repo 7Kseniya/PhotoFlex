@@ -2,9 +2,19 @@
   display: flex;
   flex-direction: row;
   background-color: #1e1e1e;
-  width: 1918px;
-  height: 100px;
-  border: solid black 1px;
+  padding-bottom: 10px;
+  width: 100%;
+  height: auto;
+  border-bottom: solid black 1px;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #191919;
+  min-height: 1080px;
+  width: auto;
 }
 
 .logoContainer {
@@ -12,6 +22,7 @@
   margin-top: 20px;
   width: 300px;
   height: 60px;
+  cursor: pointer;
 }
 
 .photosContainer {
@@ -19,15 +30,17 @@
   display: flex;
   justify-content: center;
   flex-direction: row;
-  width: 1800px;
+  width: 100%;
+  max-width: 1700px;
   height: 500px;
   border-radius: 60px;
+  gap: 40px;
+  align-items: center;
 }
 
 .photo {
   background-color: #1e1e1e;
   width: 500px;
-  margin-right: 60px;
   height: 500px;
   border-radius: 60px;
 }
@@ -37,25 +50,101 @@
   display: flex;
   flex-direction: row;
   background-color: #1e1e1e;
-  width: 900px;
+  width: 1000px;
   height: 200px;
   border-radius: 60px;
   border: solid black 1px;
+  align-items: center;
 }
 
-.mainContainer {
+.editSection {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: row;
+  width: 280px;
+}
+
+.dataContainer {
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  margin-left: 100px;
+  margin-right: 30px;
+  align-items: flex-start;
+  color: #884f9f;
+  font-size: 25px;
+  gap: 15px;
+}
+
+.dataRow {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  background-color: #191919;
-  height: 1080px;
-  width: 1920px;
+}
+
+.nameInput,
+.inputsData {
+  padding: 10px;
+  font-size: 20px;
+  background-color: #1e1e1e;
+  color: white;
+  border: none;
+  outline: none;
+  width: 250px;
+}
+
+.nameInput {
+  font-size: 30px;
+}
+
+.userName {
+  font-size: 35px;
+  color: white;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #884f9f;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.saveButton:hover {
+  background-color: #6f3f7f;
+}
+
+.editIcon {
+  font-size: 30px;
+  color: #884f9f;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 .icon.edit {
   margin-top: 10px;
-  margin-left: 1300px;
+  margin-left: auto;
   margin-right: 30px;
   font-size: 70px;
   color: #884f9f;
+  cursor: pointer;
+}
+
+.editing {
+  border-radius: 10px;
+  border: 2px dashed white;
+  transition: border 0.3s ease;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.emailInput {
+  background-color: #1e1e1e;
 }
