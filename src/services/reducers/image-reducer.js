@@ -7,7 +7,7 @@ import {
 } from '../actions/image-actions';
 
 const initialState = {
-  activeTool: -1,
+  activeTool: 0,
   imageSrc: null,
   rotation: 0,
   crop: {
