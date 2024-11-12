@@ -1,5 +1,5 @@
 import styles from './personal-account.module.css';
-import logoImg from '../../images/logo.png';
+import logoImg from '../../../images/logo.png';
 import EditIcon from '@mui/icons-material/Edit';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

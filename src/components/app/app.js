@@ -1,7 +1,7 @@
 import './app.css';
 import React from 'react';
 import MainPage from './../pages/main-page/main-page';
-import PersonalAccount from './../personal-account/personal-account';
+import PersonalAccount from '../pages/personal-account/personal-account';
 import {
   BrowserRouter as Router,
   Route,
@@ -14,7 +14,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/personal" element={<PersonalAccount />} />
+          <Route path="/personal-account" element={<PersonalAccount />} />
         </Routes>
       </div>
     </Router>
