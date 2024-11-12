@@ -47,7 +47,6 @@ app.post('/login', (req, res) => {
   res.status(200).json({ message: 'Логин успешен', token });
 });
 
-// Запускаем сервер
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
