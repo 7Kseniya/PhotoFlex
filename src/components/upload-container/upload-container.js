@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setImageSrc,
+  setIsDragOver,
+} from '../../services/actions/image-actions';
 import styles from './upload-container.module.css';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PropTypes from 'prop-types';
 
 const UploadContainer = ({ onImageUpload }) => {
-  const [isDragOver, setIsDragOver] = useState(false);
+  const dispatch = useDispatch();
+  const isDragOver = useSelector((state) => state.isDragOver);
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -15,17 +21,17 @@ const UploadContainer = ({ onImageUpload }) => {
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    setIsDragOver(true);
+    dispatch(setIsDragOver(true));
   };
 
   const handleDragLeave = (event) => {
     event.preventDefault();
-    setIsDragOver(false);
+    dispatch(setIsDragOver(false));
   };
 
   const handleDrop = (event) => {
     event.preventDefault();
-    setIsDragOver(false);
+    dispatch(setIsDragOver(false));
     const file = event.dataTransfer.files[0];
     if (file) {
       readFile(file);
@@ -35,6 +41,7 @@ const UploadContainer = ({ onImageUpload }) => {
   const readFile = (file) => {
     const reader = new FileReader();
     reader.onload = () => {
+      dispatch(setImageSrc(reader.result));
       onImageUpload(reader.result);
     };
     reader.readAsDataURL(file);

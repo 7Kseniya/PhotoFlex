@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Crop169,
   Crop32,
@@ -6,54 +7,11 @@ import {
   Crop75,
   CropSquare,
 } from '@mui/icons-material';
-
-const styles = {
-  cropItemStyle: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '10px',
-    flexDirection: 'row',
-  },
-  label: {
-    color: 'white',
-    fontSize: '25px',
-    textAlign: 'center',
-    marginLeft: '10px',
-  },
-  sharedContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    marginTop: '20px',
-    alignItems: 'center',
-    height: '980px',
-    overflowY: 'scroll',
-  },
-  cropIconStyle: {
-    fontSize: '80px',
-    color: 'white',
-    cursor: 'pointer',
-  },
-  dimensionInputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '10px',
-  },
-  dimensionInput: {
-    padding: '5px',
-    fontSize: '30px',
-    border: '2px solid #ccc',
-    borderRadius: '5px',
-    backgroundColor: '#1e1e1e',
-    color: 'white',
-    outline: 'none',
-    width: '100px',
-    transition: '0.2s',
-    marginTop: '10px',
-  },
-};
-
-const Crop = ({ onCropChange }) => {
+import { setCrop } from '../../../services/actions/image-actions';
+import styles from './crop-tools-styles';
+const Crop = () => {
+  const dispatch = useDispatch();
+  const crop = useSelector((state) => state.crop);
   const cropPresets = [
     { component: Crop169, name: '16:9', width: 400, height: 225 },
     { component: CropSquare, name: '4:4', width: 250, height: 250 },
@@ -62,26 +20,24 @@ const Crop = ({ onCropChange }) => {
     { component: Crop54, name: '5:4', width: 312, height: 250 },
     { component: Crop75, name: '7:5', width: 400, height: 250 },
   ];
-
-  const [dimensions, setDimensions] = useState({
-    cropX: 0,
-    cropY: 0,
-    cropWidth: 1000,
-    cropHeight: 1000,
-  });
-
   const handlePresetSelect = (width, height) => {
-    setDimensions((prev) => ({
-      ...prev,
-      cropWidth: width,
-      cropHeight: height,
-    }));
-    onCropChange({
-      cropX: 0,
-      cropY: 0,
-      cropWidth: width,
-      cropHeight: height,
-    });
+    dispatch(
+      setCrop({
+        cropX: 0,
+        cropY: 0,
+        cropWidth: width,
+        cropHeight: height,
+      })
+    );
+  };
+  const handleInputChange = (e, type) => {
+    const value = Math.max(0, e.target.value);
+    dispatch(
+      setCrop({
+        ...crop,
+        [type]: value,
+      })
+    );
   };
 
   return (
@@ -91,24 +47,20 @@ const Crop = ({ onCropChange }) => {
           type="number"
           aria-label="Width"
           name="width"
-          value={dimensions.cropWidth}
-          onChange={(e) => {
-            const width = Math.max(0, e.target.value);
-            handlePresetSelect(width, dimensions.cropHeight);
-          }}
+          value={crop.cropWidth}
+          onChange={(e) => handleInputChange(e, 'cropWidth')}
           style={styles.dimensionInput}
+          data-testid="crop-width"
         />
         <p style={styles.label}>Width: </p>
         <input
           type="number"
           aria-label="Height"
           name="height"
-          value={dimensions.cropHeight}
-          onChange={(e) => {
-            const height = Math.max(0, e.target.value);
-            handlePresetSelect(dimensions.cropWidth, height);
-          }}
+          value={crop.cropHeight}
+          onChange={(e) => handleInputChange(e, 'cropHeight')}
           style={styles.dimensionInput}
+          data-testid="crop-height"
         />
         <p style={styles.label}>Height: </p>
       </div>
@@ -121,6 +73,7 @@ const Crop = ({ onCropChange }) => {
             onClick={() =>
               handlePresetSelect(cropItem.width, cropItem.height)
             }
+            data-testid={`crop-${cropItem.name}`}
           >
             <CropComponent style={styles.cropIconStyle} />
             <p style={styles.label}>{cropItem.name}</p>
