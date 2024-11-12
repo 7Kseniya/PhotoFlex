@@ -53,6 +53,4 @@ jobs:
           CI: true
 
       - name: Run Cypress tests
-        env:
-          CYPRESS_BASE_URL: 'https://webdevphotoflex.github.io/PhotoFlex'
         run: npx cypress run

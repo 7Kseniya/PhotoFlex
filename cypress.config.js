@@ -7,7 +7,7 @@ module.exports = defineConfig({
     },
   },
   e2e: {
-    baseUrl: process.env.CYPRESS_BASE_URL || 'http://localhost:3000',
+    baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/integration/*.spec.js',
   },
 });
