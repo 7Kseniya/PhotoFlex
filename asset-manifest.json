@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/PhotoFlex/static/css/main.040ef24c.css",
+    "main.js": "/PhotoFlex/static/js/main.ef1c89bf.js",
+    "index.html": "/PhotoFlex/index.html",
+    "main.040ef24c.css.map": "/PhotoFlex/static/css/main.040ef24c.css.map",
+    "main.ef1c89bf.js.map": "/PhotoFlex/static/js/main.ef1c89bf.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.040ef24c.css",
+    "static/js/main.ef1c89bf.js"
+  ]
+}
