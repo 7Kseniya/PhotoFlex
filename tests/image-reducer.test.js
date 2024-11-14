@@ -1,82 +1,62 @@
 import imageReducer from '../src/services/reducers/image-reducer';
 import {
-  SET_IMAGE_SRC,
-  SET_ROTATION,
-  SET_CROP,
-  SET_ACTIVE_TOOL,
-  SET_IS_DRAG_OVER,
+  setActiveTool,
+  setCropDimensions,
+  setImageSrc,
+  setIsDragOver,
+  setRotationAngle,
 } from '../src/services/actions/image-actions';
 
 describe('imageReducer', () => {
   const initialState = {
-    activeTool: 0,
     imageSrc: null,
-    rotation: 0,
-    crop: {
-      cropX: 0,
-      cropY: 0,
-      cropWidth: 1000,
-      cropHeight: 1000,
-    },
+    imageFix: null,
     isDragOver: false,
+    activeTool: 0,
+    rotationAngle: 0,
+    cropDimensions: { width: 800, height: 900 },
+    mask: [],
+    brushSize: 10,
+    drawing: false,
   };
   it('should return the initial state', () => {
     expect(imageReducer(undefined, {})).toEqual(initialState);
   });
-  it('should handle SET_ACTIVE_TOOL', () => {
-    const action = {
-      type: SET_ACTIVE_TOOL,
-      payload: 1,
-    };
-    const newState = imageReducer(initialState, action);
-    expect(newState.activeTool).toBe(1);
-  });
 
   it('should handle SET_IMAGE_SRC', () => {
-    const action = {
-      type: SET_IMAGE_SRC,
-      payload: 'test-image.jpg',
-    };
+    const action = setImageSrc('newImageSrc');
     const newState = imageReducer(initialState, action);
-    expect(newState.imageSrc).toBe('test-image.jpg');
-    expect(newState.rotation).toBe(0);
+    expect(newState.imageSrc).toBe('newImageSrc');
   });
-  it('should handle SET_ROTATION', () => {
-    const action = {
-      type: SET_ROTATION,
-      payload: 90,
-    };
-    const newState = imageReducer(initialState, action);
-    expect(newState.rotation).toBe(90);
-  });
-  it('should handle SET_CROP', () => {
-    const action = {
-      type: SET_CROP,
-      payload: {
-        cropX: 10,
-        cropY: 20,
-        cropWidth: 800,
-        cropHeight: 600,
-      },
-    };
-    const newState = imageReducer(initialState, action);
-    expect(newState.crop).toEqual({
-      cropX: 10,
-      cropY: 20,
-      cropWidth: 800,
-      cropHeight: 600,
-    });
-  });
+
   it('should handle SET_IS_DRAG_OVER', () => {
-    const action = {
-      type: SET_IS_DRAG_OVER,
-      payload: true,
-    };
+    const action = setIsDragOver(true);
     const newState = imageReducer(initialState, action);
     expect(newState.isDragOver).toBe(true);
   });
 
-  it('should return the same state for unknown action types', () => {
+  it('should handle SET_ACTIVE_TOOL', () => {
+    const action = setActiveTool(1);
+    const newState = imageReducer(initialState, action);
+    expect(newState.activeTool).toBe(1);
+  });
+
+  it('should handle SET_ROTATION_ANGLE', () => {
+    const action = setRotationAngle(90);
+    const newState = imageReducer(initialState, action);
+    expect(newState.rotationAngle).toBe(90);
+  });
+
+  it('should handle SET_CROP_DIMENSIONS', () => {
+    const action = setCropDimensions(600, 400);
+    const newState = imageReducer(initialState, action);
+    expect(newState.cropDimensions).toEqual({
+      width: 600,
+      height: 400,
+    });
+  });
+
+  it('should ignore unknown actions', () => {
     const action = { type: 'UNKNOWN_ACTION' };
     const newState = imageReducer(initialState, action);
     expect(newState).toEqual(initialState);

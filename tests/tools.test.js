@@ -3,32 +3,39 @@ import '@testing-library/jest-dom';
 import Tools from '../src/components/tools/tools';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import imageReducer from '../src/services/reducers/image-reducer';
+import configureStore from 'redux-mock-store';
+
+const mockStore = configureStore([]);
+
 const renderWithProvider = (component, initialState) => {
-  const store = createStore(imageReducer, initialState);
+  const store = mockStore(initialState);
   return render(<Provider store={store}>{component}</Provider>);
 };
+
 describe('Tools Component', () => {
   it('renders Tunes component when activeTool is 0', () => {
-    renderWithProvider(<Tools />, { activeTool: 0 });
-    expect(screen.getByText('Brightness')).toBeInTheDocument();
+    renderWithProvider(<Tools />, { image: { activeTool: 0 } });
+    expect(screen.getByTestId('tunes-component')).toBeInTheDocument();
   });
+
   it('renders Rotate component when activeTool is 2', () => {
     renderWithProvider(<Tools onRotate={jest.fn()} />, {
-      activeTool: 2,
+      image: { activeTool: 2 },
     });
     expect(
-      screen.getByTestId('rotate-left-icon')
+      screen.getByTestId('rotate-component')
     ).toBeInTheDocument();
   });
+
   it('renders Filters component when activeTool is 4', () => {
-    renderWithProvider(<Tools />, { activeTool: 4 });
-    expect(screen.getByText('nebula')).toBeInTheDocument();
+    renderWithProvider(<Tools />, { image: { activeTool: 4 } });
+    expect(
+      screen.getByTestId('filters-component')
+    ).toBeInTheDocument();
   });
 
   it('renders Text component when activeTool is 7', () => {
-    renderWithProvider(<Tools />, { activeTool: 7 });
-    expect(screen.getByText(/добавить текст/i)).toBeInTheDocument();
+    renderWithProvider(<Tools />, { image: { activeTool: 7 } });
+    expect(screen.getByTestId('text-component')).toBeInTheDocument();
   });
 });

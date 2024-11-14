@@ -5,20 +5,38 @@ import Tunes from './tune-tool/tunes-tools';
 import Filters from './filter-tool/filters-tools';
 import Crop from './crop-tool/crop-tools';
 import Rotate from './rotate-tool/rotate-tools';
-import Text from './text-tool/text-tools';
+import RemoveBgTool from './remove-bg-tool/remove-bg-tool';
+import TextTool from './text-tool/text-tools';
 
-const Tools = () => {
-  const { activeTool } = useSelector((state) => state);
+const Tools = ({
+  brushSize,
+  onBrushSizeChange,
+  onRemoveBackground,
+  onReset,
+}) => {
+  const activeTool = useSelector((state) => state.image.activeTool);
 
   return (
-    <div className={styles.mainContainer}>
+    <div
+      className={styles.mainContainer}
+      data-testid="tools-component"
+    >
       {activeTool === 0 && <Tunes data-testid="tunes-component" />}
       {activeTool === 1 && <Crop data-testid="crop-component" />}
       {activeTool === 2 && <Rotate data-testid="rotate-component" />}
       {activeTool === 4 && (
         <Filters data-testid="filters-component" />
       )}
-      {activeTool === 7 && <Text data-testid="text-component" />}
+      {activeTool === 5 && (
+        <RemoveBgTool
+          brushSize={brushSize}
+          onBrushSizeChange={onBrushSizeChange}
+          onRemoveBackground={onRemoveBackground}
+          onReset={onReset}
+          data-testid="remove-bg-component"
+        />
+      )}
+      {activeTool === 7 && <TextTool data-testid="text-component" />}
     </div>
   );
 };

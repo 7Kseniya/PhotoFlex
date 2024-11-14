@@ -6,11 +6,10 @@ import {
 } from '../../services/actions/image-actions';
 import styles from './upload-container.module.css';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import PropTypes from 'prop-types';
 
-const UploadContainer = ({ onImageUpload }) => {
+const UploadContainer = () => {
   const dispatch = useDispatch();
-  const isDragOver = useSelector((state) => state.isDragOver);
+  const isDragOver = useSelector((state) => state.image.isDragOver);
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -18,7 +17,6 @@ const UploadContainer = ({ onImageUpload }) => {
       readFile(file);
     }
   };
-
   const handleDragOver = (event) => {
     event.preventDefault();
     dispatch(setIsDragOver(true));
@@ -42,7 +40,6 @@ const UploadContainer = ({ onImageUpload }) => {
     const reader = new FileReader();
     reader.onload = () => {
       dispatch(setImageSrc(reader.result));
-      onImageUpload(reader.result);
     };
     reader.readAsDataURL(file);
   };
@@ -54,6 +51,7 @@ const UploadContainer = ({ onImageUpload }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       role="button"
+      data-testid={'upload-container'}
     >
       <p className={styles.uploadText}>choose or drag file</p>
       <input
@@ -62,17 +60,13 @@ const UploadContainer = ({ onImageUpload }) => {
         id="fileInput"
         onChange={handleFileSelect}
         style={{ display: 'none' }}
-        data-testid="file-input"
+        aria-label="choose or drag file"
       />
       <label htmlFor="fileInput" className={styles.uploadLabel}>
         <CloudUploadIcon className={styles.uploadIcon} />
       </label>
     </div>
   );
-};
-
-UploadContainer.propTypes = {
-  onImageUpload: PropTypes.func.isRequired,
 };
 
 export default UploadContainer;

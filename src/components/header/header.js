@@ -7,9 +7,20 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ canvasRef }) => {
+  const handleSave = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const imageData = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'photoflex.png';
+      link.click();
+    }
+  };
+
   return (
-    <div className={styles.mainContainer}>
+    <div className={styles.mainContainer} data-testid={'header'}>
       <NavLink to={'/'}>
         <img
           src={logoImg || null}
@@ -20,7 +31,10 @@ const Header = () => {
       <RedoIcon className={`${styles.icon} ${styles.redo}`} />
       <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
       <FlipIcon className={`${styles.icon} ${styles.flip}`} />
-      <SaveIcon className={`${styles.icon} ${styles.save}`} />
+      <SaveIcon
+        className={`${styles.icon} ${styles.save}`}
+        onClick={handleSave}
+      />
       <NavLink to={'/personal-account'}>
         <PersonAddIcon
           className={`${styles.icon} ${styles.personAdd}`}

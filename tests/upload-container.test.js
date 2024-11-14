@@ -1,90 +1,128 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import UploadContainer from '../src/components/upload-container/upload-container';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import imageReducer from '../src/services/reducers/image-reducer';
+import configureStore from 'redux-mock-store';
+import UploadContainer from '../src/components/upload-container/upload-container';
+import {
+  setIsDragOver,
+  setImageSrc,
+} from '../src/services/actions/image-actions';
+import '@testing-library/jest-dom';
+console.warn = jest.fn();
 
-const mockStore = createStore(imageReducer);
-const renderWithProvider = (component) => {
-  return render(<Provider store={mockStore}>{component}</Provider>);
+const mockStore = configureStore();
+const renderWithStore = (store) => {
+  return render(
+    <Provider store={store}>
+      <UploadContainer />
+    </Provider>
+  );
 };
+
 describe('UploadContainer', () => {
-  it('calls onImageUpload when a file is selected via input', async () => {
-    const mockOnImageUpload = jest.fn();
-    renderWithProvider(
-      <UploadContainer onImageUpload={mockOnImageUpload} />
-    );
-    const file = new File(['dummy content'], 'example.png', {
+  it('должен рендерить компонент без ошибок и показывать текст "choose or drag file"', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    renderWithStore(store);
+    const uploadText = screen.getByText(/choose or drag file/i);
+    expect(uploadText).toBeInTheDocument();
+  });
+
+  it('должен обновить состояние при перетаскивании файла', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    store.dispatch = jest.fn();
+    renderWithStore(store);
+    const dropArea = screen.getByTestId('upload-container');
+    const file = new File(['image'], 'image.png', {
       type: 'image/png',
     });
-    const fileInput = screen.getByTestId('file-input');
+    const dragEvent = { dataTransfer: { files: [file] } };
+    fireEvent.drop(dropArea, dragEvent);
+    expect(store.dispatch).toHaveBeenCalledWith(setIsDragOver(false));
+  });
+
+  it('должен изменять состояние isDragOver при dragOver', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    renderWithStore(store);
+    const container = screen.getByTestId('upload-container');
+
+    fireEvent.dragOver(container);
+
+    const actions = store.getActions();
+    expect(actions).toEqual([
+      { type: 'SET_IS_DRAG_OVER', payload: true },
+    ]);
+  });
+
+  it('должен изменять состояние isDragOver при dragLeave', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: true,
+        imageSrc: null,
+      },
+    });
+
+    renderWithStore(store);
+    const container = screen.getByTestId('upload-container');
+
+    fireEvent.dragLeave(container);
+
+    const actions = store.getActions();
+    expect(actions).toEqual([
+      { type: 'SET_IS_DRAG_OVER', payload: false },
+    ]);
+  });
+
+  it('должен обновить состояние imageSrc при выборе файла через инпут', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    store.dispatch = jest.fn();
+    renderWithStore(store);
+    const fileInput = screen.getByLabelText(/choose or drag file/i);
+    const file = new File(['image'], 'image.png', {
+      type: 'image/png',
+    });
+
+    const mockFileReader = {
+      readAsDataURL: jest.fn(),
+      onload: null,
+    };
+    global.FileReader = jest.fn(() => mockFileReader);
+
     fireEvent.change(fileInput, { target: { files: [file] } });
-    const fileReaderMock = {
-      readAsDataURL: jest.fn(),
-      onload: jest.fn(),
-      result: 'data:image/png;base64,dummyImageData',
-    };
-    window.FileReader = jest.fn(() => fileReaderMock);
 
-    fileReaderMock.onload = function () {
-      mockOnImageUpload(fileReaderMock.result);
-    };
-    fileReaderMock.onload();
-    expect(mockOnImageUpload).toHaveBeenCalledWith(
-      'data:image/png;base64,dummyImageData'
-    );
-  });
+    mockFileReader.onload = jest.fn((event) => {
+      store.dispatch(setImageSrc(event.target.result));
+    });
 
-  it('does not call onImageUpload when no file is selected via input', () => {
-    const mockOnImageUpload = jest.fn();
-    renderWithProvider(
-      <UploadContainer onImageUpload={mockOnImageUpload} />
-    );
-    const fileInput = screen.getByTestId('file-input');
-    fireEvent.change(fileInput, { target: { files: [] } });
-    expect(mockOnImageUpload).not.toHaveBeenCalled();
-  });
-  it('calls onImageUpload when a file is dropped', async () => {
-    const mockOnImageUpload = jest.fn();
-    renderWithProvider(
-      <UploadContainer onImageUpload={mockOnImageUpload} />
-    );
-    const uploadArea = screen.getByText(
-      /choose or drag file/i
-    ).parentElement;
-    const file = new File(['dummy content'], 'example.png', {
-      type: 'image/png',
+    mockFileReader.onload({
+      target: { result: 'data:image/png;base64,image' },
     });
-    const fileReaderMock = {
-      readAsDataURL: jest.fn(),
-      onload: jest.fn(),
-      result: 'data:image/png;base64,dummyImageData',
-    };
-    window.FileReader = jest.fn(() => fileReaderMock);
-    fireEvent.drop(uploadArea, {
-      dataTransfer: {
-        files: [file],
-      },
-    });
-    fileReaderMock.onload();
-    expect(mockOnImageUpload).toHaveBeenCalledWith(
-      'data:image/png;base64,dummyImageData'
-    );
-  });
 
-  it('does not call onImageUpload when no file is dropped', () => {
-    const mockOnImageUpload = jest.fn();
-    renderWithProvider(
-      <UploadContainer onImageUpload={mockOnImageUpload} />
+    expect(store.dispatch).toHaveBeenCalledWith(
+      setImageSrc('data:image/png;base64,image')
     );
-    const uploadArea = screen.getByRole('button');
-    fireEvent.drop(uploadArea, {
-      dataTransfer: {
-        files: [],
-      },
-    });
-    expect(mockOnImageUpload).not.toHaveBeenCalled();
   });
 });

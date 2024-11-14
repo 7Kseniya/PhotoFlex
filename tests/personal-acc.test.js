@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import PersonalAccount from '../src/components/pages/personal-account/personal-account';
 import '@testing-library/jest-dom';
+console.warn = jest.fn();
 
 describe('PersonalAccount Component', () => {
   test('renders PersonalAccount component', () => {

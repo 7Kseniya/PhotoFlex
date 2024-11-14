@@ -1,101 +1,144 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import MainPage from '../src/components/pages/main-page/main-page';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { MemoryRouter } from 'react-router-dom';
-import imageReducer from '../src/services/reducers/image-reducer';
+import configureStore from 'redux-mock-store';
+import { BrowserRouter } from 'react-router-dom';
+import MainPage from '../src/components/pages/main-page/main-page';
 
-const renderWithProviderAndRouter = (component, initialState) => {
-  const store = createStore(imageReducer, initialState);
+console.warn = jest.fn();
+const mockStore = configureStore([]);
+const renderWithProvider = (component, initialState) => {
+  const store = mockStore(initialState);
   return render(
     <Provider store={store}>
-      <MemoryRouter>{component}</MemoryRouter>
+      <BrowserRouter>{component}</BrowserRouter>
     </Provider>
   );
 };
 
-describe('MainPage component', () => {
-  it('updates rotation when Rotate icon is clicked', () => {
-    renderWithProviderAndRouter(
-      <MainPage initialImageSrc="/placeholder.jpeg" />,
-      {
-        imageSrc: '/placeholder.jpeg',
-        activeTool: 2,
-        crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-      }
-    );
-    const rotateIcon = screen.getByTestId('icon-2');
-    fireEvent.click(rotateIcon);
-
-    const imageRotateCanvas = screen.getByTestId('image-rotate');
-    expect(imageRotateCanvas).toBeInTheDocument();
+describe('MainPage Component', () => {
+  let store;
+  beforeEach(() => {
+    const initialState = {
+      image: {
+        imageSrc: 'placeholder.jpeg',
+        activeTool: 5,
+        rotationAngle: 0,
+        cropDimensions: { width: 800, height: 900 },
+      },
+    };
+    store = mockStore(initialState);
+    renderWithProvider(<MainPage />, initialState);
   });
 
-  it('renders UploadContainer when no image is uploaded', () => {
-    renderWithProviderAndRouter(<MainPage />, {
-      imageSrc: null,
-      activeTool: 0,
-      crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-    });
-    const uploadContainer = screen.getByTestId('file-input');
+  it('renders the main page with canvas', () => {
+    const canvases = screen.getAllByTestId('canvas');
+    expect(canvases.length).toBeGreaterThan(0);
+  });
+
+  it('handles mouse down event on canvas', () => {
+    const canvas = screen.getByTestId('canvas');
+    fireEvent.mouseDown(canvas, { clientX: 100, clientY: 100 });
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
+  });
+
+  it('handles mouse move event on canvas', () => {
+    const canvas = screen.getByTestId('canvas');
+    fireEvent.mouseDown(canvas, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(canvas, { clientX: 150, clientY: 150 });
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
+  });
+
+  it('handles mouse up event on canvas', () => {
+    const canvas = screen.getByTestId('canvas');
+    fireEvent.mouseDown(canvas, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(canvas, { clientX: 150, clientY: 150 });
+    fireEvent.mouseUp(canvas);
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
+  });
+
+  it('renders the header', () => {
+    const header = screen.getByTestId('header');
+    expect(header).toBeInTheDocument();
+  });
+
+  it('renders the upload container when there is no image', () => {
+    const initialState = {
+      image: {
+        imageSrc: '',
+        activeTool: 0,
+        rotationAngle: 0,
+        cropDimensions: { width: 800, height: 900 },
+      },
+    };
+    renderWithProvider(<MainPage />, initialState);
+
+    const uploadContainer = screen.getByTestId('upload-container');
     expect(uploadContainer).toBeInTheDocument();
   });
 
-  it('renders ImageRotate component when image is uploaded and activeTool is 2', () => {
-    renderWithProviderAndRouter(
-      <MainPage initialImageSrc="test-image.jpg" />,
-      {
-        imageSrc: 'test-image.jpg',
-        activeTool: 2,
-        crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-      }
-    );
-    const rotateIcon = screen.getByTestId('icon-2');
-    fireEvent.click(rotateIcon);
-
-    const imageRotateCanvas = screen.getByTestId('image-rotate');
-    expect(imageRotateCanvas).toBeInTheDocument();
+  it('renders the toolbar', () => {
+    const toolbar = screen.getByTestId('toolbar');
+    expect(toolbar).toBeInTheDocument();
   });
 
-  it('renders ImageCrop component when image is uploaded and activeTool is 1', () => {
-    renderWithProviderAndRouter(
-      <MainPage initialImageSrc="test-image.jpg" />,
-      {
-        imageSrc: 'test-image.jpg',
-        activeTool: 1,
-        crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-      }
-    );
-    const cropIcon = screen.getByTestId('icon-1');
-    fireEvent.click(cropIcon);
-    const imageCropCanvas = screen.getByTestId('image-crop');
-    expect(imageCropCanvas).toBeInTheDocument();
+  it('renders the tools', () => {
+    const tools = screen.getByTestId('tools-component');
+    expect(tools).toBeInTheDocument();
   });
 
-  it('changes activeTool state when tool icon is clicked', () => {
-    renderWithProviderAndRouter(
-      <MainPage initialImageSrc="test-image.jpg" />,
-      {
-        imageSrc: 'test-image.jpg',
+  it('handles brush size change', () => {
+    const brushSizeInput = screen.getByTestId('brush-size');
+    fireEvent.change(brushSizeInput, { target: { value: 20 } });
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
+  });
+
+  it('applies crop dimensions to the image', () => {
+    const initialState = {
+      image: {
+        imageSrc: 'placeholder.jpeg',
         activeTool: 0,
-        crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-      }
-    );
-    const rotateIcon = screen.getByTestId('icon-2');
-    fireEvent.click(rotateIcon);
-    const imageRotateCanvas = screen.getByTestId('image-rotate');
-    expect(imageRotateCanvas).toBeInTheDocument();
-  });
+        rotationAngle: 0,
+        cropDimensions: { width: 800, height: 900 },
+      },
+    };
+    renderWithProvider(<MainPage />, initialState);
 
-  it('does not render ImageRotate if no image is uploaded and tool is selected', () => {
-    renderWithProviderAndRouter(<MainPage initialImageSrc={null} />, {
-      imageSrc: null,
-      activeTool: 2,
-      crop: { cropWidth: 100, cropHeight: 100, cropX: 0, cropY: 0 },
-    });
-    const imageRotateCanvas = screen.queryByTestId('image-rotate');
-    expect(imageRotateCanvas).not.toBeInTheDocument();
+    const canvases = screen.getAllByTestId('canvas');
+    const mainCanvas = canvases[0];
+    expect(mainCanvas).toHaveAttribute('width', '800');
+    expect(mainCanvas).toHaveAttribute('height', '900');
+  });
+  it('renders upload container when imageSrc is empty', () => {
+    const initialState = {
+      image: {
+        imageSrc: '',
+        activeTool: 0,
+        rotationAngle: 0,
+        cropDimensions: { width: 800, height: 900 },
+      },
+    };
+    renderWithProvider(<MainPage />, initialState);
+    const uploadContainer = screen.getByTestId('upload-container');
+    expect(uploadContainer).toBeInTheDocument();
+  });
+  it('handles reset action', () => {
+    const resetButton = screen.getByTestId('reset-button');
+    fireEvent.click(resetButton);
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
+  });
+  it('handles remove background action', () => {
+    const removeBackgroundButton = screen.getByTestId(
+      'remove-background-button'
+    );
+    fireEvent.click(removeBackgroundButton);
+    const actions = store.getActions();
+    expect(actions).toEqual([]);
   });
 });

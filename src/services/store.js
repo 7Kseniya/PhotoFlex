@@ -1,6 +1,10 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import imageReducer from './reducers/image-reducer';
 
-const store = createStore(imageReducer);
+const rootReducer = combineReducers({
+  image: imageReducer,
+});
+
+const store = createStore(rootReducer);
 
 export default store;
