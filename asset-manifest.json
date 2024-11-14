@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/PhotoFlex/static/css/main.040ef24c.css",
-    "main.js": "/PhotoFlex/static/js/main.ef1c89bf.js",
+    "main.css": "/PhotoFlex/static/css/main.dd76437f.css",
+    "main.js": "/PhotoFlex/static/js/main.a7a24bed.js",
     "index.html": "/PhotoFlex/index.html",
-    "main.040ef24c.css.map": "/PhotoFlex/static/css/main.040ef24c.css.map",
-    "main.ef1c89bf.js.map": "/PhotoFlex/static/js/main.ef1c89bf.js.map"
+    "main.dd76437f.css.map": "/PhotoFlex/static/css/main.dd76437f.css.map",
+    "main.a7a24bed.js.map": "/PhotoFlex/static/js/main.a7a24bed.js.map"
   },
   "entrypoints": [
-    "static/css/main.040ef24c.css",
-    "static/js/main.ef1c89bf.js"
+    "static/css/main.dd76437f.css",
+    "static/js/main.a7a24bed.js"
   ]
 }
