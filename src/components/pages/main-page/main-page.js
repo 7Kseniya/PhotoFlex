@@ -22,6 +22,10 @@ const MainPage = () => {
   const [appliedMask, setAppliedMask] = useState([]);
   const [originalImage, setOriginalImage] = useState(null);
   const [showOriginal, setShowOriginal] = useState(false);
+  const [originalDimensions, setOriginalDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     if (imageSrc) {
@@ -30,6 +34,10 @@ const MainPage = () => {
       img.onload = () => {
         setImage(img);
         setOriginalImage(img);
+        setOriginalDimensions({
+          width: img.width,
+          height: img.height,
+        });
         setCropDimensions({ width: img.width, height: img.height });
       };
     }
@@ -46,8 +54,8 @@ const MainPage = () => {
           originalImage,
           0,
           0,
-          cropDimensions.width,
-          cropDimensions.height
+          originalDimensions.width,
+          originalDimensions.height
         );
       } else {
         ctx.save();
