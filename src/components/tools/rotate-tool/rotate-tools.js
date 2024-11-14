@@ -4,71 +4,53 @@ import RotateRightIcon from '@mui/icons-material/RotateRight';
 import styles from './rotate-tools.module.css';
 import { Slider } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRotation } from '../../../services/actions/image-actions';
-const Rotate = ({ onRotate }) => {
+import { setRotationAngle } from '../../../services/actions/image-actions';
+
+const Rotate = () => {
   const dispatch = useDispatch();
-  const rotation = useSelector((state) => state.rotation);
-  const icons = [
-    {
-      component: RotateLeftIcon,
-      className: styles.left90,
-      action: () =>
-        onRotate ? onRotate(-90) : dispatch(setRotation(-90)), // Если onRotate передан, вызываем его
-      testId: 'rotate-left-icon',
-    },
-    {
-      component: RotateRightIcon,
-      className: styles.right90,
-      action: () =>
-        onRotate ? onRotate(90) : dispatch(setRotation(90)), // Если onRotate передан, вызываем его
-      testId: 'rotate-right-icon',
-    },
-  ];
-  const sliders = [
-    {
-      name: 'rotateHandle',
-      label: 'Rotation',
-      min: 0,
-      max: 360,
-      defaultValue: rotation,
-      testId: 'rotation-slider',
-    },
-  ];
+  const rotation = useSelector((state) => state.image.rotationAngle);
+
+  const rotateLeft = () => {
+    const newRotation = (rotation - 90 + 360) % 360;
+    dispatch(setRotationAngle(newRotation));
+  };
+
+  const rotateRight = () => {
+    const newRotation = (rotation + 90) % 360;
+    dispatch(setRotationAngle(newRotation));
+  };
 
   const handleSliderChange = (event, newValue) => {
-    dispatch(setRotation(newValue));
+    dispatch(setRotationAngle(newValue));
   };
 
   return (
-    <div className={styles.sharedContainer}>
-      {icons.map((icon, index) => {
-        const IconComponent = icon.component;
-        return (
-          <div
-            key={index}
-            onClick={icon.action}
-            data-testid={icon.testId}
-          >
-            <IconComponent
-              className={`${styles.rotateIcon} ${icon.className}`}
-            />
-          </div>
-        );
-      })}
-      {sliders.map((slider) => (
-        <div key={slider.name} className={styles.rotateItem}>
-          <Slider
-            aria-label={slider.label}
-            value={rotation !== undefined ? rotation : 0}
-            min={slider.min}
-            max={slider.max}
-            onChange={handleSliderChange}
-            valueLabelDisplay="auto"
-            style={{ color: 'white' }}
-            data-testid={`slider-${slider.name}`}
-          />
-        </div>
-      ))}
+    <div
+      className={styles.sharedContainer}
+      data-testid="rotate-component"
+    >
+      <div onClick={rotateLeft} data-testid="rotate-left-icon">
+        <RotateLeftIcon
+          className={`${styles.rotateIcon} ${styles.left90}`}
+        />
+      </div>
+      <div onClick={rotateRight} data-testid="rotate-right-icon">
+        <RotateRightIcon
+          className={`${styles.rotateIcon} ${styles.right90}`}
+        />
+      </div>
+      <div className={styles.rotateItem}>
+        <Slider
+          aria-label="Rotation"
+          min={0}
+          max={360}
+          value={rotation}
+          onChange={handleSliderChange}
+          valueLabelDisplay="auto"
+          style={{ color: 'white' }}
+          data-testid="rotation-slider"
+        />
+      </div>
     </div>
   );
 };

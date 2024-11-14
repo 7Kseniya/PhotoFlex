@@ -13,6 +13,7 @@ module.exports = {
     '**/tests/**/*.[jt]s?(x)',
     '**/?(*.)+(spec|test).[tj]s?(x)',
   ],
+  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageThreshold: {

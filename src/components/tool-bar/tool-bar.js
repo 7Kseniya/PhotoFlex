@@ -13,7 +13,7 @@ import { setActiveTool } from '../../services/actions/image-actions';
 
 const ToolBar = () => {
   const dispatch = useDispatch();
-  const activeTool = useSelector((state) => state.activeTool);
+  const activeTool = useSelector((state) => state.image.activeTool);
 
   const icons = [
     { component: TuneIcon, className: styles.tune },
@@ -27,7 +27,7 @@ const ToolBar = () => {
   ];
 
   return (
-    <div className={styles.mainContainer}>
+    <div className={styles.mainContainer} data-testid="toolbar">
       {icons.map(({ component: IconComponent, className }, index) => (
         <IconComponent
           data-testid={`icon-${index}`}

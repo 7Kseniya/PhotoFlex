@@ -24,7 +24,10 @@ const Tunes = () => {
   };
 
   return (
-    <div className={styles.sharedContainer} data-testid="settings">
+    <div
+      className={styles.sharedContainer}
+      data-testid="tunes-component"
+    >
       {tunes.map((tune) => (
         <div key={tune.name} className={styles.tuneItem}>
           <p className={styles.label}>

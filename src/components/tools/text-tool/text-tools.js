@@ -18,7 +18,7 @@ const Text = () => {
   return (
     <div
       className={styles.sharedContainer}
-      data-testid="text-settings"
+      data-testid="text-component"
     >
       <div className={styles.textItem} data-testid="add-text-item">
         <AddCircleOutlineIcon

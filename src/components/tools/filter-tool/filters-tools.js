@@ -12,7 +12,10 @@ const Filters = () => {
   ];
 
   return (
-    <div className={styles.sharedContainer}>
+    <div
+      className={styles.sharedContainer}
+      data-testid={'filters-component'}
+    >
       {filters.map(({ name }, index) => (
         <div key={index} className={styles.filterItem}>
           <div className={styles.filterBlock}></div>

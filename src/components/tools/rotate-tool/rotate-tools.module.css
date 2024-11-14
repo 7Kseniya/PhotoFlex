@@ -14,12 +14,14 @@
 }
 
 .rotateIcon.left90 {
+  rotate: -90deg;
   font-size: 80px;
   color: white;
   cursor: pointer;
 }
 
 .rotateIcon.right90 {
+  rotate: 90deg;
   font-size: 80px;
   color: white;
   cursor: pointer;

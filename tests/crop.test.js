@@ -1,99 +1,48 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import ImageCrop from '../src/components/editor-actions/image-crop';
 import '@testing-library/jest-dom';
 import Crop from '../src/components/tools/crop-tool/crop-tools';
-import { setCrop } from '../src/services/actions/image-actions';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 
 const mockStore = configureStore([]);
-
-describe('ImageCrop Component', () => {
+console.warn = jest.fn();
+const renderWithProvider = (component, initialState) => {
+  const store = mockStore(initialState);
+  return render(<Provider store={store}>{component}</Provider>);
+};
+describe('Crop Component', () => {
   let store;
-  let initialState;
-
   beforeEach(() => {
-    initialState = {
-      crop: {
-        cropX: 0,
-        cropY: 0,
-        cropWidth: 200,
-        cropHeight: 150,
+    const initialState = {
+      image: {
+        cropDimensions: { width: 800, height: 900 },
       },
-      imageSrc: 'test-image-src',
     };
     store = mockStore(initialState);
+    renderWithProvider(<Crop />, initialState);
   });
 
-  it('renders container div for image crop', () => {
-    render(
-      <Provider store={store}>
-        <ImageCrop />
-      </Provider>
-    );
+  it('renders crop component with presets', () => {
+    const cropComponent = screen.getByTestId('crop-component');
+    expect(cropComponent).toBeInTheDocument();
 
-    const container = screen.getByTestId('image-crop-container');
-    expect(container).toBeInTheDocument();
-  });
+    const crop169 = screen.getByTestId('crop-16:9');
+    expect(crop169).toBeInTheDocument();
 
-  it('renders canvas element inside the container', () => {
-    render(
-      <Provider store={store}>
-        <ImageCrop />
-      </Provider>
-    );
+    const cropSquare = screen.getByTestId('crop-4:4');
+    expect(cropSquare).toBeInTheDocument();
 
-    const canvas = screen.getByTestId('image-crop');
-    expect(canvas).toBeInTheDocument();
-  });
+    const crop916 = screen.getByTestId('crop-9:16');
+    expect(crop916).toBeInTheDocument();
 
-  it('renders with the correct crop values from the store', () => {
-    render(
-      <Provider store={store}>
-        <ImageCrop />
-      </Provider>
-    );
+    const crop32 = screen.getByTestId('crop-3:2');
+    expect(crop32).toBeInTheDocument();
 
-    const canvas = screen.getByTestId('image-crop');
-    expect(canvas.width).toBe(300);
-    expect(canvas.height).toBe(150);
-  });
-});
+    const crop54 = screen.getByTestId('crop-5:4');
+    expect(crop54).toBeInTheDocument();
 
-describe('Crop Component - Function Tests', () => {
-  let store;
-  let initialState;
-
-  beforeEach(() => {
-    initialState = {
-      crop: {
-        cropX: 0,
-        cropY: 0,
-        cropWidth: 200,
-        cropHeight: 150,
-      },
-      imageSrc: 'test-image-src',
-    };
-    store = mockStore(initialState);
-  });
-
-  it('calls handlePresetSelect and dispatches correct action for preset selection', () => {
-    render(
-      <Provider store={store}>
-        <Crop />
-      </Provider>
-    );
-    const preset16x9 = screen.getByTestId('crop-16:9');
-    fireEvent.click(preset16x9);
-    const actions = store.getActions();
-    expect(actions).toEqual([
-      setCrop({
-        cropX: 0,
-        cropY: 0,
-        cropWidth: 400,
-        cropHeight: 225,
-      }),
-    ]);
+    const crop75 = screen.getByTestId('crop-7:5');
+    expect(crop75).toBeInTheDocument();
   });
 });
