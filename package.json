@@ -1,6 +1,6 @@
 {
   "name": "photoflex",
-  "homepage": "https://webdevphotoflex.github.io/PhotoFlex/",
+  "homepage": "./",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
