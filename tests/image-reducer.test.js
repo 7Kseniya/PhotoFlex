@@ -18,6 +18,7 @@ describe('imageReducer', () => {
     mask: [],
     brushSize: 10,
     drawing: false,
+    filter: 'none',
   };
   it('should return the initial state', () => {
     expect(imageReducer(undefined, {})).toEqual(initialState);

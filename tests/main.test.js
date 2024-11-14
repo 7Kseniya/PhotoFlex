@@ -1,4 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
@@ -26,6 +31,7 @@ describe('MainPage Component', () => {
         activeTool: 5,
         rotationAngle: 0,
         cropDimensions: { width: 800, height: 900 },
+        filter: 'none',
       },
     };
     store = mockStore(initialState);
@@ -165,4 +171,13 @@ describe('MainPage Component', () => {
     const canvas = screen.getByTestId('canvas');
     expect(canvas).toBeInTheDocument();
   });
+
+  // it('should apply the correct filter(none) on the canvas initially', async () => {
+  //   const canvases = screen.getAllByTestId('canvas');
+  //   const canvas = canvases[0];
+  //   const canvasContext = canvas.getContext('2d');
+  //   await waitFor(() => {
+  //     expect(canvasContext.filter).toBe('none');
+  //   });
+  // });
 });
