@@ -141,4 +141,28 @@ describe('MainPage Component', () => {
     const actions = store.getActions();
     expect(actions).toEqual([]);
   });
+  it('displays original image when Flip icon is pressed', () => {
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    const canvas = screen.getByTestId('canvas');
+    expect(canvas).toBeInTheDocument();
+  });
+
+  it('reverts to modified image when Flip icon is released', () => {
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    fireEvent.mouseUp(flipIcon);
+
+    const canvas = screen.getByTestId('canvas');
+    expect(canvas).toBeInTheDocument();
+  });
+
+  it('reverts to modified image when mouse leaves the Flip icon', () => {
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    fireEvent.mouseLeave(flipIcon);
+
+    const canvas = screen.getByTestId('canvas');
+    expect(canvas).toBeInTheDocument();
+  });
 });

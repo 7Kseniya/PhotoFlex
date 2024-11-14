@@ -7,7 +7,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink } from 'react-router-dom';
 
-const Header = ({ canvasRef }) => {
+const Header = ({ canvasRef, setShowOriginal }) => {
   const handleSave = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -20,7 +20,7 @@ const Header = ({ canvasRef }) => {
   };
 
   return (
-    <div className={styles.mainContainer} data-testid={'header'}>
+    <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
         <img
           src={logoImg || null}
@@ -30,7 +30,13 @@ const Header = ({ canvasRef }) => {
       </NavLink>
       <RedoIcon className={`${styles.icon} ${styles.redo}`} />
       <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
-      <FlipIcon className={`${styles.icon} ${styles.flip}`} />
+      <FlipIcon
+        className={`${styles.icon} ${styles.flip}`}
+        onMouseDown={() => setShowOriginal(true)}
+        onMouseUp={() => setShowOriginal(false)}
+        onMouseLeave={() => setShowOriginal(false)}
+        data-testid="flip-icon"
+      />
       <SaveIcon
         className={`${styles.icon} ${styles.save}`}
         onClick={handleSave}
