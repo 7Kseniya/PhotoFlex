@@ -26,7 +26,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "REACT_APP_BUGSNAG_API_KEY=${{ secrets.BUGSNAG_API_KEY }}" > .env
+          echo "REACT_APP_BUGSNAG_API_KEY=${{ secrets.REACT_APP_BUGSNAG_API_KEY }}" > .env
 
       - name: Build project
         run: npm run build
