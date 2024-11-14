@@ -31,3 +31,12 @@
   align-items: center;
   cursor: pointer;
 }
+
+.activeFilter .filterBlock {
+  border: 2px solid #884f9f;
+  box-shadow: 0 0 10px rgba(185, 0, 255, 0.8);
+}
+
+.filterItem:hover {
+  opacity: 0.7;
+}
