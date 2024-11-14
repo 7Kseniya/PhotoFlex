@@ -7,7 +7,7 @@ import PersonalAccount from '../pages/personal-account/personal-account';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/PhotoFlex">
       <div className="App">
         <Routes>
           <Route path="/" element={<MainPage />} />
