@@ -20,6 +20,8 @@ const MainPage = () => {
   const [brushSize, setBrushSize] = useState(10);
   const [mask, setMask] = useState([]);
   const [appliedMask, setAppliedMask] = useState([]);
+  const [originalImage, setOriginalImage] = useState(null);
+  const [showOriginal, setShowOriginal] = useState(false);
 
   useEffect(() => {
     if (imageSrc) {
@@ -27,6 +29,7 @@ const MainPage = () => {
       img.src = imageSrc;
       img.onload = () => {
         setImage(img);
+        setOriginalImage(img);
         setCropDimensions({ width: img.width, height: img.height });
       };
     }
@@ -38,42 +41,52 @@ const MainPage = () => {
       const ctx = canvas.getContext('2d');
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((rotationAngle * Math.PI) / 180);
-      ctx.drawImage(
-        image,
-        -cropDimensions.width / 2,
-        -cropDimensions.height / 2,
-        cropDimensions.width,
-        cropDimensions.height
-      );
-      ctx.restore();
-      if (mask.length > 0) {
+      if (showOriginal) {
+        ctx.drawImage(
+          originalImage,
+          0,
+          0,
+          cropDimensions.width,
+          cropDimensions.height
+        );
+      } else {
         ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = brushSize * 2;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        for (let i = 0; i < mask.length - 1; i++) {
-          ctx.moveTo(mask[i].x, mask[i].y);
-          ctx.lineTo(mask[i + 1].x, mask[i + 1].y);
-        }
-        ctx.stroke();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((rotationAngle * Math.PI) / 180);
+        ctx.drawImage(
+          image,
+          -cropDimensions.width / 2,
+          -cropDimensions.height / 2,
+          cropDimensions.width,
+          cropDimensions.height
+        );
         ctx.restore();
-      }
-      if (appliedMask.length > 0) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.fillStyle = 'black';
-        for (let i = 0; i < appliedMask.length; i++) {
-          const point = appliedMask[i];
+        if (mask.length > 0) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.strokeStyle = 'red';
+          ctx.lineWidth = brushSize * 2;
+          ctx.lineCap = 'round';
           ctx.beginPath();
-          ctx.arc(point.x, point.y, brushSize, 0, Math.PI * 2);
-          ctx.fill();
+          for (let i = 0; i < mask.length - 1; i++) {
+            ctx.moveTo(mask[i].x, mask[i].y);
+            ctx.lineTo(mask[i + 1].x, mask[i + 1].y);
+          }
+          ctx.stroke();
+          ctx.restore();
         }
-        ctx.restore();
+        if (appliedMask.length > 0) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = 'black';
+          for (let i = 0; i < appliedMask.length; i++) {
+            const point = appliedMask[i];
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, brushSize, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
       }
     }
   };
@@ -88,6 +101,7 @@ const MainPage = () => {
     mask,
     appliedMask,
     brushSize,
+    showOriginal,
   ]);
 
   const handleMouseDown = (e) => {
@@ -129,7 +143,10 @@ const MainPage = () => {
 
   return (
     <div className={styles.mainContainer}>
-      <Header canvasRef={canvasRef} />
+      <Header
+        canvasRef={canvasRef}
+        setShowOriginal={setShowOriginal}
+      />
       <div className={styles.toolContainer}>
         <ToolBar setActiveTool={setActiveTool} />
         <Tools
