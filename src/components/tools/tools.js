@@ -22,7 +22,7 @@ const Tools = ({
       data-testid="tools-component"
     >
       {activeTool === 0 && <Tunes data-testid="tunes-component" />}
-      {activeTool === 1 && <Crop data-testid="crop-component" />}
+      {activeTool === 3 && <Crop data-testid="crop-component" />}
       {activeTool === 2 && <Rotate data-testid="rotate-component" />}
       {activeTool === 4 && (
         <Filters data-testid="filters-component" />
