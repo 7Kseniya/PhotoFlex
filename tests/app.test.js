@@ -406,17 +406,3 @@ describe('ImageCrop Component', () => {
     });
   });
 });
-
-describe('LoginModal', () => {
-  const mockOnSignUpClick = jest.fn();
-  const mockOnSubmitted = jest.fn();
-
-  beforeEach(() => {
-    render(
-      <LoginModal
-        onSignUpClick={mockOnSignUpClick}
-        onSubmited={mockOnSubmitted}
-      />
-    );
-  });
-});

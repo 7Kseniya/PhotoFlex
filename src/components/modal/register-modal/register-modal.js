@@ -47,7 +47,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
     return passwordPattern.test(password);
   };
   const validateUsername = (username) => {
-    const usernamePattern = /^[a-zA-Z0-9_]{5,15}$/;
+    const usernamePattern = /^[a-zA-Z0-9_]{5,20}$/;
     return usernamePattern.test(username);
   };
   const handleSubmit = (event) => {

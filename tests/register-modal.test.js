@@ -81,9 +81,39 @@ describe('RegisterModal', () => {
     ).toBeNull();
     expect(mockOnSubmitted).toHaveBeenCalled();
   });
-  test('calls onSignIn Click when the sign-up button is clicked', () => {
+  test('calls onSignIn click when the sign-up button is clicked', () => {
     const signInButton = screen.getByText(/sign in/i);
     fireEvent.click(signInButton);
     expect(mockOnSignInClick).toHaveBeenCalled();
+  });
+  test('shows alert when invalid username is provided', () => {
+    const loginInput = screen.getByLabelText(
+      /enter your phone number\/email\/login/i
+    );
+    const passwordInput = screen.getByLabelText(
+      /come up with a password/i
+    );
+    const usernameInput = screen.getByLabelText(
+      /come up with username/i
+    );
+    const submitButton = screen.getByText(/submit/i);
+
+    fireEvent.change(loginInput, {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(passwordInput, {
+      target: { value: 'Password123!' },
+    });
+    fireEvent.change(usernameInput, {
+      target: { value: 'ab' },
+    });
+    fireEvent.click(submitButton);
+
+    expect(
+      screen.getByText(
+        /username must be 5-20 characters long and can only contain letters, numbers, and underscores/i
+      )
+    ).toBeInTheDocument();
+    //expect(mockOnSubmitted).not.toHaveBeenCalled();
   });
 });
