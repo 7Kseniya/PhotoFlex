@@ -8,6 +8,7 @@ const initialState = {
   mask: [],
   brushSize: 10,
   drawing: false,
+  filter: 'none',
 };
 
 const imageReducer = (state = initialState, action) => {
@@ -36,6 +37,11 @@ const imageReducer = (state = initialState, action) => {
       return {
         ...state,
         rotationAngle: action.payload,
+      };
+    case 'SET_FILTER':
+      return {
+        ...state,
+        filter: action.payload,
       };
     default:
       return state;
