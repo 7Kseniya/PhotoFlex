@@ -165,4 +165,21 @@ describe('MainPage Component', () => {
     const canvas = screen.getByTestId('canvas');
     expect(canvas).toBeInTheDocument();
   });
+  it('handles mouse events correctly for activeTool 5', () => {
+    const canvas = screen.getByTestId('canvas');
+
+    fireEvent.mouseDown(canvas, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(canvas, { clientX: 150, clientY: 150 });
+    fireEvent.mouseUp(canvas);
+  });
+  it('renders all main components correctly', () => {
+    const header = screen.getByTestId('header');
+    const toolbar = screen.getByTestId('toolbar');
+    const tools = screen.getByTestId('tools-component');
+    const canvas = screen.getByTestId('canvas');
+    expect(header).toBeInTheDocument();
+    expect(toolbar).toBeInTheDocument();
+    expect(tools).toBeInTheDocument();
+    expect(canvas).toBeInTheDocument();
+  });
 });

@@ -43,6 +43,7 @@ const Header = ({ canvasRef, setShowOriginal }) => {
       />
       <NavLink to={'/personal-account'}>
         <PersonAddIcon
+          data-testid="PersonAddIcon"
           className={`${styles.icon} ${styles.personAdd}`}
         />
       </NavLink>

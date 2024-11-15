@@ -43,4 +43,13 @@ describe('Header Component', () => {
       'image/png'
     );
   });
+  it('renders RedoIcon components', () => {
+    render(
+      <MemoryRouter>
+        <Header canvasRef={canvasRef} />
+      </MemoryRouter>
+    );
+    const redoIcons = screen.getAllByTestId('RedoIcon');
+    expect(redoIcons.length).toBe(2);
+  });
 });

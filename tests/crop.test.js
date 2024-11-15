@@ -1,19 +1,32 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import Crop from '../src/components/tools/crop-tool/crop-tools';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { useDispatch } from 'react-redux';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(),
+}));
 
 const mockStore = configureStore([]);
-console.warn = jest.fn();
 const renderWithProvider = (component, initialState) => {
   const store = mockStore(initialState);
-  return render(<Provider store={store}>{component}</Provider>);
+  return {
+    ...render(<Provider store={store}>{component}</Provider>),
+    store,
+  };
 };
+
 describe('Crop Component', () => {
   let store;
+  const mockDispatch = jest.fn();
+
   beforeEach(() => {
+    useDispatch.mockReturnValue(mockDispatch);
+
     const initialState = {
       image: {
         cropDimensions: { width: 800, height: 900 },
@@ -29,20 +42,56 @@ describe('Crop Component', () => {
 
     const crop169 = screen.getByTestId('crop-16:9');
     expect(crop169).toBeInTheDocument();
+  });
 
-    const cropSquare = screen.getByTestId('crop-4:4');
-    expect(cropSquare).toBeInTheDocument();
+  it('renders input fields with initial values', () => {
+    const widthInput = screen.getByTestId('crop-width');
+    const heightInput = screen.getByTestId('crop-height');
 
+    expect(widthInput).toBeInTheDocument();
+    expect(heightInput).toBeInTheDocument();
+
+    expect(widthInput.value).toBe('800');
+    expect(heightInput.value).toBe('900');
+  });
+
+  it('updates width and height dynamically on input', () => {
+    const widthInput = screen.getByTestId('crop-width');
+    const heightInput = screen.getByTestId('crop-height');
+
+    fireEvent.change(widthInput, { target: { value: '1200' } });
+    fireEvent.change(heightInput, { target: { value: '1600' } });
+
+    expect(widthInput.value).toBe('1200');
+    expect(heightInput.value).toBe('1600');
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_CROP_DIMENSIONS',
+      payload: { width: 1200, height: 1600 },
+    });
+  });
+
+  it('updates dimensions when a preset is clicked', () => {
     const crop916 = screen.getByTestId('crop-9:16');
-    expect(crop916).toBeInTheDocument();
+    fireEvent.click(crop916);
 
-    const crop32 = screen.getByTestId('crop-3:2');
-    expect(crop32).toBeInTheDocument();
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_CROP_DIMENSIONS',
+      payload: { width: 506, height: 900 },
+    });
 
-    const crop54 = screen.getByTestId('crop-5:4');
-    expect(crop54).toBeInTheDocument();
+    const widthInput = screen.getByTestId('crop-width');
+    const heightInput = screen.getByTestId('crop-height');
 
-    const crop75 = screen.getByTestId('crop-7:5');
-    expect(crop75).toBeInTheDocument();
+    expect(widthInput.value).toBe('506');
+    expect(heightInput.value).toBe('900');
+  });
+
+  it('renders all presets with correct labels', () => {
+    const cropPresets = ['16:9', '4:4', '9:16', '3:2', '5:4', '7:5'];
+    cropPresets.forEach((preset) => {
+      const presetElement = screen.getByTestId(`crop-${preset}`);
+      expect(presetElement).toBeInTheDocument();
+    });
   });
 });
