@@ -11,8 +11,13 @@ import {
 } from '../../../services/actions/image-actions';
 
 const MainPage = () => {
-  const { imageSrc, activeTool, rotationAngle, cropDimensions } =
-    useSelector((state) => state.image);
+  const {
+    imageSrc,
+    activeTool,
+    rotationAngle,
+    cropDimensions,
+    filter,
+  } = useSelector((state) => state.image);
   const { width, height } = cropDimensions;
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
@@ -26,6 +31,26 @@ const MainPage = () => {
     width: 0,
     height: 0,
   });
+
+  const filterStyles = {
+    none: {},
+    grayscale: { filter: 'grayscale(100%)' },
+    sepia: { filter: 'sepia(100%)' },
+    invert: { filter: 'invert(100%)' },
+    outerspace: {
+      filter:
+        'grayscale(70%) contrast(120%) hue-rotate(200deg) brightness(0.9)',
+    },
+    refulgence: {
+      filter: 'contrast(180%) saturate(250%) brightness(1.3)',
+    },
+    pink: {
+      filter:
+        'hue-rotate(320deg) saturate(500%) brightness(1.3) contrast(120%)',
+    },
+  };
+
+  const selectedFilter = filterStyles[filter];
 
   useEffect(() => {
     if (imageSrc) {
@@ -59,6 +84,7 @@ const MainPage = () => {
         );
       } else {
         ctx.save();
+        ctx.filter = selectedFilter.filter;
         ctx.translate(canvas.width / 2, canvas.height / 2);
         ctx.rotate((rotationAngle * Math.PI) / 180);
         ctx.drawImage(
@@ -110,6 +136,7 @@ const MainPage = () => {
     appliedMask,
     brushSize,
     showOriginal,
+    filter,
   ]);
 
   const handleMouseDown = (e) => {

@@ -20,3 +20,8 @@ export const setCropDimensions = (width, height) => ({
   type: 'SET_CROP_DIMENSIONS',
   payload: { width, height },
 });
+
+export const setFilter = (filter) => ({
+  type: 'SET_FILTER',
+  payload: filter,
+});
