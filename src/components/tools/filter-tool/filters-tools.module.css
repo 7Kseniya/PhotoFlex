@@ -25,18 +25,34 @@
   width: 250px;
   height: 180px;
   background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid transparent;
   border-radius: 15%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.filterBlock:hover {
+  border-color: #aa6fbc;
+  opacity: 0.85;
+}
+
+.filterBlock:focus {
+  border-color: #aa6fbc;
+  box-shadow: 0 0 5px #aa6fbc;
 }
 
 .activeFilter .filterBlock {
-  border: 2px solid #884f9f;
+  border-color: #884f9f;
   box-shadow: 0 0 10px rgba(185, 0, 255, 0.8);
 }
 
 .filterItem:hover {
-  opacity: 0.7;
+  opacity: 0.9;
 }
