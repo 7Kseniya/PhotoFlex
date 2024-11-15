@@ -29,6 +29,7 @@ const Crop = () => {
   return (
     <div style={styles.sharedContainer} data-testid="crop-component">
       <div style={styles.dimensionInputContainer}>
+        <p style={styles.label}>Width: </p>
         <input
           type="number"
           aria-label="Width"
@@ -36,7 +37,7 @@ const Crop = () => {
           style={styles.dimensionInput}
           data-testid="crop-width"
         />
-        <p style={styles.label}>Width: </p>
+        <p style={styles.label}>Height: </p>
         <input
           type="number"
           aria-label="Height"
@@ -44,7 +45,6 @@ const Crop = () => {
           style={styles.dimensionInput}
           data-testid="crop-height"
         />
-        <p style={styles.label}>Height: </p>
       </div>
       {cropPresets.map((cropItem, index) => {
         const CropComponent = cropItem.component;

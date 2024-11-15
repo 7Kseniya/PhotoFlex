@@ -18,7 +18,7 @@ const styles = {
     fontSize: '16px',
   },
   label: {
-    fontSize: '14px',
+    fontSize: '24px',
     color: '#fff',
     margin: '0 5px',
   },
@@ -29,9 +29,9 @@ const styles = {
     margin: '5px 0',
   },
   cropIconStyle: {
-    fontSize: '24px',
+    fontSize: '96px',
     color: '#fff',
-    marginRight: '8px',
+    marginRight: '12px',
   },
 };
 
