@@ -1,4 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  createEvent,
+} from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -11,6 +16,17 @@ import '@testing-library/jest-dom';
 console.warn = jest.fn();
 
 const mockStore = configureStore();
+
+jest.mock(
+  '../src/components/upload-container/upload-container.module.css',
+  () => ({
+    mainContainer: 'mainContainer',
+    dragOver: 'dragOver',
+    uploadText: 'uploadText',
+    uploadLabel: 'uploadLabel',
+    uploadIcon: 'uploadIcon',
+  })
+);
 const renderWithStore = (store) => {
   return render(
     <Provider store={store}>
@@ -124,5 +140,88 @@ describe('UploadContainer', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
       setImageSrc('data:image/png;base64,image')
     );
+  });
+  it('не должен вызывать setImageSrc, если файл не был перетянут', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    store.dispatch = jest.fn();
+    renderWithStore(store);
+    const dropArea = screen.getByTestId('upload-container');
+
+    const preventDefault = jest.fn();
+    const dataTransfer = { files: [] };
+
+    const dropEvent = createEvent.drop(dropArea);
+    dropEvent.preventDefault = preventDefault;
+    Object.defineProperty(dropEvent, 'dataTransfer', {
+      value: dataTransfer,
+    });
+
+    fireEvent(dropArea, dropEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(setIsDragOver(false));
+    expect(store.dispatch).not.toHaveBeenCalledWith(
+      setImageSrc(expect.anything())
+    );
+  });
+
+  it('не должен вызывать setImageSrc, если файл не был выбран через инпут', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    store.dispatch = jest.fn();
+    renderWithStore(store);
+    const fileInput = screen.getByLabelText(/choose or drag file/i);
+
+    const mockFileReader = {
+      readAsDataURL: jest.fn(),
+      onload: null,
+    };
+    global.FileReader = jest.fn(() => mockFileReader);
+
+    fireEvent.change(fileInput, { target: { files: [] } });
+
+    expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(
+      setImageSrc(expect.anything())
+    );
+  });
+
+  it('должен применять правильный класс при isDragOver равном true', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: true,
+        imageSrc: null,
+      },
+    });
+
+    renderWithStore(store);
+    const container = screen.getByTestId('upload-container');
+
+    expect(container.className).toMatch(/dragOver/);
+  });
+
+  it('не должен применять класс dragOver при isDragOver равном false', () => {
+    const store = mockStore({
+      image: {
+        isDragOver: false,
+        imageSrc: null,
+      },
+    });
+
+    renderWithStore(store);
+    const container = screen.getByTestId('upload-container');
+
+    expect(container.className).not.toMatch(/dragOver/);
   });
 });

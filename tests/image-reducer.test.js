@@ -5,6 +5,7 @@ import {
   setImageSrc,
   setIsDragOver,
   setRotationAngle,
+  setFilter,
 } from '../src/services/actions/image-actions';
 
 describe('imageReducer', () => {
@@ -55,6 +56,12 @@ describe('imageReducer', () => {
       width: 600,
       height: 400,
     });
+  });
+
+  it('should handle SET_FILTER', () => {
+    const action = setFilter('grayscale');
+    const newState = imageReducer(initialState, action);
+    expect(newState.filter).toBe('grayscale');
   });
 
   it('should ignore unknown actions', () => {
