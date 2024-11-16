@@ -5,6 +5,7 @@ const initialState = {
   activeTool: 0,
   rotationAngle: 0,
   resizeDimensions: { width: 800, height: 900 },
+  cropArea: { x: 0, y: 0 },
   mask: [],
   brushSize: 10,
   drawing: false,
@@ -28,10 +29,20 @@ const imageReducer = (state = initialState, action) => {
         ...state,
         isDragOver: action.payload,
       };
+    case 'SET_CROP_AREA':
+      return {
+        ...state,
+        cropArea: action.payload,
+      };
     case 'SET_RESIZE_DIMENSIONS':
       return {
         ...state,
         resizeDimensions: action.payload,
+      };
+    case 'SET_CROP_DIMENSIONS':
+      return {
+        ...state,
+        cropDimensions: action.payload,
       };
     case 'SET_ROTATION_ANGLE':
       return {

@@ -16,6 +16,7 @@ describe('imageReducer', () => {
     activeTool: 0,
     rotationAngle: 0,
     resizeDimensions: { width: 800, height: 900 },
+    cropArea: { x: 0, y: 0 },
     mask: [],
     brushSize: 10,
     drawing: false,
