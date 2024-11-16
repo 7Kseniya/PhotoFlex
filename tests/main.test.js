@@ -8,6 +8,10 @@ import MainPage from '../src/components/pages/main-page/main-page';
 
 console.warn = jest.fn();
 const mockStore = configureStore([]);
+
+jest.mock('../src/services/actions/image-actions.js', () => ({
+  setResizeDimensions: jest.fn(),
+}));
 const renderWithProvider = (component, initialState) => {
   const store = mockStore(initialState);
   return render(
@@ -142,14 +146,16 @@ describe('MainPage Component', () => {
     expect(actions).toEqual([]);
   });
   it('displays original image when Flip icon is pressed', () => {
-    const flipIcon = screen.getByTestId('flip-icon');
+    const flipIcons = screen.getAllByTestId('flip-icon');
+    const flipIcon = flipIcons[0];
     fireEvent.mouseDown(flipIcon);
     const canvas = screen.getByTestId('canvas');
     expect(canvas).toBeInTheDocument();
   });
 
   it('reverts to modified image when Flip icon is released', () => {
-    const flipIcon = screen.getByTestId('flip-icon');
+    const flipIcons = screen.getAllByTestId('flip-icon');
+    const flipIcon = flipIcons[0];
     fireEvent.mouseDown(flipIcon);
     fireEvent.mouseUp(flipIcon);
 
@@ -158,7 +164,8 @@ describe('MainPage Component', () => {
   });
 
   it('reverts to modified image when mouse leaves the Flip icon', () => {
-    const flipIcon = screen.getByTestId('flip-icon');
+    const flipIcons = screen.getAllByTestId('flip-icon');
+    const flipIcon = flipIcons[0];
     fireEvent.mouseDown(flipIcon);
     fireEvent.mouseLeave(flipIcon);
 

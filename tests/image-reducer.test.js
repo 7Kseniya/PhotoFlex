@@ -6,6 +6,7 @@ import {
   setIsDragOver,
   setRotationAngle,
   setFilter,
+  setCropArea,
 } from '../src/services/actions/image-actions';
 
 describe('imageReducer', () => {
@@ -16,6 +17,7 @@ describe('imageReducer', () => {
     activeTool: 0,
     rotationAngle: 0,
     resizeDimensions: { width: 800, height: 900 },
+    cropArea: { x: 0, y: 0 },
     mask: [],
     brushSize: 10,
     drawing: false,
@@ -47,6 +49,12 @@ describe('imageReducer', () => {
     const action = setRotationAngle(90);
     const newState = imageReducer(initialState, action);
     expect(newState.rotationAngle).toBe(90);
+  });
+
+  it('should handle SET_CROP_AREA', () => {
+    const action = setCropArea(100);
+    const newState = imageReducer(initialState, action);
+    expect(newState.cropArea).toBe(100);
   });
 
   it('should handle SET_RESIZE_DIMENSIONS', () => {

@@ -21,6 +21,11 @@ export const setResizeDimensions = (width, height) => ({
   payload: { width, height },
 });
 
+export const setCropArea = (cropArea) => ({
+  type: 'SET_CROP_AREA',
+  payload: cropArea,
+});
+
 export const setFilter = (filter) => ({
   type: 'SET_FILTER',
   payload: filter,

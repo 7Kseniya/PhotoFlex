@@ -42,7 +42,7 @@ const Header = ({ canvasRef, setShowOriginal }) => {
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
         <img
-          src={logoImg || null}
+          src={logoImg}
           className={styles.logoContainer}
           alt={'logo'}
         />

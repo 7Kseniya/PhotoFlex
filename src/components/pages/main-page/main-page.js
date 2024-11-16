@@ -17,6 +17,7 @@ const MainPage = () => {
     rotationAngle,
     resizeDimensions,
     filter,
+    cropArea,
   } = useSelector((state) => state.image);
   const { width, height } = resizeDimensions;
   const canvasRef = useRef(null);
@@ -74,6 +75,7 @@ const MainPage = () => {
       const ctx = canvas.getContext('2d');
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       if (showOriginal) {
         ctx.drawImage(
           originalImage,
@@ -84,16 +86,36 @@ const MainPage = () => {
         );
       } else {
         ctx.save();
+
         ctx.filter = selectedFilter.filter;
+
+        const cropX = cropArea.x;
+        const cropY = cropArea.y;
+        const cropWidth = originalDimensions.width;
+        const cropHeight = originalDimensions.height;
+
+        const dWidth = resizeDimensions.width;
+        const dHeight = resizeDimensions.height;
+
+        const dx = (canvas.width - dWidth) / 2;
+        const dy = (canvas.height - dHeight) / 2;
+
         ctx.translate(canvas.width / 2, canvas.height / 2);
         ctx.rotate((rotationAngle * Math.PI) / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
         ctx.drawImage(
           image,
-          -resizeDimensions.width / 2,
-          -resizeDimensions.height / 2,
-          resizeDimensions.width,
-          resizeDimensions.height
+          cropX,
+          cropY,
+          cropWidth,
+          cropHeight,
+          dx,
+          dy,
+          dWidth,
+          dHeight
         );
+
         ctx.restore();
         if (mask.length > 0) {
           ctx.save();
@@ -137,6 +159,7 @@ const MainPage = () => {
     brushSize,
     showOriginal,
     filter,
+    cropArea,
   ]);
 
   const handleMouseDown = (e) => {
