@@ -25,7 +25,7 @@ describe('MainPage Component', () => {
         imageSrc: 'placeholder.jpeg',
         activeTool: 5,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     store = mockStore(initialState);
@@ -72,7 +72,7 @@ describe('MainPage Component', () => {
         imageSrc: '',
         activeTool: 0,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     renderWithProvider(<MainPage />, initialState);
@@ -98,13 +98,13 @@ describe('MainPage Component', () => {
     expect(actions).toEqual([]);
   });
 
-  it('applies crop dimensions to the image', () => {
+  it('applies resize dimensions to the image', () => {
     const initialState = {
       image: {
         imageSrc: 'placeholder.jpeg',
         activeTool: 0,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     renderWithProvider(<MainPage />, initialState);
@@ -120,7 +120,7 @@ describe('MainPage Component', () => {
         imageSrc: '',
         activeTool: 0,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     renderWithProvider(<MainPage />, initialState);

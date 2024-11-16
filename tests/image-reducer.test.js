@@ -1,7 +1,7 @@
 import imageReducer from '../src/services/reducers/image-reducer';
 import {
   setActiveTool,
-  setCropDimensions,
+  setResizeDimensions,
   setImageSrc,
   setIsDragOver,
   setRotationAngle,
@@ -15,7 +15,7 @@ describe('imageReducer', () => {
     isDragOver: false,
     activeTool: 0,
     rotationAngle: 0,
-    cropDimensions: { width: 800, height: 900 },
+    resizeDimensions: { width: 800, height: 900 },
     mask: [],
     brushSize: 10,
     drawing: false,
@@ -49,10 +49,10 @@ describe('imageReducer', () => {
     expect(newState.rotationAngle).toBe(90);
   });
 
-  it('should handle SET_CROP_DIMENSIONS', () => {
-    const action = setCropDimensions(600, 400);
+  it('should handle SET_RESIZE_DIMENSIONS', () => {
+    const action = setResizeDimensions(600, 400);
     const newState = imageReducer(initialState, action);
-    expect(newState.cropDimensions).toEqual({
+    expect(newState.resizeDimensions).toEqual({
       width: 600,
       height: 400,
     });

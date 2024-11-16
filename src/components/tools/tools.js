@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styles from './tools.module.css';
 import Tunes from './tune-tool/tunes-tools';
 import Filters from './filter-tool/filters-tools';
-import Crop from './crop-tool/crop-tools';
+import Resize from './resize-tool/resize-tools';
 import Rotate from './rotate-tool/rotate-tools';
 import RemoveBgTool from './remove-bg-tool/remove-bg-tool';
 import TextTool from './text-tool/text-tools';
@@ -22,8 +22,8 @@ const Tools = ({
       data-testid="tools-component"
     >
       {activeTool === 0 && <Tunes data-testid="tunes-component" />}
-      {activeTool === 3 && <Crop data-testid="crop-component" />}
       {activeTool === 2 && <Rotate data-testid="rotate-component" />}
+      {activeTool === 3 && <Resize data-testid="crop-component" />}
       {activeTool === 4 && (
         <Filters data-testid="filters-component" />
       )}

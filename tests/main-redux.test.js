@@ -30,7 +30,7 @@ describe('MainPage Component with Redux', () => {
         imageSrc: null,
         activeTool: 0,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     store = mockStore(initialState);
@@ -48,7 +48,7 @@ describe('MainPage Component with Redux', () => {
         imageSrc: 'test-image.jpg',
         activeTool: 0,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     renderWithProvider(<MainPage />, initialStateWithImage);
@@ -62,7 +62,7 @@ describe('MainPage Component with Redux', () => {
         imageSrc: 'test-image.jpg',
         activeTool: 5,
         rotationAngle: 0,
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
 

@@ -16,8 +16,8 @@ export const setRotationAngle = (angle) => ({
   type: 'SET_ROTATION_ANGLE',
   payload: angle,
 });
-export const setCropDimensions = (width, height) => ({
-  type: 'SET_CROP_DIMENSIONS',
+export const setResizeDimensions = (width, height) => ({
+  type: 'SET_RESIZE_DIMENSIONS',
   payload: { width, height },
 });
 

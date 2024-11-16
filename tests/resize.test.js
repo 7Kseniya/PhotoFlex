@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
-import Crop from '../src/components/tools/crop-tool/crop-tools';
+import Resize from '../src/components/tools/resize-tool/resize-tools';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { useDispatch } from 'react-redux';
@@ -20,7 +20,7 @@ const renderWithProvider = (component, initialState) => {
   };
 };
 
-describe('Crop Component', () => {
+describe('Resize Component', () => {
   let store;
   const mockDispatch = jest.fn();
 
@@ -29,24 +29,24 @@ describe('Crop Component', () => {
 
     const initialState = {
       image: {
-        cropDimensions: { width: 800, height: 900 },
+        resizeDimensions: { width: 800, height: 900 },
       },
     };
     store = mockStore(initialState);
-    renderWithProvider(<Crop />, initialState);
+    renderWithProvider(<Resize />, initialState);
   });
 
-  it('renders crop component with presets', () => {
-    const cropComponent = screen.getByTestId('crop-component');
-    expect(cropComponent).toBeInTheDocument();
+  it('renders resize component with presets', () => {
+    const resizeComponent = screen.getByTestId('resize-component');
+    expect(resizeComponent).toBeInTheDocument();
 
-    const crop169 = screen.getByTestId('crop-16:9');
-    expect(crop169).toBeInTheDocument();
+    const resize169 = screen.getByTestId('resize-16:9');
+    expect(resize169).toBeInTheDocument();
   });
 
   it('renders input fields with initial values', () => {
-    const widthInput = screen.getByTestId('crop-width');
-    const heightInput = screen.getByTestId('crop-height');
+    const widthInput = screen.getByTestId('resize-width');
+    const heightInput = screen.getByTestId('resize-height');
 
     expect(widthInput).toBeInTheDocument();
     expect(heightInput).toBeInTheDocument();
@@ -56,8 +56,8 @@ describe('Crop Component', () => {
   });
 
   it('updates width and height dynamically on input', () => {
-    const widthInput = screen.getByTestId('crop-width');
-    const heightInput = screen.getByTestId('crop-height');
+    const widthInput = screen.getByTestId('resize-width');
+    const heightInput = screen.getByTestId('resize-height');
 
     fireEvent.change(widthInput, { target: { value: '1200' } });
     fireEvent.change(heightInput, { target: { value: '1600' } });
@@ -66,31 +66,38 @@ describe('Crop Component', () => {
     expect(heightInput.value).toBe('1600');
 
     expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'SET_CROP_DIMENSIONS',
+      type: 'SET_RESIZE_DIMENSIONS',
       payload: { width: 1200, height: 1600 },
     });
   });
 
   it('updates dimensions when a preset is clicked', () => {
-    const crop916 = screen.getByTestId('crop-9:16');
-    fireEvent.click(crop916);
+    const resize916 = screen.getByTestId('resize-9:16');
+    fireEvent.click(resize916);
 
     expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'SET_CROP_DIMENSIONS',
+      type: 'SET_RESIZE_DIMENSIONS',
       payload: { width: 506, height: 900 },
     });
 
-    const widthInput = screen.getByTestId('crop-width');
-    const heightInput = screen.getByTestId('crop-height');
+    const widthInput = screen.getByTestId('resize-width');
+    const heightInput = screen.getByTestId('resize-height');
 
     expect(widthInput.value).toBe('506');
     expect(heightInput.value).toBe('900');
   });
 
   it('renders all presets with correct labels', () => {
-    const cropPresets = ['16:9', '4:4', '9:16', '3:2', '5:4', '7:5'];
-    cropPresets.forEach((preset) => {
-      const presetElement = screen.getByTestId(`crop-${preset}`);
+    const resizePresets = [
+      '16:9',
+      '4:4',
+      '9:16',
+      '3:2',
+      '5:4',
+      '7:5',
+    ];
+    resizePresets.forEach((preset) => {
+      const presetElement = screen.getByTestId(`resize-${preset}`);
       expect(presetElement).toBeInTheDocument();
     });
   });
