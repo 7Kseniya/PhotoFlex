@@ -11,13 +11,13 @@ const Crop = () => {
   );
 
   const [cropArea, setCropAreaState] = useState({
-    x: currentCropArea?.x || 0,
-    y: currentCropArea?.y || 0,
+    x: currentCropArea.x,
+    y: currentCropArea.y,
   });
 
   const [localInput, setLocalInput] = useState({
-    x: String(currentCropArea?.x || 0),
-    y: String(currentCropArea?.y || 0),
+    x: String(currentCropArea.x),
+    y: String(currentCropArea.y),
   });
 
   useEffect(() => {
@@ -25,13 +25,11 @@ const Crop = () => {
   }, [cropArea, dispatch]);
 
   useEffect(() => {
-    if (currentCropArea) {
-      setCropAreaState(currentCropArea);
-      setLocalInput({
-        x: String(currentCropArea.x),
-        y: String(currentCropArea.y),
-      });
-    }
+    setCropAreaState(currentCropArea);
+    setLocalInput({
+      x: String(currentCropArea.x),
+      y: String(currentCropArea.y),
+    });
   }, [currentCropArea]);
 
   const handleInputChange = (e) => {
@@ -42,7 +40,7 @@ const Crop = () => {
     if (!isNaN(numericValue)) {
       setCropAreaState((prev) => ({
         ...prev,
-        [name]: numericValue || 0,
+        [name]: numericValue,
       }));
     }
   };

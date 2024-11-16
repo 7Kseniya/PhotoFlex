@@ -89,11 +89,10 @@ const MainPage = () => {
 
         ctx.filter = selectedFilter.filter;
 
-        const cropX = cropArea?.x || 0;
-        const cropY = cropArea?.y || 0;
-        const cropWidth = cropArea?.width || originalDimensions.width;
-        const cropHeight =
-          cropArea?.height || originalDimensions.height;
+        const cropX = cropArea.x;
+        const cropY = cropArea.y;
+        const cropWidth = originalDimensions.width;
+        const cropHeight = originalDimensions.height;
 
         const dWidth = resizeDimensions.width;
         const dHeight = resizeDimensions.height;
