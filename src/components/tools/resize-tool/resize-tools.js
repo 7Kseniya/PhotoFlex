@@ -8,28 +8,28 @@ import {
   CropSquare,
 } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-import { setCropDimensions } from '../../../services/actions/image-actions';
-import styles from './crop-tools-styles';
+import { setResizeDimensions } from '../../../services/actions/image-actions';
+import styles from './resize-tools-styles';
 import { useSelector } from 'react-redux';
 
-const Crop = () => {
+const Resize = () => {
   const dispatch = useDispatch();
   const [dimensions, setDimensions] = useState({
     width: '',
     height: '',
   });
-  const cropDimensions = useSelector(
-    (state) => state.image.cropDimensions
+  const resizeDimensions = useSelector(
+    (state) => state.image.resizeDimensions
   );
 
   useEffect(() => {
     setDimensions({
-      width: cropDimensions.width,
-      height: cropDimensions.height,
+      width: resizeDimensions.width,
+      height: resizeDimensions.height,
     });
-  }, [cropDimensions]);
+  }, [resizeDimensions]);
 
-  const cropPresets = [
+  const resizePresets = [
     { component: Crop169, name: '16:9', width: 900, height: 506 },
     { component: CropSquare, name: '4:4', width: 600, height: 600 },
     {
@@ -43,9 +43,9 @@ const Crop = () => {
     { component: Crop75, name: '7:5', width: 800, height: 500 },
   ];
 
-  const handleCropPreset = (width, height) => {
+  const handleResizePreset = (width, height) => {
     setDimensions({ width, height });
-    dispatch(setCropDimensions(width, height));
+    dispatch(setResizeDimensions(width, height));
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +59,7 @@ const Crop = () => {
         [name]: numericValue,
       };
       dispatch(
-        setCropDimensions(
+        setResizeDimensions(
           updatedDimensions.width || 0,
           updatedDimensions.height || 0
         )
@@ -68,7 +68,10 @@ const Crop = () => {
   };
 
   return (
-    <div style={styles.sharedContainer} data-testid="crop-component">
+    <div
+      style={styles.sharedContainer}
+      data-testid="resize-component"
+    >
       <div style={styles.dimensionInputContainer}>
         <p style={styles.label}>Width: </p>
         <input
@@ -76,7 +79,7 @@ const Crop = () => {
           aria-label="Width"
           name="width"
           style={styles.dimensionInput}
-          data-testid="crop-width"
+          data-testid="resize-width"
           value={dimensions.width}
           onChange={handleInputChange}
         />
@@ -86,24 +89,24 @@ const Crop = () => {
           aria-label="Height"
           name="height"
           style={styles.dimensionInput}
-          data-testid="crop-height"
+          data-testid="resize-height"
           value={dimensions.height}
           onChange={handleInputChange}
         />
       </div>
-      {cropPresets.map((cropItem, index) => {
-        const CropComponent = cropItem.component;
+      {resizePresets.map((resizeItem, index) => {
+        const ResizeComponent = resizeItem.component;
         return (
           <div
             key={index}
             style={styles.cropItemStyle}
             onClick={() =>
-              handleCropPreset(cropItem.width, cropItem.height)
+              handleResizePreset(resizeItem.width, resizeItem.height)
             }
-            data-testid={`crop-${cropItem.name}`}
+            data-testid={`resize-${resizeItem.name}`}
           >
-            <CropComponent style={styles.cropIconStyle} />
-            <p style={styles.label}>{cropItem.name}</p>
+            <ResizeComponent style={styles.cropIconStyle} />
+            <p style={styles.label}>{resizeItem.name}</p>
           </div>
         );
       })}
@@ -111,4 +114,4 @@ const Crop = () => {
   );
 };
 
-export default Crop;
+export default Resize;

@@ -7,7 +7,7 @@ import ToolBar from '../../tool-bar/tool-bar';
 import Tools from '../../tools/tools';
 import {
   setActiveTool,
-  setCropDimensions,
+  setResizeDimensions,
 } from '../../../services/actions/image-actions';
 
 const MainPage = () => {
@@ -15,10 +15,10 @@ const MainPage = () => {
     imageSrc,
     activeTool,
     rotationAngle,
-    cropDimensions,
+    resizeDimensions,
     filter,
   } = useSelector((state) => state.image);
-  const { width, height } = cropDimensions;
+  const { width, height } = resizeDimensions;
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
   const [drawing, setDrawing] = useState(false);
@@ -63,7 +63,7 @@ const MainPage = () => {
           width: img.width,
           height: img.height,
         });
-        setCropDimensions({ width: img.width, height: img.height });
+        setResizeDimensions({ width: img.width, height: img.height });
       };
     }
   }, [imageSrc]);
@@ -89,10 +89,10 @@ const MainPage = () => {
         ctx.rotate((rotationAngle * Math.PI) / 180);
         ctx.drawImage(
           image,
-          -cropDimensions.width / 2,
-          -cropDimensions.height / 2,
-          cropDimensions.width,
-          cropDimensions.height
+          -resizeDimensions.width / 2,
+          -resizeDimensions.height / 2,
+          resizeDimensions.width,
+          resizeDimensions.height
         );
         ctx.restore();
         if (mask.length > 0) {
