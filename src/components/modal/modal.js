@@ -4,7 +4,7 @@ import styles from './modal.module.css';
 import ModalOverlay from '../modal/modal-overlay';
 import ClearIcon from '@mui/icons-material/Clear';
 const modalRoot = document.getElementById('modal-root');
-const Modal = ({ children, onClose }) => {
+const Modal = ({ children, onClose, open }) => {
   useEffect(() => {
     const handleClose = (event) => {
       if (event.key === 'Escape') {
@@ -16,7 +16,7 @@ const Modal = ({ children, onClose }) => {
     return () => {
       document.removeEventListener('keydown', handleClose);
     };
-  }, [onClose]);
+  }, [onClose, open]);
 
   return ReactDOM.createPortal(
     <>
