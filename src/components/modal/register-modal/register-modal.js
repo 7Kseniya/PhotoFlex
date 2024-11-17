@@ -67,7 +67,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
     }
     if (!validateUsername(username)) {
       setAlert(
-        'username must be 5-15 characters long and can only contain letters, numbers, and underscores'
+        'username must be 5-20 characters long and can only contain letters, numbers, and underscores'
       );
       setShowAlert(true);
       return;
