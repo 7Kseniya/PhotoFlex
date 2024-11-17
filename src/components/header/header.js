@@ -7,8 +7,9 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink } from 'react-router-dom';
 import { saveAs } from 'file-saver';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
-const Header = ({ canvasRef, setShowOriginal }) => {
+const Header = ({ canvasRef, setShowOriginal, onAccountClick }) => {
   const [selectedFormat, setSelectedFormat] = useState('png');
   const handleSave = () => {
     const canvas = canvasRef.current;
@@ -79,6 +80,10 @@ const Header = ({ canvasRef, setShowOriginal }) => {
           className={`${styles.icon} ${styles.personAdd}`}
         />
       </NavLink>
+      <AccountCircle
+        className={`${styles.icon} ${styles.personAdd}`}
+        onClick={onAccountClick}
+      />
     </div>
   );
 };
