@@ -9,6 +9,9 @@ import {
   setActiveTool,
   setResizeDimensions,
 } from '../../../services/actions/image-actions';
+import Modal from '../../modal/modal';
+import LoginModal from '../../modal/login-modal/login-modal';
+import RegisterModal from '../../modal/register-modal/register-modal';
 
 const MainPage = () => {
   const {
@@ -28,6 +31,7 @@ const MainPage = () => {
   const [appliedMask, setAppliedMask] = useState([]);
   const [originalImage, setOriginalImage] = useState(null);
   const [showOriginal, setShowOriginal] = useState(false);
+  const [modalType, setModalType] = useState(null);
   const [originalDimensions, setOriginalDimensions] = useState({
     width: 0,
     height: 0,
@@ -198,6 +202,9 @@ const MainPage = () => {
     setMask([]);
     setAppliedMask([]);
   };
+  const openLoginModal = () => setModalType('login');
+  const openRegisterModal = () => setModalType('register');
+  const closeModal = () => setModalType(null);
 
   return (
     <div className={styles.mainContainer}>
@@ -242,6 +249,22 @@ const MainPage = () => {
           )}
         </div>
       </div>
+      {modalType == 'login' && (
+        <Modal onClose={closeModal}>
+          <LoginModal
+            onSignUpClick={openRegisterModal}
+            onSubmited={closeModal}
+          />
+        </Modal>
+      )}
+      {modalType == 'register' && (
+        <Modal onClose={closeModal}>
+          <RegisterModal
+            onSignInClick={openLoginModal}
+            onSubmited={closeModal}
+          />
+        </Modal>
+      )}
     </div>
   );
 };
