@@ -1,99 +1,139 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
 import Header from '../src/components/header/header';
-import { saveAs } from 'file-saver';
 
-jest.mock('file-saver', () => ({
-  saveAs: jest.fn(),
-}));
-
-console.warn = jest.fn();
+const mockStore = configureStore([]);
 
 describe('Header Component', () => {
-  const canvasRef = {
-    current: {
-      width: 800,
-      height: 600,
-      toDataURL: jest.fn((format) =>
-        format === 'image/png'
-          ? 'data:image/png;base64'
-          : `data:${format};base64`
-      ),
-    },
-  };
+  let store;
+  let canvasRef;
+
+  beforeEach(() => {
+    store = mockStore({});
+    canvasRef = {
+      current: {
+        toDataURL: jest
+          .fn()
+          .mockReturnValue('data:image/png;base64,mockImageData'),
+        width: 800,
+        height: 600,
+      },
+    };
+  });
+
   it('renders Header component', () => {
     render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
     );
-    const headerElement = screen.getByTestId('header');
-    expect(headerElement).toBeInTheDocument();
-  });
-  it('renders logo image', () => {
-    render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
-    );
-    const logoElement = screen.getByAltText('logo');
-    expect(logoElement).toBeInTheDocument();
+
+    expect(screen.getByTestId('header')).toBeInTheDocument();
   });
 
-  it('renders RedoIcon components', () => {
+  it('handles format selection change', () => {
     render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
     );
-    const redoIcons = screen.getAllByTestId('RedoIcon');
-    expect(redoIcons.length).toBe(2);
-  });
 
-  it('handleSave function works correctly for PNG format', () => {
-    render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
-    );
     const selectElement = screen.getByRole('combobox');
-    fireEvent.change(selectElement, { target: { value: 'png' } });
-    const saveIcon = screen.getByTestId('SaveIcon');
+    fireEvent.change(selectElement, { target: { value: 'jpeg' } });
+
+    expect(selectElement.value).toBe('jpeg');
+  });
+
+  it('handles save icon click', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const saveIcon = screen.getByTestId('save-icon');
     fireEvent.click(saveIcon);
 
     expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
       'image/png'
     );
   });
-
-  it('handleSave function works correctly for SVG format', () => {
+  it('handles flip icon mouse events', () => {
     render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
     );
-    const selectElement = screen.getByRole('combobox');
-    fireEvent.change(selectElement, { target: { value: 'svg' } });
-    const saveIcon = screen.getByTestId('SaveIcon');
-    fireEvent.click(saveIcon);
-    expect(saveAs).toHaveBeenCalledWith(
-      expect.any(Blob),
-      'photoflex.svg'
-    );
+
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    expect(store.getActions()).toEqual([
+      { type: 'SET_SHOW_ORIGINAL', payload: true },
+    ]);
+
+    fireEvent.mouseUp(flipIcon);
+    expect(store.getActions()).toEqual([
+      { type: 'SET_SHOW_ORIGINAL', payload: true },
+      { type: 'SET_SHOW_ORIGINAL', payload: false },
+    ]);
+
+    fireEvent.mouseLeave(flipIcon);
+    expect(store.getActions()).toEqual([
+      { type: 'SET_SHOW_ORIGINAL', payload: true },
+      { type: 'SET_SHOW_ORIGINAL', payload: false },
+      { type: 'SET_SHOW_ORIGINAL', payload: false },
+    ]);
   });
+  it('handles save icon click when canvas is null', () => {
+    canvasRef = { current: null };
 
-  it('renders all format options correctly', () => {
     render(
-      <MemoryRouter>
-        <Header canvasRef={canvasRef} />
-      </MemoryRouter>
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
     );
-    const selectElement = screen.getByRole('combobox');
-    const options = Array.from(selectElement.options).map(
-      (option) => option.value
+
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+    expect(store.getActions()).toEqual([]);
+  });
+  it('navigates to personal account page when PersonAddIcon is clicked', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
     );
-    expect(options).toEqual(['png', 'jpeg', 'jpg', 'webp', 'svg']);
+
+    const personAddIcon = screen.getByTestId('PersonAddIcon');
+    fireEvent.click(personAddIcon);
+    expect(window.location.pathname).toBe('/personal-account');
+  });
+  it('navigates to home page when logo is clicked', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const logo = screen.getByAltText('logo');
+    fireEvent.click(logo);
+    expect(window.location.pathname).toBe('/');
   });
 });

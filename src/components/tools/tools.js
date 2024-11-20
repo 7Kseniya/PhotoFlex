@@ -8,15 +8,8 @@ import Rotate from './rotate-tool/rotate-tools';
 import RemoveBgTool from './remove-bg-tool/remove-bg-tool';
 import TextTool from './text-tool/text-tools';
 import Crop from './crop-tool/crop-tools';
-
-const Tools = ({
-  brushSize,
-  onBrushSizeChange,
-  onRemoveBackground,
-  onReset,
-}) => {
+const Tools = () => {
   const activeTool = useSelector((state) => state.image.activeTool);
-
   return (
     <div
       className={styles.mainContainer}
@@ -30,13 +23,7 @@ const Tools = ({
         <Filters data-testid="filters-component" />
       )}
       {activeTool === 5 && (
-        <RemoveBgTool
-          brushSize={brushSize}
-          onBrushSizeChange={onBrushSizeChange}
-          onRemoveBackground={onRemoveBackground}
-          onReset={onReset}
-          data-testid="remove-bg-component"
-        />
+        <RemoveBgTool data-testid="remove-bg-component" />
       )}
       {activeTool === 7 && <TextTool data-testid="text-component" />}
     </div>

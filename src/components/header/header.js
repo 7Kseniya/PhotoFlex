@@ -7,8 +7,11 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink } from 'react-router-dom';
 import { saveAs } from 'file-saver';
+import { setShowOriginal } from '../../services/actions/image-actions';
+import { useDispatch } from 'react-redux';
 
-const Header = ({ canvasRef, setShowOriginal }) => {
+const Header = ({ canvasRef }) => {
+  const dispatch = useDispatch();
   const [selectedFormat, setSelectedFormat] = useState('png');
   const handleSave = () => {
     const canvas = canvasRef.current;
@@ -37,7 +40,6 @@ const Header = ({ canvasRef, setShowOriginal }) => {
       }
     }
   };
-
   return (
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
@@ -51,9 +53,9 @@ const Header = ({ canvasRef, setShowOriginal }) => {
       <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
       <FlipIcon
         className={`${styles.icon} ${styles.flip}`}
-        onMouseDown={() => setShowOriginal(true)}
-        onMouseUp={() => setShowOriginal(false)}
-        onMouseLeave={() => setShowOriginal(false)}
+        onMouseDown={() => dispatch(setShowOriginal(true))}
+        onMouseUp={() => dispatch(setShowOriginal(false))}
+        onMouseLeave={() => dispatch(setShowOriginal(false))}
         data-testid="flip-icon"
       />
       <div className={styles.saveContainer}>
@@ -71,6 +73,7 @@ const Header = ({ canvasRef, setShowOriginal }) => {
         <SaveIcon
           className={`${styles.icon} ${styles.save}`}
           onClick={handleSave}
+          data-testid={'save-icon'}
         />
       </div>
       <NavLink to={'/personal-account'}>

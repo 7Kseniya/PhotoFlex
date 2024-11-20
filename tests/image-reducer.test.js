@@ -1,80 +1,177 @@
-import imageReducer from '../src/services/reducers/image-reducer';
-import {
-  setActiveTool,
-  setResizeDimensions,
-  setImageSrc,
-  setIsDragOver,
-  setRotationAngle,
-  setFilter,
-  setCropArea,
-} from '../src/services/actions/image-actions';
+import imageReducer, {
+  initialState,
+} from '../src/services/reducers/image-reducer';
 
 describe('imageReducer', () => {
-  const initialState = {
-    imageSrc: null,
-    imageFix: null,
-    isDragOver: false,
-    activeTool: 0,
-    rotationAngle: 0,
-    resizeDimensions: { width: 800, height: 900 },
-    cropArea: { x: 0, y: 0 },
-    mask: [],
-    brushSize: 10,
-    drawing: false,
-    filter: 'none',
-  };
-  it('should return the initial state', () => {
+  it('should return the initial state when no action is passed', () => {
     expect(imageReducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should handle SET_IMAGE_SRC', () => {
-    const action = setImageSrc('newImageSrc');
-    const newState = imageReducer(initialState, action);
-    expect(newState.imageSrc).toBe('newImageSrc');
+  it('should handle SET_ACTIVE_TOOL action', () => {
+    const action = {
+      type: 'SET_ACTIVE_TOOL',
+      payload: 1,
+    };
+    const expectedState = {
+      ...initialState,
+      activeTool: 1,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_IS_DRAG_OVER', () => {
-    const action = setIsDragOver(true);
-    const newState = imageReducer(initialState, action);
-    expect(newState.isDragOver).toBe(true);
+  it('should handle SET_IMAGE_SRC action', () => {
+    const action = {
+      type: 'SET_IMAGE_SRC',
+      payload: 'image-src-path',
+    };
+    const expectedState = {
+      ...initialState,
+      imageSrc: 'image-src-path',
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_ACTIVE_TOOL', () => {
-    const action = setActiveTool(1);
-    const newState = imageReducer(initialState, action);
-    expect(newState.activeTool).toBe(1);
+  it('should handle SET_IS_DRAG_OVER action', () => {
+    const action = {
+      type: 'SET_IS_DRAG_OVER',
+      payload: true,
+    };
+    const expectedState = {
+      ...initialState,
+      isDragOver: true,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_ROTATION_ANGLE', () => {
-    const action = setRotationAngle(90);
-    const newState = imageReducer(initialState, action);
-    expect(newState.rotationAngle).toBe(90);
+  it('should handle SET_CROP_AREA action', () => {
+    const action = {
+      type: 'SET_CROP_AREA',
+      payload: { x: 50, y: 50 },
+    };
+    const expectedState = {
+      ...initialState,
+      cropArea: { x: 50, y: 50 },
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_CROP_AREA', () => {
-    const action = setCropArea(100);
-    const newState = imageReducer(initialState, action);
-    expect(newState.cropArea).toBe(100);
+  it('should handle SET_ROTATION_ANGLE action', () => {
+    const action = {
+      type: 'SET_ROTATION_ANGLE',
+      payload: 90,
+    };
+    const expectedState = {
+      ...initialState,
+      rotationAngle: 90,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_RESIZE_DIMENSIONS', () => {
-    const action = setResizeDimensions(600, 400);
-    const newState = imageReducer(initialState, action);
-    expect(newState.resizeDimensions).toEqual({
-      width: 600,
-      height: 400,
-    });
+  it('should handle SET_FILTER action', () => {
+    const action = {
+      type: 'SET_FILTER',
+      payload: 'grayscale',
+    };
+    const expectedState = {
+      ...initialState,
+      filter: 'grayscale',
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_FILTER', () => {
-    const action = setFilter('grayscale');
-    const newState = imageReducer(initialState, action);
-    expect(newState.filter).toBe('grayscale');
+  it('should handle SET_BRUSH_SIZE action', () => {
+    const action = {
+      type: 'SET_BRUSH_SIZE',
+      payload: 15,
+    };
+    const expectedState = {
+      ...initialState,
+      brushSize: 15,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should ignore unknown actions', () => {
-    const action = { type: 'UNKNOWN_ACTION' };
-    const newState = imageReducer(initialState, action);
-    expect(newState).toEqual(initialState);
+  it('should handle SET_MASK action', () => {
+    const action = {
+      type: 'SET_MASK',
+      payload: [{ x: 10, y: 10, brushSize: 5 }],
+    };
+    const expectedState = {
+      ...initialState,
+      mask: [{ x: 10, y: 10, brushSize: 5 }],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_APPLIED_MASK action', () => {
+    const action = {
+      type: 'SET_APPLIED_MASK',
+      payload: [{ x: 20, y: 20, brushSize: 5 }],
+    };
+    const expectedState = {
+      ...initialState,
+      appliedMask: [{ x: 20, y: 20, brushSize: 5 }],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_DRAWING action', () => {
+    const action = {
+      type: 'SET_DRAWING',
+      payload: true,
+    };
+    const expectedState = {
+      ...initialState,
+      drawing: true,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_RESIZE_DIMENSIONS action', () => {
+    const action = {
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 2500, height: 2500 },
+    };
+    const expectedState = {
+      ...initialState,
+      resizeDimensions: { width: 2500, height: 2500 },
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_SHOW_ORIGINALS action', () => {
+    const action = {
+      type: 'SET_SHOW_ORIGINAL',
+      payload: true,
+    };
+    const expectedState = {
+      ...initialState,
+      showOriginal: true,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_ORIGINAL_IMAGE action', () => {
+    const action = {
+      type: 'SET_ORIGINAL_IMAGE',
+      payload: { src: 'original-image-path' },
+    };
+    const expectedState = {
+      ...initialState,
+      originalImage: { src: 'original-image-path' },
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_IMAGE action', () => {
+    const action = {
+      type: 'SET_IMAGE',
+      payload: { src: 'image-path' },
+    };
+    const expectedState = {
+      ...initialState,
+      image: { src: 'image-path' },
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 });
