@@ -47,6 +47,7 @@ const useImageDrawer = ({
   originalImage,
   showOriginal,
   filter,
+  cropArea,
   resizeDimensions,
   rotationAngle,
   mask,
@@ -65,10 +66,13 @@ const useImageDrawer = ({
           0,
           0,
           originalImage.width,
-          originalImage.height
+          originalImage.height,
+          0,
+          0,
+          resizeDimensions.width,
+          resizeDimensions.height
         );
       } else {
-        ctx.save();
         const filters = {
           none: 'none',
           grayscale: 'grayscale(100%)',
@@ -78,31 +82,33 @@ const useImageDrawer = ({
           refulgence: 'contrast(150%) brightness(120%)',
           pink: 'hue-rotate(300deg)',
         };
+
+        ctx.save();
         ctx.filter = filters[filter] || 'none';
 
-        const { width: imgWidth, height: imgHeight } = image;
-        const canvasAspect = canvas.width / canvas.height;
-        const imageAspect = imgWidth / imgHeight;
+        const cropX = cropArea?.x || 0;
+        const cropY = cropArea?.y || 0;
+        const cropWidth = cropArea?.width || originalImage.width;
+        const cropHeight = cropArea?.height || originalImage.height;
 
-        let renderWidth, renderHeight, dx, dy;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
 
-        if (canvasAspect > imageAspect) {
-          renderHeight = canvas.height;
-          renderWidth = imgWidth * (canvas.height / imgHeight);
-          dx = (canvas.width - renderWidth) / 2;
-          dy = 0;
-        } else {
-          renderWidth = canvas.width;
-          renderHeight = imgHeight * (canvas.width / imgWidth);
-          dx = 0;
-          dy = (canvas.height - renderHeight) / 2;
-        }
-
-        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.translate(centerX, centerY);
         ctx.rotate((rotationAngle * Math.PI) / 180);
-        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+        ctx.translate(-centerX, -centerY);
 
-        ctx.drawImage(image, dx, dy, renderWidth, renderHeight);
+        ctx.drawImage(
+          image,
+          cropX,
+          cropY,
+          cropWidth,
+          cropHeight,
+          (canvas.width - resizeDimensions.width) / 2,
+          (canvas.height - resizeDimensions.height) / 2,
+          resizeDimensions.width,
+          resizeDimensions.height
+        );
         ctx.restore();
 
         const scale = resizeDimensions.width / image.width;
@@ -120,6 +126,7 @@ const useImageDrawer = ({
           );
           ctx.restore();
         }
+
         if (appliedMask.length > 0) {
           ctx.save();
           ctx.globalCompositeOperation = 'destination-out';
@@ -146,7 +153,7 @@ const useImageDrawer = ({
     rotationAngle,
     mask,
     appliedMask,
-    brushSize,
+    cropArea,
   ]);
   useEffect(() => {
     drawImage();
