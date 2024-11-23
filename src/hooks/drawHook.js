@@ -154,6 +154,7 @@ const useImageDrawer = ({
     mask,
     appliedMask,
     cropArea,
+    brushSize,
   ]);
   useEffect(() => {
     drawImage();
