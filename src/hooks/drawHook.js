@@ -66,11 +66,7 @@ const useImageDrawer = ({
           0,
           0,
           originalImage.width,
-          originalImage.height,
-          0,
-          0,
-          resizeDimensions.width,
-          resizeDimensions.height
+          originalImage.height
         );
       } else {
         const filters = {
