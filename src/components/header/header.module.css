@@ -1,0 +1,84 @@
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  background-color: #1e1e1e;
+  width: 1918px;
+  height: 100px;
+  border: solid black 1px;
+}
+
+.logoContainer {
+  margin-left: 80px;
+  margin-top: 20px;
+  width: 300px;
+  height: 60px;
+}
+
+.icon.redo {
+  margin-top: 10px;
+  margin-left: 150px;
+  margin-right: 30px;
+  font-size: 70px;
+  transform: scaleX(-1);
+  color: #884f9f;
+}
+
+.icon.redoRight {
+  margin-top: 10px;
+  margin-left: 0;
+  margin-right: 30px;
+  font-size: 70px;
+  color: #884f9f;
+}
+
+.icon.flip {
+  margin-top: 10px;
+  margin-left: 40px;
+  margin-right: 30px;
+  font-size: 70px;
+  color: #884f9f;
+}
+
+.icon.save {
+  margin-left: 40px;
+  margin-right: 30px;
+  font-size: 70px;
+  color: #884f9f;
+  cursor: pointer;
+}
+
+.icon.personAdd {
+  margin-left: 50px;
+  margin-top: 10px;
+  margin-right: 30px;
+  font-size: 70px;
+  color: #884f9f;
+}
+
+.saveContainer {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 30px;
+}
+
+.formatSelect {
+  background-color: #292929;
+  color: white;
+  border: 2px solid #884f9f;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 20px;
+  padding: 5px 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.formatSelect:hover {
+  border-color: #aa6fbc;
+}
+
+.formatSelect:focus {
+  border-color: #aa6fbc;
+  box-shadow: 0 0 5px #aa6fbc;
+}

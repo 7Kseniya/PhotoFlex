@@ -1,0 +1,37 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #191919;
+  height: 1080px;
+  width: 1920px;
+}
+
+.toolContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2px;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.uploadedImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.canvas {
+  width: 800px;
+  height: 800px;
+  border: 1px solid black;
+  cursor: crosshair;
+}

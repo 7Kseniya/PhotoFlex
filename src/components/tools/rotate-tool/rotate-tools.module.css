@@ -1,0 +1,28 @@
+.sharedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-top: 20px;
+  align-items: center;
+  height: 980px;
+  overflow-y: scroll;
+}
+
+.rotateItem {
+  margin-top: 15px;
+  width: 250px;
+}
+
+.rotateIcon.left90 {
+  rotate: -90deg;
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
+
+.rotateIcon.right90 {
+  rotate: 90deg;
+  font-size: 80px;
+  color: white;
+  cursor: pointer;
+}
