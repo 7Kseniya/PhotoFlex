@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './main-page.module.css';
 import Header from '../../header/header';
@@ -13,6 +13,9 @@ import {
   setOriginalImage,
   setResizeDimensions,
 } from '../../../services/actions/image-actions';
+import Modal from '../../modal/modal';
+import LoginModal from '../../modal/login-modal/login-modal';
+import RegisterModal from '../../modal/register-modal/register-modal';
 const MainPage = () => {
   const {
     imageSrc,
@@ -32,6 +35,7 @@ const MainPage = () => {
     (state) => state.image.resizeDimensions || { width: 0, height: 0 }
   );
 
+  const [modalType, setModalType] = useState(null);
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   useEffect(() => {
@@ -99,6 +103,9 @@ const MainPage = () => {
   const handleMouseUp = () => {
     dispatch(setDrawing(false));
   };
+  const openLoginModal = () => setModalType('login');
+  const openRegisterModal = () => setModalType('register');
+  const closeModal = () => setModalType(null);
   return (
     <div className={styles.mainContainer}>
       <Header canvasRef={canvasRef} />
@@ -133,6 +140,23 @@ const MainPage = () => {
           )}
         </div>
       </div>
+      {modalType == 'login' && (
+        <Modal onClose={closeModal}>
+          <LoginModal
+            onSignUpClick={openRegisterModal}
+            onSubmited={closeModal}
+            data-testid="login-modal"
+          />
+        </Modal>
+      )}
+      {modalType == 'register' && (
+        <Modal onClose={closeModal}>
+          <RegisterModal
+            onSignInClick={openLoginModal}
+            onSubmited={closeModal}
+          />
+        </Modal>
+      )}
     </div>
   );
 };
