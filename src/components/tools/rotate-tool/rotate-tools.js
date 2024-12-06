@@ -24,6 +24,10 @@ const Rotate = () => {
     dispatch(setRotationAngle(newValue));
   };
 
+  const handleReset = () => {
+    dispatch(setRotationAngle(0));
+  };
+
   return (
     <div
       className={styles.sharedContainer}
@@ -51,6 +55,13 @@ const Rotate = () => {
           data-testid="rotation-slider"
         />
       </div>
+      <button
+        className={styles.button}
+        onClick={handleReset}
+        data-testid="reset-button"
+      >
+        Сброс
+      </button>
     </div>
   );
 };

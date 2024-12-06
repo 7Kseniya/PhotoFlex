@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import Crop from '../src/components/tools/crop-tool/crop-tools';
 import { setCropArea } from '../src/services/actions/image-actions';
+import '@testing-library/jest-dom';
 
 jest.mock('../src/services/actions/image-actions.js', () => ({
   setCropArea: jest.fn(),
@@ -80,5 +81,15 @@ describe('Crop Component', () => {
       type: 'SET_CROP_AREA',
       payload: { x: expect.any(Number), y: expect.any(Number) },
     });
+  });
+  it('renders reset button', () => {
+    render(
+      <Provider store={store}>
+        <Crop />
+      </Provider>
+    );
+
+    const resetButton = screen.getByTestId('reset-button');
+    expect(resetButton).toBeInTheDocument();
   });
 });

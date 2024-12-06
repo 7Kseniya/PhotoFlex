@@ -101,4 +101,17 @@ describe('Resize Component', () => {
       expect(presetElement).toBeInTheDocument();
     });
   });
+
+  it('renders reset button', () => {
+    render(
+      <Provider store={store}>
+        <Resize />
+      </Provider>
+    );
+
+    const resetButtons = screen.getAllByTestId('reset-button');
+    const resetButton = resetButtons[0];
+
+    expect(resetButton).toBeInTheDocument();
+  });
 });
