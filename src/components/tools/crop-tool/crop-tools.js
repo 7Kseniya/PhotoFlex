@@ -48,6 +48,10 @@ const Crop = () => {
     }
   };
 
+  const handleReset = () => {
+    setCropAreaState(() => ({ x: 0, y: 0 }));
+  };
+
   return (
     <div style={styles.sharedContainer} data-testid="crop-component">
       <div style={styles.dimensionInputContainer}>
@@ -72,6 +76,13 @@ const Crop = () => {
           min="0"
         />
       </div>
+      <button
+        style={styles.button}
+        onClick={handleReset}
+        data-testid="reset-button"
+      >
+        Сброс
+      </button>
     </div>
   );
 };
