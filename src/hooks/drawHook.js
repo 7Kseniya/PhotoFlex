@@ -61,6 +61,8 @@ const useImageDrawer = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (showOriginal) {
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
         ctx.drawImage(
           originalImage,
           0,
