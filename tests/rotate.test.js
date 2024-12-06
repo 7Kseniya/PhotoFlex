@@ -62,9 +62,9 @@ describe('Rotate Component', () => {
 
   it('renders reset button', () => {
     render(
-        <Provider store={store}>
-          <Rotate />
-        </Provider>
+      <Provider store={store}>
+        <Rotate />
+      </Provider>
     );
 
     const resetButtons = screen.getAllByTestId('reset-button');

@@ -104,9 +104,9 @@ describe('Resize Component', () => {
 
   it('renders reset button', () => {
     render(
-        <Provider store={store}>
-          <Resize />
-        </Provider>
+      <Provider store={store}>
+        <Resize />
+      </Provider>
     );
 
     const resetButtons = screen.getAllByTestId('reset-button');

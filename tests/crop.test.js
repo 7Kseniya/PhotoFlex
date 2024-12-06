@@ -84,9 +84,9 @@ describe('Crop Component', () => {
   });
   it('renders reset button', () => {
     render(
-        <Provider store={store}>
-          <Crop />
-        </Provider>
+      <Provider store={store}>
+        <Crop />
+      </Provider>
     );
 
     const resetButton = screen.getByTestId('reset-button');
