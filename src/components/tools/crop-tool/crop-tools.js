@@ -34,13 +34,16 @@ const Crop = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const numericValue = value === '' ? '' : Number(value);
+
+    const sanitizedValue = numericValue < 0 ? 0 : numericValue;
+
     setLocalInput((prev) => ({ ...prev, [name]: value }));
 
-    const numericValue = value === '' ? '' : Number(value);
     if (!isNaN(numericValue)) {
       setCropAreaState((prev) => ({
         ...prev,
-        [name]: numericValue,
+        [name]: sanitizedValue,
       }));
     }
   };
@@ -56,6 +59,7 @@ const Crop = () => {
           style={styles.dimensionInput}
           value={localInput.x}
           onChange={handleInputChange}
+          min="0"
         />
         <p style={styles.label}>Y: </p>
         <input
@@ -65,6 +69,7 @@ const Crop = () => {
           style={styles.dimensionInput}
           value={localInput.y}
           onChange={handleInputChange}
+          min="0"
         />
       </div>
     </div>
