@@ -61,6 +61,8 @@ const useImageDrawer = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (showOriginal) {
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
         ctx.drawImage(
           originalImage,
           0,
@@ -84,11 +86,17 @@ const useImageDrawer = ({
 
         const cropX = cropArea?.x || 0;
         const cropY = cropArea?.y || 0;
-        const cropWidth = cropArea?.width || originalImage.width;
-        const cropHeight = cropArea?.height || originalImage.height;
 
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
+
+        const finalWidth = resizeDimensions.width - cropX;
+        const finalHeight = resizeDimensions.height - cropY;
+
+        canvas.width = finalWidth;
+        canvas.height = finalHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.translate(centerX, centerY);
         ctx.rotate((rotationAngle * Math.PI) / 180);
@@ -98,12 +106,12 @@ const useImageDrawer = ({
           image,
           cropX,
           cropY,
-          cropWidth,
-          cropHeight,
-          (canvas.width - resizeDimensions.width) / 2,
-          (canvas.height - resizeDimensions.height) / 2,
-          resizeDimensions.width,
-          resizeDimensions.height
+          image.width - cropX,
+          image.height - cropY,
+          0,
+          0,
+          finalWidth,
+          finalHeight
         );
         ctx.restore();
 
