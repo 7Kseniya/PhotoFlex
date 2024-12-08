@@ -21,6 +21,7 @@
   font-size: 70px;
   transform: scaleX(-1);
   color: #884f9f;
+  cursor: pointer;
 }
 
 .icon.redoRight {
@@ -29,6 +30,7 @@
   margin-right: 30px;
   font-size: 70px;
   color: #884f9f;
+  cursor: pointer;
 }
 
 .icon.flip {
@@ -37,6 +39,7 @@
   margin-right: 30px;
   font-size: 70px;
   color: #884f9f;
+  cursor: pointer;
 }
 
 .icon.save {

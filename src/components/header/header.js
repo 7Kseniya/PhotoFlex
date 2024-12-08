@@ -7,7 +7,11 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink } from 'react-router-dom';
 import { saveAs } from 'file-saver';
-import { setShowOriginal } from '../../services/actions/image-actions';
+import {
+  redo,
+  setShowOriginal,
+  undo,
+} from '../../services/actions/image-actions';
 import { useDispatch } from 'react-redux';
 
 const Header = ({ canvasRef }) => {
@@ -40,6 +44,13 @@ const Header = ({ canvasRef }) => {
       }
     }
   };
+  const handleUndo = () => {
+    dispatch(undo());
+  };
+
+  const handleRedo = () => {
+    dispatch(redo());
+  };
   return (
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
@@ -49,8 +60,14 @@ const Header = ({ canvasRef }) => {
           alt={'logo'}
         />
       </NavLink>
-      <RedoIcon className={`${styles.icon} ${styles.redo}`} />
-      <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
+      <RedoIcon
+        className={`${styles.icon} ${styles.redo}`}
+        onClick={handleUndo}
+      />
+      <RedoIcon
+        className={`${styles.icon} ${styles.redoRight}`}
+        onClick={handleRedo}
+      />
       <FlipIcon
         className={`${styles.icon} ${styles.flip}`}
         onMouseDown={() => dispatch(setShowOriginal(true))}
