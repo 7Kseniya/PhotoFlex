@@ -29,6 +29,7 @@ const initialState = {
 };
 
 const getPresentState = (state) => {
+  // eslint-disable-next-line no-unused-vars
   const { past, future, hasInitializedResize, ...present } = state;
   return present;
 };
