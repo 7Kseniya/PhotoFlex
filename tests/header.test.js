@@ -136,4 +136,38 @@ describe('Header Component', () => {
     fireEvent.click(logo);
     expect(window.location.pathname).toBe('/');
   });
+  it('handles redo icon', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const redoIcon = screen.getByTestId('redo-icon');
+
+    expect(redoIcon).toBeInTheDocument();
+
+    fireEvent.click(redoIcon);
+
+    expect(store.getActions()).toContainEqual({ type: 'REDO' });
+  });
+  it('handles undo icon', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const undoIcon = screen.getByTestId('undo-icon');
+
+    expect(undoIcon).toBeInTheDocument();
+
+    fireEvent.click(undoIcon);
+
+    expect(store.getActions()).toContainEqual({ type: 'UNDO' });
+  });
 });

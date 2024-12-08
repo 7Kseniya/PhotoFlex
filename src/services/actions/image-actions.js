@@ -61,3 +61,10 @@ export const setImage = (image) => ({
   type: 'SET_IMAGE',
   payload: image,
 });
+export const undo = () => ({
+  type: 'UNDO',
+});
+
+export const redo = () => ({
+  type: 'REDO',
+});

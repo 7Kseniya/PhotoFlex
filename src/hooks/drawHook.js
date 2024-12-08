@@ -82,7 +82,6 @@ const useImageDrawer = ({
         };
 
         ctx.save();
-        ctx.filter = filters[filter] || 'none';
 
         const cropX = cropArea?.x || 0;
         const cropY = cropArea?.y || 0;
@@ -101,6 +100,7 @@ const useImageDrawer = ({
         ctx.translate(centerX, centerY);
         ctx.rotate((rotationAngle * Math.PI) / 180);
         ctx.translate(-centerX, -centerY);
+        ctx.filter = filters[filter] || 'none';
 
         ctx.drawImage(
           image,
