@@ -75,4 +75,39 @@ describe('Modal', () => {
 
     expect(onClose).not.toHaveBeenCalled();
   });
+  test('does not call onClose when other key is pressed', () => {
+    render(
+      <Modal onClose={onClose}>
+        <div>Modal Content</div>
+      </Modal>
+    );
+
+    fireEvent.keyDown(document, { key: 'Enter', code: 'Enter' });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+  test('does not call onClose when clicking inside the modal content', () => {
+    render(
+      <Modal onClose={onClose}>
+        <div data-testid="modal-content">
+          Modal Content
+          <button data-testid="inside-button">Inside Button</button>
+        </div>
+      </Modal>
+    );
+
+    fireEvent.click(screen.getByTestId('inside-button'));
+    fireEvent.click(screen.getByTestId('modal-content'));
+
+    expect(onClose).not.toHaveBeenCalled();
+  });
+  test('calls onClose when clicking on the overlay', () => {
+    render(
+      <Modal onClose={onClose}>
+        <div>Modal Content</div>
+      </Modal>
+    );
+
+    fireEvent.click(screen.getByTestId('modal-overlay'));
+    expect(onClose).toHaveBeenCalled();
+  });
 });
