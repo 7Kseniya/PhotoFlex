@@ -1,3 +1,12 @@
+const actionsWithoutHistory = [
+  'SET_IMAGE_SRC',
+  'SET_IMAGE',
+  'SET_ORIGINAL_IMAGE',
+  'SET_ACTIVE_TOOL',
+  'SET_SHOW_ORIGINAL',
+  'SET_IS_DRAG_OVER',
+];
+
 const initialState = {
   imageSrc: null,
   imageFix: null,
@@ -16,19 +25,24 @@ const initialState = {
   image: null,
   past: [],
   future: [],
+  hasInitializedResize: false,
 };
 
 const getPresentState = (state) => {
-  const { past, future, ...present } = state;
+  const { past, future, hasInitializedResize, ...present } = state;
   return present;
 };
 
 export const imageReducer = (state = initialState, action) => {
+  const shouldAddToHistory = !actionsWithoutHistory.includes(
+    action.type
+  );
+
   switch (action.type) {
     case 'UNDO': {
+      console.log('UNDO');
       console.log(state.past.length);
       if (state.past.length === 0) {
-        console.log('+');
         return state;
       }
       const previous = state.past[state.past.length - 1];
@@ -37,10 +51,12 @@ export const imageReducer = (state = initialState, action) => {
         ...previous,
         past: newPast,
         future: [getPresentState(state), ...state.future],
+        hasInitializedResize: state.hasInitializedResize,
       };
     }
 
     case 'REDO': {
+      console.log('REDO');
       console.log(state.past.length);
       if (state.future.length === 0) {
         return state;
@@ -51,113 +67,229 @@ export const imageReducer = (state = initialState, action) => {
         ...next,
         past: [...state.past, getPresentState(state)],
         future: newFuture,
+        hasInitializedResize: state.hasInitializedResize,
       };
     }
-    case 'SET_ACTIVE_TOOL':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        activeTool: action.payload,
-      };
-    case 'SET_IMAGE_SRC':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        imageSrc: action.payload,
-      };
-    case 'SET_IS_DRAG_OVER':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        isDragOver: action.payload,
-      };
-    case 'SET_CROP_AREA':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        cropArea: action.payload,
-      };
-    case 'SET_CROP_DIMENSIONS':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        cropDimensions: action.payload,
-      };
-    case 'SET_ROTATION_ANGLE':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        rotationAngle: action.payload,
-      };
-    case 'SET_FILTER':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        filter: action.payload,
-      };
-    case 'SET_BRUSH_SIZE':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        brushSize: action.payload,
-      };
-    case 'SET_MASK':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        mask: action.payload,
-      };
-    case 'SET_APPLIED_MASK':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        appliedMask: action.payload,
-      };
-    case 'SET_DRAWING':
-      return {
-        ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        drawing: action.payload,
-      };
+
     case 'SET_RESIZE_DIMENSIONS':
+      console.log('SET_RESIZE_DIMENSIONS');
+      console.log(state.past.length);
+      if (!state.hasInitializedResize) {
+        return {
+          ...state,
+          resizeDimensions: action.payload,
+          hasInitializedResize: true,
+        };
+      } else {
+        return {
+          ...state,
+          resizeDimensions: action.payload,
+          ...(shouldAddToHistory
+            ? {
+                past: [...state.past, getPresentState(state)],
+                future: [],
+              }
+            : {}),
+          hasInitializedResize: true,
+        };
+      }
+
+    case 'SET_ACTIVE_TOOL':
+      console.log('SET_ACTIVE_TOOL');
+      console.log(state.past.length);
       return {
         ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
-        resizeDimensions: action.payload,
+        activeTool: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
+
+    case 'SET_IMAGE_SRC':
+      console.log('SET_IMAGE_SRC');
+      console.log(state.past.length);
+      return {
+        ...state,
+        imageSrc: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_IS_DRAG_OVER':
+      console.log('SET_IS_DRAG_OVER');
+      console.log(state.past.length);
+      return {
+        ...state,
+        isDragOver: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_CROP_AREA':
+      console.log('SET_CROP_AREA');
+      console.log(state.past.length);
+      return {
+        ...state,
+        cropArea: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_CROP_DIMENSIONS':
+      console.log('SET_CROP_DIMENSIONS');
+      console.log(state.past.length);
+      return {
+        ...state,
+        cropDimensions: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_ROTATION_ANGLE':
+      console.log('SET_ROTATION_ANGLE');
+      console.log(state.past.length);
+      return {
+        ...state,
+        rotationAngle: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_FILTER':
+      console.log('SET_FILTER');
+      console.log(state.past.length);
+      return {
+        ...state,
+        filter: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_BRUSH_SIZE':
+      console.log('SET_BRUSH_SIZE');
+      console.log(state.past.length);
+      return {
+        ...state,
+        brushSize: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_MASK':
+      console.log('SET_MASK');
+      console.log(state.past.length);
+      return {
+        ...state,
+        mask: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_APPLIED_MASK':
+      console.log('SET_APPLIED_MASK');
+      console.log(state.past.length);
+      return {
+        ...state,
+        appliedMask: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
+    case 'SET_DRAWING':
+      console.log('SET_DRAWING');
+      console.log(state.past.length);
+      return {
+        ...state,
+        drawing: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
+      };
+
     case 'SET_SHOW_ORIGINAL':
+      console.log('SET_SHOW_ORIGINAL');
+      console.log(state.past.length);
       return {
         ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
         showOriginal: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
+
     case 'SET_ORIGINAL_IMAGE':
+      console.log('SET_ORIGINAL_IMAGE');
+      console.log(state.past.length);
       return {
         ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
         originalImage: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
+
     case 'SET_IMAGE':
+      console.log('SET_IMAGE');
+      console.log(state.past.length);
       return {
         ...state,
-        past: [...state.past, getPresentState(state)],
-        future: [],
         image: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
+
     default:
       return state;
   }
