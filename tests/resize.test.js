@@ -114,4 +114,43 @@ describe('Resize Component', () => {
 
     expect(resetButton).toBeInTheDocument();
   });
+
+  it('handles input change for width and height', () => {
+    const widthInput = screen.getByTestId('resize-width');
+
+    mockDispatch.mockClear();
+
+    fireEvent.change(widthInput, { target: { value: '' } });
+    expect(widthInput.value).toBe('');
+    expect(mockDispatch).not.toHaveBeenCalled();
+
+    fireEvent.change(widthInput, { target: { value: '-100' } });
+    expect(widthInput.value).toBe('-100');
+    expect(mockDispatch).not.toHaveBeenCalled();
+
+    fireEvent.change(widthInput, { target: { value: '1200' } });
+    expect(widthInput.value).toBe('1200');
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 1200, height: 900 },
+    });
+
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles reset to original dimensions', () => {
+    const resetButton = screen.getByTestId('reset-button');
+    fireEvent.click(resetButton);
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 0, height: 0 },
+    });
+
+    const widthInput = screen.getByTestId('resize-width');
+    const heightInput = screen.getByTestId('resize-height');
+
+    expect(widthInput.value).toBe('0');
+    expect(heightInput.value).toBe('0');
+  });
 });

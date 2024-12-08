@@ -63,10 +63,12 @@ const Header = ({ canvasRef }) => {
       <RedoIcon
         className={`${styles.icon} ${styles.redo}`}
         onClick={handleUndo}
+        data-testid="undo-icon"
       />
       <RedoIcon
         className={`${styles.icon} ${styles.redoRight}`}
         onClick={handleRedo}
+        data-testid="redo-icon"
       />
       <FlipIcon
         className={`${styles.icon} ${styles.flip}`}

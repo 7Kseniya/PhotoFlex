@@ -227,4 +227,154 @@ describe('imageReducer', () => {
     };
     expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
+
+  it('should handle SET_CROP_DIMENSIONS action', () => {
+    const action = {
+      type: 'SET_CROP_DIMENSIONS',
+      payload: { width: 100, height: 100 },
+    };
+    const expectedState = {
+      ...initialState,
+      cropDimensions: { width: 100, height: 100 },
+      past: [getPresentState(initialState)],
+      future: [],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle UNDO action', () => {
+    const action = {
+      type: 'UNDO',
+    };
+    const expectedState = {
+      ...initialState,
+      past: [],
+      future: [],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle REDO action', () => {
+    const action = {
+      type: 'REDO',
+    };
+    const expectedState = {
+      ...initialState,
+      past: [],
+      future: [],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+  it('should handle SET_RESIZE_DIMENSIONS when hasInitializedResize is false', () => {
+    const action = {
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 2500, height: 2500 },
+    };
+    const state = {
+      ...initialState,
+      hasInitializedResize: false,
+    };
+
+    const expectedState = {
+      ...state,
+      resizeDimensions: { width: 2500, height: 2500 },
+      hasInitializedResize: true,
+    };
+
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_RESIZE_DIMENSIONS when hasInitializedResize is true and add to history', () => {
+    const action = {
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 3000, height: 3000 },
+    };
+    const state = {
+      ...initialState,
+      hasInitializedResize: true,
+      past: [],
+    };
+
+    const expectedState = {
+      ...state,
+      resizeDimensions: { width: 3000, height: 3000 },
+      past: [getPresentState(state)],
+      future: [],
+    };
+
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
+  it('should handle UNDO when past is empty', () => {
+    const action = { type: 'UNDO' };
+
+    const state = {
+      ...initialState,
+      past: [],
+    };
+
+    expect(imageReducer(state, action)).toEqual(state);
+  });
+
+  it('should handle UNDO when past contains states', () => {
+    const previousState = { ...initialState, activeTool: 1 };
+    const state = {
+      ...initialState,
+      past: [previousState],
+      future: [],
+    };
+
+    const action = { type: 'UNDO' };
+
+    const expectedState = {
+      ...previousState,
+      past: [],
+      future: [getPresentState(state)],
+    };
+
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
+  it('should handle REDO when future is empty', () => {
+    const action = { type: 'REDO' };
+
+    const state = {
+      ...initialState,
+      future: [],
+    };
+
+    expect(imageReducer(state, action)).toEqual(state);
+  });
+
+  it('should handle REDO when future contains states', () => {
+    const nextState = { ...initialState, activeTool: 2 };
+    const state = {
+      ...initialState,
+      past: [],
+      future: [nextState],
+    };
+
+    const action = { type: 'REDO' };
+
+    const expectedState = {
+      ...nextState,
+      past: [getPresentState(state)],
+      future: [],
+    };
+
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
+  it('should not add to history for actions in actionsWithoutHistory', () => {
+    const action = { type: 'SET_ACTIVE_TOOL', payload: 1 };
+
+    const state = {
+      ...initialState,
+      past: [],
+    };
+
+    const expectedState = {
+      ...state,
+      activeTool: 1,
+    };
+
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
 });
