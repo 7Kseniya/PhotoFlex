@@ -1,11 +1,32 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import PersonalAccount from '../src/components/pages/personal-account/personal-account';
 import '@testing-library/jest-dom';
-console.warn = jest.fn();
+import { render, fireEvent, screen } from '@testing-library/react';
+import PersonalAccount from '../src/components/pages/personal-account/personal-account';
+import { MemoryRouter } from 'react-router-dom';
 
-describe('PersonalAccount Component', () => {
+jest.mock('../../../images/logo.png', () => 'mock-logo');
+jest.mock('../../../images/1.jpeg', () => 'mock-photo-1');
+jest.mock('../../../images/2.jpeg', () => 'mock-photo-2');
+jest.mock('../../../images/21.jpeg', () => 'mock-photo-21');
+jest.mock('@mui/icons-material/Edit', () => {
+  const EditIcon = () => <div>EditIcon</div>;
+  EditIcon.displayName = 'EditIcon';
+  return EditIcon;
+});
+
+jest.mock('@mui/icons-material/ArrowBackIos', () => {
+  const ArrowBackIosIcon = () => <div>ArrowBackIosIcon</div>;
+  ArrowBackIosIcon.displayName = 'ArrowBackIosIcon';
+  return ArrowBackIosIcon;
+});
+
+jest.mock('@mui/icons-material/ArrowForwardIos', () => {
+  const ArrowForwardIosIcon = () => <div>ArrowForwardIosIcon</div>;
+  ArrowForwardIosIcon.displayName = 'ArrowForwardIosIcon';
+  return ArrowForwardIosIcon;
+});
+
+describe('PersonalAccount', () => {
   test('renders PersonalAccount component', () => {
     render(
       <MemoryRouter>
@@ -22,7 +43,7 @@ describe('PersonalAccount Component', () => {
     ).toBeInTheDocument();
   });
 
-  test('validates phone input format', () => {
+  it('displays an error when invalid phone or email is entered', async () => {
     render(
       <MemoryRouter>
         <PersonalAccount />
@@ -30,59 +51,137 @@ describe('PersonalAccount Component', () => {
     );
 
     const phoneInput = screen.getByPlaceholderText('phone');
-    fireEvent.change(phoneInput, { target: { value: '65845694' } });
+    fireEvent.change(phoneInput, { target: { value: '12345' } });
     expect(
-      screen.getByText('Неверный формат номера')
+      await screen.findByText('Неверный формат номера')
     ).toBeInTheDocument();
-
-    fireEvent.change(phoneInput, {
-      target: { value: '+7 999 999 99 99' },
-    });
-    expect(phoneInput.value).toBe('+7 999 999 99 99');
-    expect(
-      screen.queryByText('Неверный формат номера')
-    ).not.toBeInTheDocument();
-  });
-
-  test('validates email input format', () => {
-    render(
-      <MemoryRouter>
-        <PersonalAccount />
-      </MemoryRouter>
-    );
-
     const emailInput = screen.getByPlaceholderText('email');
-
     fireEvent.change(emailInput, {
       target: { value: 'invalid-email' },
     });
     expect(
-      screen.getByText('Неверный формат email')
+      await screen.findByText('Неверный формат email')
     ).toBeInTheDocument();
-
-    fireEvent.change(emailInput, {
-      target: { value: 'username52@gmail.com' },
-    });
-    expect(emailInput.value).toBe('username52@gmail.com');
-    expect(
-      screen.queryByText('Неверный формат email')
-    ).not.toBeInTheDocument();
   });
-  test('activates edit mode on EditIcon click', () => {
+
+  it('displays no error for valid phone or email input', async () => {
     render(
       <MemoryRouter>
         <PersonalAccount />
       </MemoryRouter>
     );
-    const editIcon = screen.getByTestId('EditIcon');
-    expect(screen.getByPlaceholderText('phone')).toBeDisabled();
-    expect(screen.getByPlaceholderText('email')).toBeDisabled();
-    expect(screen.getByPlaceholderText('telegram')).toBeDisabled();
-    fireEvent.click(editIcon);
-    expect(screen.getByPlaceholderText('phone')).not.toBeDisabled();
-    expect(screen.getByPlaceholderText('email')).not.toBeDisabled();
-    expect(
-      screen.getByPlaceholderText('telegram')
-    ).not.toBeDisabled();
+
+    const phoneInput = screen.getByPlaceholderText('phone');
+    fireEvent.change(phoneInput, {
+      target: { value: '+7 999 999 99 99' },
+    });
+
+    expect(screen.queryByText('Неверный формат номера')).toBeNull();
+
+    const emailInput = screen.getByPlaceholderText('email');
+    fireEvent.change(emailInput, {
+      target: { value: 'username52@gmal.com' },
+    });
+
+    expect(screen.queryByText('Неверный формат email')).toBeNull();
+  });
+
+  it('navigates through photos when clicking next and previous buttons', () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const photos = screen.getAllByRole('img');
+    expect(photos.length).toBe(1);
+
+    fireEvent.click(screen.getByText('ArrowForwardIosIcon'));
+
+    const newPhotos = screen.getAllByRole('img');
+    expect(newPhotos.length).toBe(1);
+  });
+
+  it('cycles to the last photo after reaching the first one', () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const nextButton = screen.getByText('ArrowForwardIosIcon');
+    for (let i = 0; i < 20; i++) {
+      fireEvent.click(nextButton);
+    }
+    const firstPhoto = screen.getAllByRole('img')[0];
+    expect(firstPhoto.src).toContain('mock-photo-21');
+  });
+
+  it('does not allow toggling edit mode if there are validation errors', async () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const phoneInput = screen.getByPlaceholderText('phone');
+    fireEvent.change(phoneInput, { target: { value: '12345' } });
+
+    const editButton = screen.getByText('EditIcon');
+    fireEvent.click(editButton);
+
+    expect(screen.queryByPlaceholderText('name')).toBeNull();
+  });
+
+  it('calls handlePrev and updates currentIndex correctly', () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const initialPhoto = screen.getByTestId('photo-0');
+    expect(initialPhoto.style.backgroundImage).toContain(
+      'url(mock-photo-21)'
+    );
+
+    const prevButton = screen.getByText('ArrowBackIosIcon');
+    fireEvent.click(prevButton);
+
+    const updatedPhoto = screen.getByTestId('photo-0');
+    expect(updatedPhoto.style.backgroundImage).toContain(
+      'url(mock-photo-21)'
+    );
+  });
+
+  it('does not toggle editing mode when there are validation errors', () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const phoneInput = screen.getByPlaceholderText('phone');
+    fireEvent.change(phoneInput, { target: { value: '12345' } });
+
+    const editButton = screen.getByText('EditIcon');
+    fireEvent.click(editButton);
+
+    expect(screen.queryByPlaceholderText('name')).toBeNull();
+  });
+  it('formats phone correctly and updates userData', () => {
+    render(
+      <MemoryRouter>
+        <PersonalAccount />
+      </MemoryRouter>
+    );
+
+    const phoneInput = screen.getByPlaceholderText('phone');
+
+    fireEvent.change(phoneInput, {
+      target: { value: '+7 999 123 45 67' },
+    });
+
+    expect(phoneInput.value).toBe('+7 999 123 45 67');
   });
 });

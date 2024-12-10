@@ -1,52 +1,82 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './remove-bg-tool.module.css';
 import {
-  setAppliedMask,
   setBrushSize,
+  setImage,
+  setImageBeforeRemove,
   setMask,
 } from '../../../services/actions/image-actions';
 import { useSelector, useDispatch } from 'react-redux';
-const RemoveBgTool = () => {
-  const { brushSize, mask } = useSelector((state) => state.image);
+import { applyMaskToImageData } from '../../../utils/image-utils';
+import AuthRequired from '../auth-required/auth-required';
+
+const RemoveBgTool = ({ canvasRef }) => {
   const dispatch = useDispatch();
+  const { imageBeforeRemove, image, brushSize, mask } = useSelector(
+    (state) => state.image
+  );
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+  useEffect(() => {
+    if (!imageBeforeRemove && image) {
+      dispatch(setImageBeforeRemove(image));
+    }
+  }, [image, imageBeforeRemove, dispatch]);
   const handleRemoveBackground = () => {
-    dispatch(setAppliedMask(mask));
+    if (!image || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const { width, height } = canvas;
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0, width, height);
+    if (mask.length === 0) return;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    applyMaskToImageData(imageData, mask);
+    ctx.putImageData(imageData, 0, 0);
+    const updatedImage = new Image();
+    updatedImage.src = canvas.toDataURL();
+    updatedImage.onload = () => {
+      dispatch(setImage(updatedImage));
+    };
+    dispatch(setMask([]));
   };
   const handleReset = () => {
-    dispatch(setMask([]));
-    dispatch(setAppliedMask([]));
+    if (imageBeforeRemove) {
+      dispatch(setImage(imageBeforeRemove));
+      dispatch(setMask([]));
+    }
   };
+  if (!isAuth) {
+    return <AuthRequired />;
+  }
   return (
-    <div
-      className={styles.container}
-      data-testid="remove-bg-component"
-    >
-      <label htmlFor="brushSize">Размер кисти: {brushSize}</label>
+    <div className={styles.container}>
+      <label className={styles.brushSizeLabel} htmlFor="brushSize">
+        Размер кисти: {brushSize}
+      </label>
       <input
         type="range"
         id="brushSize"
         min="5"
-        max="100"
+        max="200"
         value={brushSize}
         onChange={(e) =>
           dispatch(setBrushSize(Number(e.target.value)))
         }
         className={styles.rangeInput}
-        data-testid="brush-size"
         aria-label="brush size"
       />
       <div className={styles.buttonsContainer}>
         <button
           className={styles.button}
           onClick={handleRemoveBackground}
-          data-testid="remove-background-button"
+          disabled={!image}
         >
           Удалить фон
         </button>
         <button
           className={styles.button}
           onClick={handleReset}
-          data-testid="reset-button"
+          disabled={!imageBeforeRemove}
         >
           Сброс
         </button>

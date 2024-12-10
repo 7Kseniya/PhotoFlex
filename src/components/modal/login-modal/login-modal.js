@@ -15,70 +15,60 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  loginUser,
+  setLogin,
+  setPassword,
+} from '../../../services/actions/auth-actions';
+import {
+  handleMouseDownPassword,
+  handleMouseUpPassword,
+  validateLogin,
+  validatePassword,
+} from '../../../utils/auth-utils';
 
 const LoginModal = ({ onSignUpClick, onSubmited }) => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const { login, password } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
 
-  const validateLogin = (login) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phonePattern = /^\+?[1-9]\d{1,14}$/;
-    return (
-      emailPattern.test(login) ||
-      (phonePattern.test(login) && login.length > 0)
-    );
-  };
-
-  const validatePassword = (password) => {
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-    return passwordPattern.test(password);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setShowAlert(false);
     setAlert('');
 
     if (!validateLogin(login)) {
-      setAlert('please enter valid email or phone number');
+      setAlert('Please enter a valid email or phone number');
       setShowAlert(true);
       return;
     }
     if (!validatePassword(password)) {
-      setAlert('password must be at least 8 characters long');
+      setAlert('Password must be at least 8 characters long');
       setShowAlert(true);
       return;
     }
-    setAlert('login succesful');
-    setShowAlert(true);
 
-    console.log('login: ', login);
-    console.log('password: ', password);
-
-    if (onSubmited) {
+    try {
+      await dispatch(loginUser(login, password));
       onSubmited();
+      setAlert('Login successful!');
+      setShowAlert(true);
+      dispatch(setLogin(''));
+      dispatch(setPassword(''));
+    } catch (error) {
+      setAlert(error.message || 'An error occurred during login');
+      setShowAlert(true);
     }
-
-    setLogin('');
-    setPassword('');
-    setShowAlert(false);
   };
 
   return (
-    <div style={styles.mainContainer}>
+    <div style={styles.mainContainer} data-testid="login-modal">
       <DialogTitle sx={styles.modalTitle}>sign in</DialogTitle>
       <form>
         <Stack spacing={2} sx={styles.stack}>
@@ -90,7 +80,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
               required
               id="login-input"
               value={login}
-              onChange={(e) => setLogin(e.target.value)}
+              onChange={(e) => dispatch(setLogin(e.target.value))}
               label="Login"
               sx={styles.loginInputStyle}
             />
@@ -107,7 +97,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
               id="password-input"
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => dispatch(setPassword(e.target.value))}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -166,20 +156,19 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
             <span style={styles.footerText}>
               don&apos;t have an account?
             </span>
-            <Button onClick={onSignUpClick} sx={styles.btn}>
+            <Button
+              sx={styles.btn}
+              onClick={onSignUpClick}
+              data-testid="signup-link"
+            >
               sign up
             </Button>
           </Stack>
-          <Stack sx={styles.footerStack} direction="row" spacing={1}>
-            <Button
-              sx={styles.btn}
-              onClick={() => {
-                /*redirect to recover password form*/
-              }}
-            >
-              recover password
-            </Button>
-          </Stack>
+          <Stack
+            sx={styles.footerStack}
+            direction="row"
+            spacing={1}
+          ></Stack>
         </Stack>
       </form>
     </div>

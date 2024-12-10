@@ -102,6 +102,7 @@ describe('Resize Component', () => {
     });
   });
 
+
   it('renders reset button', () => {
     render(
       <Provider store={store}>
