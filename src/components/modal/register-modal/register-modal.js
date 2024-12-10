@@ -1,4 +1,3 @@
-import { styles } from './register-modal-styles';
 import React, { useState } from 'react';
 import {
   DialogTitle,
@@ -15,52 +14,45 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import {
+  handleMouseDownPassword,
+  handleMouseUpPassword,
+  validateLogin,
+  validatePassword,
+  validateUsername,
+} from '../../../utils/auth-utils';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  registerUser,
+  setLoginRegister,
+  setPasswordRegister,
+  setUsername,
+} from '../../../services/actions/auth-actions';
+import { styles } from './register-modal-styles';
 
 const RegisterModal = ({ onSignInClick, onSubmited }) => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
+  const dispatch = useDispatch();
+  const { loginRegister, passwordRegister, username } = useSelector(
+    (state) => state.auth
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-  const validateLogin = (login) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phonePattern = /^\+?[1-9]\d{1,14}$/;
-    return (
-      emailPattern.test(login) ||
-      (phonePattern.test(login) && login.length > 0)
-    );
-  };
 
-  const validatePassword = (password) => {
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-    return passwordPattern.test(password);
-  };
-  const validateUsername = (username) => {
-    const usernamePattern = /^[a-zA-Z0-9_]{5,20}$/;
-    return usernamePattern.test(username);
-  };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setShowAlert(false);
     setAlert('');
 
-    if (!validateLogin(login)) {
+    if (!validateLogin(loginRegister)) {
       setAlert('please enter valid email or phone number');
       setShowAlert(true);
       return;
     }
-    if (!validatePassword(password)) {
+    if (!validatePassword(passwordRegister)) {
       setAlert('password must be at least 8 characters long');
       setShowAlert(true);
       return;
@@ -72,25 +64,26 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
       setShowAlert(true);
       return;
     }
-    setAlert('register succesful');
-    setShowAlert(true);
-
-    console.log('login: ', login);
-    console.log('password: ', password);
-    console.log('username: ', username);
-
-    if (onSubmited) {
+    try {
+      await dispatch(
+        registerUser(loginRegister, username, passwordRegister)
+      );
       onSubmited();
+      console.log('диспатч есть');
+      setAlert('Register successful');
+      setShowAlert(true);
+      dispatch(setLoginRegister(''));
+      dispatch(setPasswordRegister(''));
+      dispatch(setUsername(''));
+      setShowAlert(false);
+    } catch (error) {
+      setAlert('Registration failed. Please try again.');
+      setShowAlert(true);
     }
-
-    setLogin('');
-    setPassword('');
-    setUsername('');
-    setShowAlert(false);
   };
 
   return (
-    <div style={styles.mainContainer}>
+    <div style={styles.mainContainer} data-testid="register-modal">
       <DialogTitle sx={styles.modalTitle}>sign up</DialogTitle>
       <form>
         <Stack spacing={2} sx={styles.stack}>
@@ -101,8 +94,10 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
             <OutlinedInput
               required
               id="login-input"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
+              value={loginRegister}
+              onChange={(e) =>
+                dispatch(setLoginRegister(e.target.value))
+              }
               label="Login"
               sx={styles.loginInputStyle}
             />
@@ -118,8 +113,10 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
               required
               id="password-input"
               type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={passwordRegister}
+              onChange={(e) =>
+                dispatch(setPasswordRegister(e.target.value))
+              }
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -153,7 +150,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
               required
               id="username-input"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => dispatch(setUsername(e.target.value))}
               label="Username"
               sx={styles.userInputStyle}
             />
@@ -161,10 +158,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
           {showAlert && (
             <Alert
               severity="warning"
-              onClose={() => {
-                console.log('Alert closed');
-                setShowAlert(false);
-              }}
+              onClose={() => setShowAlert(false)}
             >
               {alert}
             </Alert>
@@ -195,18 +189,18 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
             <span style={styles.footerText}>
               already have an account?
             </span>
-            <Button sx={styles.btn} onClick={onSignInClick}>
+            <Button
+              sx={styles.btn}
+              onClick={onSignInClick}
+              data-testid="signin-link"
+            >
               sign in
             </Button>
           </Stack>
-          <Stack
-            sx={styles.footerStack}
-            direction="row"
-            spacing={1}
-          ></Stack>
         </Stack>
       </form>
     </div>
   );
 };
+
 export default RegisterModal;

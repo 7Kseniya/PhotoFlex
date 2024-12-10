@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './modal.module.css';
-import ModalOverlay from '../modal/modal-overlay';
 import ClearIcon from '@mui/icons-material/Clear';
+import styles from './modal.module.css';
+import ModalOverlay from './modal-overlay';
+
 const modalRoot = document.getElementById('modal-root');
+
 const Modal = ({ children, onClose }) => {
   useEffect(() => {
     const handleClose = (event) => {
@@ -11,6 +13,7 @@ const Modal = ({ children, onClose }) => {
         onClose();
       }
     };
+
     document.addEventListener('keydown', handleClose);
 
     return () => {
@@ -20,8 +23,8 @@ const Modal = ({ children, onClose }) => {
 
   return ReactDOM.createPortal(
     <>
-      <ModalOverlay onClose={onClose} />
-      <div className={styles.modal}>
+      <ModalOverlay onClose={onClose} data-testid="modal-overlay" />
+      <div className={styles.modal} data-testid="clear-icon">
         <div onClick={onClose}>
           <ClearIcon className={styles.clearIcon} />
         </div>

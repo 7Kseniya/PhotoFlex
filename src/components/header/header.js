@@ -5,48 +5,71 @@ import RedoIcon from '@mui/icons-material/Redo';
 import FlipIcon from '@mui/icons-material/Flip';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 import { setShowOriginal } from '../../services/actions/image-actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useModal } from '../../hooks/use-modal';
+import AuthModal from '../modal/auth-modal';
 
 const Header = ({ canvasRef }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {
+    isModalOpen,
+    activeModal,
+    openModal,
+    closeModal,
+    toggleToLogin,
+    toggleToRegister,
+    closeModalWithTimeOut,
+  } = useModal();
   const [selectedFormat, setSelectedFormat] = useState('png');
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+
   const handleSave = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       const format = selectedFormat.toLowerCase();
       if (format === 'svg') {
         const svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
-          <foreignObject width="100%" height="100%">
-            <div xmlns="http://www.w3.org/1999/xhtml" style="width:${canvas.width}px;height:${canvas.height}px;">
-              <img src="${canvas.toDataURL('image/png')}" style="width:100%;height:100%;" alt=" "/>
-            </div>
-          </foreignObject>
-        </svg>
-      `;
+          <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+            <foreignObject width="100%" height="100%">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="width:${canvas.width}px;height:${canvas.height}px;">
+                <img src="${canvas.toDataURL('image/png')}" style="width:100%;height:100%;" alt=" "/>
+              </div>
+            </foreignObject>
+          </svg>
+        `;
         const blob = new Blob([svgContent], {
           type: 'image/svg+xml;charset=utf-8',
         });
         saveAs(blob, 'photoflex.svg');
       } else {
-        const imageData = canvas.toDataURL(`image/${format}`);
+        const imageData = canvas.toDataURL(`image/${selectedFormat}`);
         const link = document.createElement('a');
         link.href = imageData;
-        link.download = `photoflex.${format}`;
+        link.download = `photoflex.${selectedFormat}`;
         link.click();
       }
     }
   };
+
+  const handleProfileClick = () => {
+    if (isAuth) {
+      navigate('/personal-account');
+    } else {
+      openModal('login');
+    }
+  };
+
   return (
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
         <img
           src={logoImg}
           className={styles.logoContainer}
-          alt={'logo'}
+          alt="logo"
         />
       </NavLink>
       <RedoIcon className={`${styles.icon} ${styles.redo}`} />
@@ -73,15 +96,23 @@ const Header = ({ canvasRef }) => {
         <SaveIcon
           className={`${styles.icon} ${styles.save}`}
           onClick={handleSave}
-          data-testid={'save-icon'}
+          data-testid="save-icon"
         />
       </div>
-      <NavLink to={'/personal-account'}>
-        <PersonAddIcon
-          data-testid="PersonAddIcon"
-          className={`${styles.icon} ${styles.personAdd}`}
-        />
-      </NavLink>
+      <PersonAddIcon
+        onClick={handleProfileClick}
+        data-testid="PersonAddIcon"
+        className={`${styles.icon} ${styles.personAdd}`}
+      />
+      <AuthModal
+        data-testid="auth-modal"
+        isModalOpen={isModalOpen}
+        activeModal={activeModal}
+        onClose={closeModal}
+        toggleToLogin={toggleToLogin}
+        toggleToRegister={toggleToRegister}
+        closeModalWithTimeOut={closeModalWithTimeOut}
+      />
     </div>
   );
 };

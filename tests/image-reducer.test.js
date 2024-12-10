@@ -139,7 +139,7 @@ describe('imageReducer', () => {
     expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_SHOW_ORIGINALS action', () => {
+  it('should handle SET_SHOW_ORIGINAL action', () => {
     const action = {
       type: 'SET_SHOW_ORIGINAL',
       payload: true,
@@ -171,6 +171,18 @@ describe('imageReducer', () => {
     const expectedState = {
       ...initialState,
       image: { src: 'image-path' },
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle SET_IMAGE_BEFORE_REMOVE action', () => {
+    const action = {
+      type: 'SET_IMAGE_BEFORE_REMOVE',
+      payload: { src: 'image-before-remove-path' },
+    };
+    const expectedState = {
+      ...initialState,
+      imageBeforeRemove: { src: 'image-before-remove-path' },
     };
     expect(imageReducer(initialState, action)).toEqual(expectedState);
   });

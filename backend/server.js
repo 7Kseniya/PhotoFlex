@@ -1,7 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(bodyParser.json());
 
 let users = [];
@@ -11,18 +19,16 @@ function generateMockToken(username) {
 }
 
 app.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { username, login, password } = req.body;
 
-  const existingUser = users.find(
-    (user) => user.username === username
-  );
+  const existingUser = users.find((user) => user.login === login);
   if (existingUser) {
     return res
       .status(400)
       .json({ message: 'Пользователь уже существует' });
   }
 
-  users.push({ username, password });
+  users.push({ login, password });
 
   const token = generateMockToken(username);
 
@@ -30,10 +36,10 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, login, password } = req.body;
 
   const user = users.find(
-    (user) => user.username === username && user.password === password
+    (user) => user.login === login && user.password === password
   );
 
   if (!user) {
@@ -47,7 +53,7 @@ app.post('/login', (req, res) => {
   res.status(200).json({ message: 'Логин успешен', token });
 });
 
-const PORT = 3000;
+const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
 });

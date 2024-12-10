@@ -14,6 +14,7 @@ export const initialState = {
   showOriginal: false,
   originalImage: null,
   image: null,
+  imageBeforeRemove: null,
 };
 
 export const imageReducer = (state = initialState, action) => {
@@ -92,6 +93,11 @@ export const imageReducer = (state = initialState, action) => {
       return {
         ...state,
         image: action.payload,
+      };
+    case 'SET_IMAGE_BEFORE_REMOVE':
+      return {
+        ...state,
+        imageBeforeRemove: action.payload,
       };
     default:
       return state;
