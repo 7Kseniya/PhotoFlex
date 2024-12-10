@@ -48,9 +48,6 @@ describe('RegisterModal', () => {
     validatePassword.mockReturnValue(true);
     validateUsername.mockReturnValue(true);
     registerUser.mockResolvedValue({});
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -106,7 +103,7 @@ describe('RegisterModal', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('displays alert on validation failure', () => {
+  it('displays alert on validation failure (invalid login)', () => {
     validateLogin.mockReturnValue(false);
 
     render(
@@ -141,6 +138,78 @@ describe('RegisterModal', () => {
 
     expect(
       screen.getByText('please enter valid email or phone number')
+    ).toBeInTheDocument();
+  });
+
+  it('shows alert when password validation fails', () => {
+    validatePassword.mockReturnValue(false);
+
+    render(
+      <Provider store={store}>
+        <RegisterModal
+          onSignInClick={() => {}}
+          onSubmited={() => {}}
+        />
+      </Provider>
+    );
+
+    fireEvent.change(
+      screen.getByLabelText('Enter your phone number/email/login'),
+      {
+        target: { value: 'validemail@example.com' },
+      }
+    );
+    fireEvent.change(
+      screen.getByLabelText('Come up with a password'),
+      {
+        target: { value: 'short' },
+      }
+    );
+    fireEvent.change(screen.getByLabelText('Come up with username'), {
+      target: { value: 'testuser' },
+    });
+
+    fireEvent.click(screen.getByText('submit'));
+
+    expect(
+      screen.getByText('password must be at least 8 characters long')
+    ).toBeInTheDocument();
+  });
+
+  it('shows alert when username validation fails', () => {
+    validateUsername.mockReturnValue(false);
+
+    render(
+      <Provider store={store}>
+        <RegisterModal
+          onSignInClick={() => {}}
+          onSubmited={() => {}}
+        />
+      </Provider>
+    );
+
+    fireEvent.change(
+      screen.getByLabelText('Enter your phone number/email/login'),
+      {
+        target: { value: 'validemail@example.com' },
+      }
+    );
+    fireEvent.change(
+      screen.getByLabelText('Come up with a password'),
+      {
+        target: { value: 'validpassword' },
+      }
+    );
+    fireEvent.change(screen.getByLabelText('Come up with username'), {
+      target: { value: '!!invalid??' },
+    });
+
+    fireEvent.click(screen.getByText('submit'));
+
+    expect(
+      screen.getByText(
+        'username must be 5-20 characters long and can only contain letters, numbers, and underscores'
+      )
     ).toBeInTheDocument();
   });
 });

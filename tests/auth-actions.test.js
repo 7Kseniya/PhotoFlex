@@ -21,6 +21,7 @@ describe('Auth Actions', () => {
   beforeEach(() => {
     store = mockStore({});
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
   describe('Simple Action Creators', () => {
@@ -85,12 +86,28 @@ describe('Auth Actions', () => {
       expect(localStorage.getItem('authToken')).toBe('mockToken');
     });
 
-    it('dispatches REGISTER_FAILURE when registerUser fails', async () => {
+    it('dispatches REGISTER_FAILURE when registerUser fails with response error', async () => {
       const mockError = { response: { data: 'Registration error' } };
       axios.post.mockRejectedValueOnce(mockError);
 
       const expectedActions = [
         { type: 'REGISTER_FAILURE', payload: 'Registration error' },
+      ];
+
+      await store.dispatch(
+        registerUser('testLogin', 'testUsername', 'testPassword')
+      );
+
+      const actions = store.getActions();
+      expect(actions).toEqual(expectedActions);
+    });
+
+    it('dispatches REGISTER_FAILURE with default message when registerUser fails without response', async () => {
+      const mockError = new Error('Network Error');
+      axios.post.mockRejectedValueOnce(mockError);
+
+      const expectedActions = [
+        { type: 'REGISTER_FAILURE', payload: 'Ошибка соединения' },
       ];
 
       await store.dispatch(
@@ -118,12 +135,26 @@ describe('Auth Actions', () => {
       expect(localStorage.getItem('authToken')).toBe('mockToken');
     });
 
-    it('dispatches LOGIN_FAILURE when loginUser fails', async () => {
+    it('dispatches LOGIN_FAILURE when loginUser fails with response error', async () => {
       const mockError = { response: { data: 'Login error' } };
       axios.post.mockRejectedValueOnce(mockError);
 
       const expectedActions = [
         { type: 'LOGIN_FAILURE', payload: 'Login error' },
+      ];
+
+      await store.dispatch(loginUser('testLogin', 'testPassword'));
+
+      const actions = store.getActions();
+      expect(actions).toEqual(expectedActions);
+    });
+
+    it('dispatches LOGIN_FAILURE with default message when loginUser fails without response', async () => {
+      const mockError = new Error('Network Error');
+      axios.post.mockRejectedValueOnce(mockError);
+
+      const expectedActions = [
+        { type: 'LOGIN_FAILURE', payload: 'Ошибка соединения' },
       ];
 
       await store.dispatch(loginUser('testLogin', 'testPassword'));
