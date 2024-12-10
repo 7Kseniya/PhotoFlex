@@ -31,7 +31,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "stylelint": "stylelint '**/**/**.css'",
-    "stylelint:fix": "stylelint '**/*.css' --fix"
+    "stylelint:fix": "stylelint '**/**/**.css' --fix"
   },
   "eslintConfig": {
     "extends": [

@@ -15,6 +15,9 @@ const Resize = () => {
   const resizeDimensions = useSelector(
     (state) => state.image.resizeDimensions || { width: 0, height: 0 }
   );
+  const originalImage = useSelector(
+    (state) => state.image.originalImage || { width: 0, height: 0 }
+  );
 
   const [dimensions, setDimensions] = useState({
     width: resizeDimensions.width,
@@ -56,6 +59,13 @@ const Resize = () => {
       );
     }
   };
+
+  const handleReset = () => {
+    const { width, height } = originalImage;
+    setDimensions({ width, height });
+    dispatch(setResizeDimensions({ width, height }));
+  };
+
   return (
     <div
       style={styles.sharedContainer}
@@ -103,6 +113,13 @@ const Resize = () => {
           </div>
         );
       })}
+      <button
+        style={styles.button}
+        onClick={handleReset}
+        data-testid="reset-button"
+      >
+        Сброс
+      </button>
     </div>
   );
 };

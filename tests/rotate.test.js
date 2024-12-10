@@ -59,4 +59,16 @@ describe('Rotate Component', () => {
       { type: 'SET_ROTATION_ANGLE', payload: 90 },
     ]);
   });
+
+  it('renders reset button', () => {
+    render(
+      <Provider store={store}>
+        <Rotate />
+      </Provider>
+    );
+
+    const resetButtons = screen.getAllByTestId('reset-button');
+    const resetButton = resetButtons[0];
+    expect(resetButton).toBeInTheDocument();
+  });
 });

@@ -61,7 +61,15 @@ export const setImage = (image) => ({
   type: 'SET_IMAGE',
   payload: image,
 });
+
 export const setImageBeforeRemove = (image) => ({
   type: 'SET_IMAGE_BEFORE_REMOVE',
   payload: image,
+});
+export const undo = () => ({
+  type: 'UNDO',
+});
+
+export const redo = () => ({
+  type: 'REDO',
 });

@@ -7,10 +7,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
-import { setShowOriginal } from '../../services/actions/image-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../hooks/use-modal';
 import AuthModal from '../modal/auth-modal';
+import {
+  redo,
+  setShowOriginal,
+  undo,
+} from '../../services/actions/image-actions';
+
 
 const Header = ({ canvasRef }) => {
   const dispatch = useDispatch();
@@ -63,6 +68,14 @@ const Header = ({ canvasRef }) => {
     }
   };
 
+  const handleUndo = () => {
+    dispatch(undo());
+  };
+
+  const handleRedo = () => {
+    dispatch(redo());
+  };
+
   return (
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
@@ -72,8 +85,16 @@ const Header = ({ canvasRef }) => {
           alt="logo"
         />
       </NavLink>
-      <RedoIcon className={`${styles.icon} ${styles.redo}`} />
-      <RedoIcon className={`${styles.icon} ${styles.redoRight}`} />
+      <RedoIcon
+        className={`${styles.icon} ${styles.redo}`}
+        onClick={handleUndo}
+        data-testid="undo-icon"
+      />
+      <RedoIcon
+        className={`${styles.icon} ${styles.redoRight}`}
+        onClick={handleRedo}
+        data-testid="redo-icon"
+      />
       <FlipIcon
         className={`${styles.icon} ${styles.flip}`}
         onMouseDown={() => dispatch(setShowOriginal(true))}

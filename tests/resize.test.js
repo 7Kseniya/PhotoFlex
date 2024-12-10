@@ -102,6 +102,20 @@ describe('Resize Component', () => {
     });
   });
 
+
+  it('renders reset button', () => {
+    render(
+      <Provider store={store}>
+        <Resize />
+      </Provider>
+    );
+
+    const resetButtons = screen.getAllByTestId('reset-button');
+    const resetButton = resetButtons[0];
+
+    expect(resetButton).toBeInTheDocument();
+  });
+
   it('handles input change for width and height', () => {
     const widthInput = screen.getByTestId('resize-width');
 
@@ -123,5 +137,21 @@ describe('Resize Component', () => {
     });
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles reset to original dimensions', () => {
+    const resetButton = screen.getByTestId('reset-button');
+    fireEvent.click(resetButton);
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_RESIZE_DIMENSIONS',
+      payload: { width: 0, height: 0 },
+    });
+
+    const widthInput = screen.getByTestId('resize-width');
+    const heightInput = screen.getByTestId('resize-height');
+
+    expect(widthInput.value).toBe('0');
+    expect(heightInput.value).toBe('0');
   });
 });

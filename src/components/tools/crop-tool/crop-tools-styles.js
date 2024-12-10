@@ -33,6 +33,16 @@ const styles = {
     color: '#fff',
     marginRight: '8px',
   },
+  button: {
+    padding: '20px 25px',
+    fontSize: '14px',
+    backgroundColor: '#884f9f',
+    color: 'white',
+    border: 'none',
+    borderRadius: '40px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+  },
 };
 
 export default styles;
