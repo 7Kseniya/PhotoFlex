@@ -16,7 +16,6 @@ import {
   undo,
 } from '../../services/actions/image-actions';
 
-
 const Header = ({ canvasRef }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

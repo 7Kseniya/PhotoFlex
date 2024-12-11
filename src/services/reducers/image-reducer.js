@@ -295,6 +295,12 @@ export const imageReducer = (state = initialState, action) => {
       return {
         ...state,
         imageBeforeRemove: action.payload,
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
 
     default:

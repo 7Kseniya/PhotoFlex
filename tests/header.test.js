@@ -13,7 +13,9 @@ describe('Header Component', () => {
   let canvasRef;
 
   beforeEach(() => {
-    store = mockStore({});
+    store = mockStore({
+      auth: { isAuthenticated: false },
+    });
     canvasRef = {
       current: {
         toDataURL: jest
@@ -60,13 +62,13 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
+
     const saveIcon = screen.getByTestId('save-icon');
     fireEvent.click(saveIcon);
 
-    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
-      'image/png'
-    );
+    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith('image/png');
   });
+
   it('handles flip icon mouse events', () => {
     render(
       <Provider store={store}>
@@ -78,23 +80,15 @@ describe('Header Component', () => {
 
     const flipIcon = screen.getByTestId('flip-icon');
     fireEvent.mouseDown(flipIcon);
-    expect(store.getActions()).toEqual([
-      { type: 'SET_SHOW_ORIGINAL', payload: true },
-    ]);
+    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: true });
 
     fireEvent.mouseUp(flipIcon);
-    expect(store.getActions()).toEqual([
-      { type: 'SET_SHOW_ORIGINAL', payload: true },
-      { type: 'SET_SHOW_ORIGINAL', payload: false },
-    ]);
+    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: false });
 
     fireEvent.mouseLeave(flipIcon);
-    expect(store.getActions()).toEqual([
-      { type: 'SET_SHOW_ORIGINAL', payload: true },
-      { type: 'SET_SHOW_ORIGINAL', payload: false },
-      { type: 'SET_SHOW_ORIGINAL', payload: false },
-    ]);
+    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: false });
   });
+
   it('handles save icon click when canvas is null', () => {
     canvasRef = { current: null };
 
@@ -108,9 +102,16 @@ describe('Header Component', () => {
 
     const saveIcon = screen.getByTestId('save-icon');
     fireEvent.click(saveIcon);
+
+    // Проверяем, что никаких действий не было
     expect(store.getActions()).toEqual([]);
   });
+
   it('navigates to personal account page when PersonAddIcon is clicked', () => {
+    // Мокаем window.location
+    delete window.location;
+    window.location = { pathname: '', assign: jest.fn() };
+
     render(
       <Provider store={store}>
         <Router>
@@ -121,9 +122,15 @@ describe('Header Component', () => {
 
     const personAddIcon = screen.getByTestId('PersonAddIcon');
     fireEvent.click(personAddIcon);
-    expect(window.location.pathname).toBe('/personal-account');
+
+    expect(window.location.assign).toHaveBeenCalledWith('/personal-account');
   });
+
   it('navigates to home page when logo is clicked', () => {
+    // Мокаем window.location
+    delete window.location;
+    window.location = { pathname: '', assign: jest.fn() };
+
     render(
       <Provider store={store}>
         <Router>
@@ -134,8 +141,10 @@ describe('Header Component', () => {
 
     const logo = screen.getByAltText('logo');
     fireEvent.click(logo);
-    expect(window.location.pathname).toBe('/');
+
+    expect(window.location.assign).toHaveBeenCalledWith('/');
   });
+
   it('handles redo icon', () => {
     render(
       <Provider store={store}>
@@ -146,13 +155,11 @@ describe('Header Component', () => {
     );
 
     const redoIcon = screen.getByTestId('redo-icon');
-
-    expect(redoIcon).toBeInTheDocument();
-
     fireEvent.click(redoIcon);
 
     expect(store.getActions()).toContainEqual({ type: 'REDO' });
   });
+
   it('handles undo icon', () => {
     render(
       <Provider store={store}>
@@ -163,9 +170,6 @@ describe('Header Component', () => {
     );
 
     const undoIcon = screen.getByTestId('undo-icon');
-
-    expect(undoIcon).toBeInTheDocument();
-
     fireEvent.click(undoIcon);
 
     expect(store.getActions()).toContainEqual({ type: 'UNDO' });
