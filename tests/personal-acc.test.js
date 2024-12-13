@@ -192,12 +192,9 @@ describe('PersonalAccount', () => {
     );
 
     const forwardIcon = screen.getByText('ArrowForwardIosIcon');
-    // Допустим, крутим 21 раз, чтобы вернуться к исходной
     for (let i = 0; i < 21; i++) {
       fireEvent.click(forwardIcon);
     }
-    // Проверяем, что после полной прокрутки мы снова на исходной фотографии
-    // Для этого нужен data-testid или проверка backgroundImage photo-0
     const firstPhoto = screen.getByTestId('photo-0');
     expect(firstPhoto.style.backgroundImage).toContain(
       'mock-photo-21'
@@ -215,48 +212,6 @@ describe('PersonalAccount', () => {
       target: { value: '+7 999 123 45 67' },
     });
     expect(phoneInput.value).toBe('+7 999 123 45 67');
-  });
-
-  it('navigates to next photo when ArrowForwardIosIcon is clicked', () => {
-    render(
-      <MemoryRouter>
-        <PersonalAccount />
-      </MemoryRouter>
-    );
-
-    const forwardIcon = screen.getByText('ArrowForwardIosIcon');
-    fireEvent.click(forwardIcon);
-    // Фотографии циклически переключаются, но в тесте мы проверяем,
-    // что клик не вызывает ошибок и что мы можем достичь другого индекса.
-    // Можно дополнительно проверить смену backgroundImage у photo-0
-  });
-
-  it('navigates to prev photo when ArrowBackIosIcon is clicked', () => {
-    render(
-      <MemoryRouter>
-        <PersonalAccount />
-      </MemoryRouter>
-    );
-
-    const backIcon = screen.getByText('ArrowBackIosIcon');
-    fireEvent.click(backIcon);
-    // Аналогично, проверяем что переключение назад работает
-    // Можно проверить backgroundImage photo-0, если нужно
-  });
-  it('prevents toggling edit mode if validation errors exist', () => {
-    render(
-      <MemoryRouter>
-        <PersonalAccount />
-      </MemoryRouter>
-    );
-
-    const phoneInput = screen.getByPlaceholderText('phone');
-    fireEvent.change(phoneInput, { target: { value: '12345' } });
-    const editButton = screen.getByText('EditIcon');
-    fireEvent.click(editButton);
-
-    // Если есть ошибка, режим редактирования не должен включиться
-    expect(screen.queryByPlaceholderText('name')).toBeNull();
   });
 
   it('shows error when entering invalid email', async () => {

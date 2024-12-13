@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import RemoveBgTool from '../src/components/tools/remove-bg-tool/remove-bg-tool';
 import * as imageActions from '../src/services/actions/image-actions';
-import { applyMaskToImageData } from '../src/utils/image-utils';
 
 const mockStore = configureStore([]);
 const renderWithProvider = (component, initialState) => {
@@ -164,24 +163,6 @@ describe('RemoveBgTool Component', () => {
       payload: { src: 'original-image' },
     });
     expect(actions).toContainEqual({ type: 'SET_MASK', payload: [] });
-  });
-  it('should render AuthRequired if user is not authenticated', () => {
-    const initialState = {
-      image: {
-        imageBeforeRemove: null,
-        image: null,
-        brushSize: 10,
-        mask: [],
-      },
-      auth: {
-        isAuthenticated: false,
-      },
-    };
-
-    renderWithProvider(
-      <RemoveBgTool canvasRef={{ current: {} }} />,
-      initialState
-    );
   });
 
   it('should render RemoveBgTool if user is authenticated', () => {

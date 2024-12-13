@@ -528,13 +528,7 @@ describe('MainPage Mouse Events', () => {
       type: 'SET_DRAWING',
       payload: true,
     });
-    const newState = {
-      image: {
-        ...initialState.image,
-        activeTool: 1,
-      },
-      auth: { isAuthenticated: true },
-    };
+
     rerender(
       <Provider store={store}>
         <Router>

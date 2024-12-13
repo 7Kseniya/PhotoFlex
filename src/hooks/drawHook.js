@@ -29,7 +29,7 @@ const useImageDrawer = ({
     if (!image || !canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    const { width, height } = resizeDimensions;
+    const { width } = resizeDimensions;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 

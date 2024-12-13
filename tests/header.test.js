@@ -20,14 +20,7 @@ jest.mock('file-saver', () => ({
 jest.mock('../src/components/modal/auth-modal', () => {
   const React = require('react');
   // eslint-disable-next-line react/display-name
-  return ({
-    isModalOpen,
-    activeModal,
-    onClose,
-    toggleToLogin,
-    toggleToRegister,
-    closeModalWithTimeOut,
-  }) => {
+  return ({ isModalOpen, onClose }) => {
     if (!isModalOpen) {
       return null;
     }
