@@ -23,6 +23,15 @@
   cursor: pointer;
 }
 
+.icon.reset {
+  margin-top: 10px;
+  margin-left: 40px;
+  margin-right: 30px;
+  font-size: 70px;
+  color: #884f9f;
+  cursor: pointer;
+}
+
 .icon.redoRight {
   margin-top: 10px;
   margin-left: 0;

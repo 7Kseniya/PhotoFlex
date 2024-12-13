@@ -1,5 +1,5 @@
 import { styles } from './login-modal-styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DialogTitle,
   Stack,
@@ -27,6 +27,7 @@ import {
   validateLogin,
   validatePassword,
 } from '../../../utils/auth-utils';
+import axios from 'axios';
 
 const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const dispatch = useDispatch();
@@ -66,6 +67,44 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
       setShowAlert(true);
     }
   };
+
+  const handleTelegramAuth = async (user) => {
+    try {
+      console.log('Telegram Auth Data:', user);
+
+      const response = await axios.get(
+        'http://localhost:4000/telegram-auth',
+        {
+          params: {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username: user.username,
+            photo_url: user.photo_url,
+            auth_date: user.auth_date,
+            hash: user.hash,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert(`Welcome, ${user.first_name}!`);
+        localStorage.setItem('authToken', response.data.token);
+        onSubmited();
+      } else {
+        alert('Ошибка авторизации через Telegram!');
+      }
+    } catch (error) {
+      console.error('Ошибка при авторизации через Telegram:', error);
+      alert('Ошибка при авторизации через Telegram');
+    }
+  };
+
+  useEffect(() => {
+    window.TelegramLoginWidget = {
+      dataOnauth: handleTelegramAuth,
+    };
+  }, []);
 
   return (
     <div style={styles.mainContainer} data-testid="login-modal">
@@ -148,7 +187,17 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
             <Button variant="outlined" sx={styles.socialBtn}>
               <GoogleIcon />
             </Button>
-            <Button variant="outlined" sx={styles.socialBtn}>
+            <Button
+              variant="outlined"
+              sx={styles.socialBtn}
+              onClick={() => {
+                window.TelegramLoginWidget.showFrame({
+                  bot_id: '<YOUR_BOT_ID>', // Замените на ваш bot ID
+                  size: 'large',
+                  corner_radius: 10,
+                });
+              }}
+            >
               <TelegramIcon />
             </Button>
           </Stack>
@@ -164,14 +213,10 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
               sign up
             </Button>
           </Stack>
-          <Stack
-            sx={styles.footerStack}
-            direction="row"
-            spacing={1}
-          ></Stack>
         </Stack>
       </form>
     </div>
   );
 };
+
 export default LoginModal;

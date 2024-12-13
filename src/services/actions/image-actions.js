@@ -37,10 +37,6 @@ export const setMask = (mask) => ({
   payload: mask,
 });
 
-export const setAppliedMask = (appliedMask) => ({
-  type: 'SET_APPLIED_MASK',
-  payload: appliedMask,
-});
 export const setDrawing = (drawing) => ({
   type: 'SET_DRAWING',
   payload: drawing,
@@ -72,4 +68,7 @@ export const undo = () => ({
 
 export const redo = () => ({
   type: 'REDO',
+});
+export const resetState = () => ({
+  type: 'RESET_STATE',
 });

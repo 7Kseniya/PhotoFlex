@@ -4,6 +4,7 @@ export const resizeImageToCanvas = (img, maxWidth, maxHeight) => {
   let width = imgWidth;
   let height = imgHeight;
   const aspectRatio = imgWidth / imgHeight;
+
   if (imgWidth > maxWidth || imgHeight > maxHeight) {
     if (aspectRatio > 1) {
       width = maxWidth;
@@ -13,11 +14,13 @@ export const resizeImageToCanvas = (img, maxWidth, maxHeight) => {
       width = maxHeight * aspectRatio;
     }
   }
+
   return {
     width: Math.round(width),
     height: Math.round(height),
   };
 };
+
 export const applyMaskTransformation = (
   ctx,
   mask,

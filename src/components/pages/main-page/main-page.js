@@ -21,6 +21,7 @@ const MainPage = () => {
     activeTool,
     rotationAngle,
     filter,
+    cropArea,
     brushSize,
     mask,
     appliedMask,
@@ -28,13 +29,8 @@ const MainPage = () => {
     showOriginal,
     originalImage,
     image,
+    resizeDimensions,
   } = useSelector((state) => state.image);
-  const resizeDimensions = useSelector(
-    (state) => state.image.resizeDimensions || { width: 0, height: 0 }
-  );
-  const cropArea = useSelector(
-    (state) => state.cropArea || { x: 0, y: 0 }
-  );
 
   const dispatch = useDispatch();
   const canvasRef = useRef(null);

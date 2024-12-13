@@ -7,19 +7,17 @@ import BugsnagPluginReact from '@bugsnag/plugin-react';
 import { Provider } from 'react-redux';
 import store from './services/store';
 
-Bugsnag.start({
-  apiKey: process.env.REACT_APP_BUGSNAG_API_KEY,
-  plugins: [new BugsnagPluginReact()],
-});
-
-const ErrorBoundary =
-  Bugsnag.getPlugin('react').createErrorBoundary(React);
+// Bugsnag.start({
+//   apiKey: process.env.REACT_APP_BUGSNAG_API_KEY,
+//   plugins: [new BugsnagPluginReact()],
+// });
+//
+// const ErrorBoundary =
+//   Bugsnag.getPlugin('react').createErrorBoundary(React);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <ErrorBoundary>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </ErrorBoundary>
+  <Provider store={store}>
+    <App />
+  </Provider>
 );

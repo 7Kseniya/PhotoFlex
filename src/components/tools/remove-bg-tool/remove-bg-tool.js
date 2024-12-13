@@ -27,6 +27,7 @@ const RemoveBgTool = ({ canvasRef }) => {
     const ctx = canvas.getContext('2d');
     const { width, height } = canvas;
     ctx.clearRect(0, 0, width, height);
+    ctx.filter = 'none';
     ctx.drawImage(image, 0, 0, width, height);
     if (mask.length === 0) return;
     const imageData = ctx.getImageData(0, 0, width, height);

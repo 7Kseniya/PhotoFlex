@@ -10,6 +10,7 @@ const useImageDrawer = ({
   resizeDimensions,
   rotationAngle,
   mask,
+  appliedMask,
 }) => {
   const applyFilters = (ctx, filter) => {
     const filters = {
@@ -23,41 +24,19 @@ const useImageDrawer = ({
     };
     ctx.filter = filters[filter] || 'none';
   };
-  const drawBaseImage = (
-    ctx,
-    image,
-    width,
-    height,
-    cropArea,
-    canvas,
-    rotationAngle
-  ) => {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate((rotationAngle * Math.PI) / 180);
-    ctx.translate(-centerX, -centerY);
-    ctx.drawImage(
-      image,
-      cropArea?.x || 0,
-      cropArea?.y || 0,
-      cropArea?.width || image.width,
-      cropArea?.height || image.height,
-      (canvas.width - width) / 2,
-      (canvas.height - height) / 2,
-      width,
-      height
-    );
-    ctx.restore();
-  };
+
   const drawImage = useCallback(() => {
     if (!image || !canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     const { width, height } = resizeDimensions;
-    if (showOriginal) {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (showOriginal && originalImage) {
+      // Отображаем оригинальное изображение без трансформаций и фильтров
+      canvas.width = originalImage.width;
+      canvas.height = originalImage.height;
       ctx.drawImage(
         originalImage,
         0,
@@ -66,16 +45,38 @@ const useImageDrawer = ({
         originalImage.height
       );
     } else {
+      // Рассчитываем итоговые размеры холста с учётом cropArea и resizeDimensions
+      const cropX = cropArea?.x || 0;
+      const cropY = cropArea?.y || 0;
+      const finalWidth = resizeDimensions.width - cropX;
+      const finalHeight = resizeDimensions.height - cropY;
+
+      canvas.width = finalWidth;
+      canvas.height = finalHeight;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
       applyFilters(ctx, filter);
-      drawBaseImage(
-        ctx,
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate((rotationAngle * Math.PI) / 180);
+      ctx.translate(-centerX, -centerY);
+
+      ctx.drawImage(
         image,
-        width,
-        height,
-        cropArea,
-        canvas,
-        rotationAngle
+        cropX,
+        cropY,
+        image.width - cropX,
+        image.height - cropY,
+        0,
+        0,
+        finalWidth,
+        finalHeight
       );
+      ctx.restore();
+
       if (mask.length > 0) {
         const scale = width / image.width;
         applyMaskTransformation(
@@ -97,6 +98,7 @@ const useImageDrawer = ({
     resizeDimensions,
     rotationAngle,
     mask,
+    appliedMask,
   ]);
 
   useEffect(() => {

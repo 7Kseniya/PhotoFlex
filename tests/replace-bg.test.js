@@ -23,9 +23,13 @@ const renderWithProvider = (component, initialState) => {
 
 describe('ReplaceBgTool Component', () => {
   let store;
+  let canvasRefMock;
 
   beforeEach(() => {
     global.URL.createObjectURL = jest.fn(() => 'mock-url');
+    canvasRefMock = { current: document.createElement('canvas') };
+    canvasRefMock.current.width = 200;
+    canvasRefMock.current.height = 200;
     const initialState = {
       image: {
         imageBeforeRemove: null,
@@ -38,7 +42,7 @@ describe('ReplaceBgTool Component', () => {
       },
     };
     const renderResult = renderWithProvider(
-      <ReplaceBgTool canvasRef={{ current: {} }} />,
+      <ReplaceBgTool canvasRef={canvasRefMock} />,
       initialState
     );
     store = renderResult.store;
@@ -485,5 +489,22 @@ describe('ReplaceBgTool Component', () => {
       { type: 'SET_IMAGE', payload: null },
       { type: 'SET_MASK', payload: [] },
     ]);
+  });
+  it('does not enable replace button if the uploaded file is not an image', async () => {
+    const nonImageFile = new File(['dummy content'], 'test.txt', {
+      type: 'text/plain',
+    });
+    const fileInput = screen.getByTestId('fileUploadInput1');
+    fireEvent.change(fileInput, {
+      target: { files: [nonImageFile] },
+    });
+
+    await waitFor(() => {
+      const replaceButton = screen.getByTestId('replaceButton');
+      expect(replaceButton).toBeDisabled();
+      expect(
+        screen.queryByTestId('previewImage')
+      ).not.toBeInTheDocument();
+    });
   });
 });

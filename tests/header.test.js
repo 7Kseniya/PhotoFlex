@@ -1,12 +1,45 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import Header from '../src/components/header/header';
+import { saveAs } from 'file-saver';
 
 const mockStore = configureStore([]);
+jest.mock('file-saver', () => ({
+  saveAs: jest.fn(),
+}));
+
+jest.mock('../src/components/modal/auth-modal', () => {
+  const React = require('react');
+  // eslint-disable-next-line react/display-name
+  return ({
+    isModalOpen,
+    activeModal,
+    onClose,
+    toggleToLogin,
+    toggleToRegister,
+    closeModalWithTimeOut,
+  }) => {
+    if (!isModalOpen) {
+      return null;
+    }
+    return (
+      <div data-testid="auth-modal">
+        <button data-testid="close-modal" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    );
+  };
+});
 
 describe('Header Component', () => {
   let store;
@@ -35,11 +68,157 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
-
     expect(screen.getByTestId('header')).toBeInTheDocument();
   });
 
   it('handles format selection change', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    fireEvent.change(selectElement, { target: { value: 'jpeg' } });
+    expect(selectElement.value).toBe('jpeg');
+  });
+
+  it('handles save icon click', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
+      'image/png'
+    );
+  });
+
+  it('handles flip icon mouse events', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: true,
+    });
+    fireEvent.mouseUp(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+    fireEvent.mouseLeave(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+  });
+
+  it('handles save icon click when canvas is null', () => {
+    canvasRef = { current: null };
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+    expect(store.getActions()).toEqual([]);
+  });
+
+  it('navigates to home page when logo is clicked', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const logo = screen.getByAltText('logo');
+    fireEvent.click(logo);
+    expect(window.location.pathname).toBe('/');
+  });
+
+  it('renders the correct initial format in the dropdown', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    expect(selectElement.value).toBe('png');
+  });
+
+  it('dispatches setShowOriginal actions correctly when FlipIcon is interacted with', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: true,
+    });
+
+    fireEvent.mouseUp(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+
+    fireEvent.mouseLeave(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+  });
+
+  it('handles redo icon', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const redoIcon = screen.getByTestId('redo-icon');
+    fireEvent.click(redoIcon);
+    expect(store.getActions()).toContainEqual({ type: 'REDO' });
+  });
+
+  it('handles undo icon', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const undoIcon = screen.getByTestId('undo-icon');
+    fireEvent.click(undoIcon);
+    expect(store.getActions()).toContainEqual({ type: 'UNDO' });
+  });
+  it('changes the selected format in the dropdown', () => {
     render(
       <Provider store={store}>
         <Router>
@@ -53,8 +232,7 @@ describe('Header Component', () => {
 
     expect(selectElement.value).toBe('jpeg');
   });
-
-  it('handles save icon click', () => {
+  it('dispatches resetState action when reset icon is clicked', () => {
     render(
       <Provider store={store}>
         <Router>
@@ -62,14 +240,17 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
-
-    const saveIcon = screen.getByTestId('save-icon');
-    fireEvent.click(saveIcon);
-
-    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith('image/png');
+    const resetIcon = screen.getByTestId('reset-icon');
+    fireEvent.click(resetIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'RESET_STATE',
+    });
   });
 
-  it('handles flip icon mouse events', () => {
+  it('navigates to personal account page when profile icon is clicked and user is authenticated', () => {
+    store = mockStore({
+      auth: { isAuthenticated: true },
+    });
     render(
       <Provider store={store}>
         <Router>
@@ -77,21 +258,12 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
-
-    const flipIcon = screen.getByTestId('flip-icon');
-    fireEvent.mouseDown(flipIcon);
-    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: true });
-
-    fireEvent.mouseUp(flipIcon);
-    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: false });
-
-    fireEvent.mouseLeave(flipIcon);
-    expect(store.getActions()).toContainEqual({ type: 'SET_SHOW_ORIGINAL', payload: false });
+    const profileIcon = screen.getByTestId('PersonAddIcon');
+    fireEvent.click(profileIcon);
+    expect(window.location.pathname).toBe('/personal-account');
   });
 
-  it('handles save icon click when canvas is null', () => {
-    canvasRef = { current: null };
-
+  it('dispatches undo action when undo icon is clicked', () => {
     render(
       <Provider store={store}>
         <Router>
@@ -99,19 +271,12 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
-
-    const saveIcon = screen.getByTestId('save-icon');
-    fireEvent.click(saveIcon);
-
-    // Проверяем, что никаких действий не было
-    expect(store.getActions()).toEqual([]);
+    const undoIcon = screen.getByTestId('undo-icon');
+    fireEvent.click(undoIcon);
+    expect(store.getActions()).toContainEqual({ type: 'UNDO' });
   });
 
-  it('navigates to personal account page when PersonAddIcon is clicked', () => {
-    // Мокаем window.location
-    delete window.location;
-    window.location = { pathname: '', assign: jest.fn() };
-
+  it('dispatches redo action when redo icon is clicked', () => {
     render(
       <Provider store={store}>
         <Router>
@@ -119,48 +284,57 @@ describe('Header Component', () => {
         </Router>
       </Provider>
     );
-
-    const personAddIcon = screen.getByTestId('PersonAddIcon');
-    fireEvent.click(personAddIcon);
-
-    expect(window.location.assign).toHaveBeenCalledWith('/personal-account');
-  });
-
-  it('navigates to home page when logo is clicked', () => {
-    // Мокаем window.location
-    delete window.location;
-    window.location = { pathname: '', assign: jest.fn() };
-
-    render(
-      <Provider store={store}>
-        <Router>
-          <Header canvasRef={canvasRef} />
-        </Router>
-      </Provider>
-    );
-
-    const logo = screen.getByAltText('logo');
-    fireEvent.click(logo);
-
-    expect(window.location.assign).toHaveBeenCalledWith('/');
-  });
-
-  it('handles redo icon', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <Header canvasRef={canvasRef} />
-        </Router>
-      </Provider>
-    );
-
     const redoIcon = screen.getByTestId('redo-icon');
     fireEvent.click(redoIcon);
-
     expect(store.getActions()).toContainEqual({ type: 'REDO' });
   });
 
-  it('handles undo icon', () => {
+  it('dispatches setShowOriginal action when flip icon is interacted with', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: true,
+    });
+    fireEvent.mouseUp(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+    fireEvent.mouseLeave(flipIcon);
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_SHOW_ORIGINAL',
+      payload: false,
+    });
+  });
+
+  it('saves file as JPEG when selected', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    fireEvent.change(selectElement, { target: { value: 'jpeg' } });
+
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+
+    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
+      'image/jpeg'
+    );
+  });
+
+  it('calls undo multiple times', () => {
     render(
       <Provider store={store}>
         <Router>
@@ -171,7 +345,126 @@ describe('Header Component', () => {
 
     const undoIcon = screen.getByTestId('undo-icon');
     fireEvent.click(undoIcon);
+    fireEvent.click(undoIcon);
+    fireEvent.click(undoIcon);
 
-    expect(store.getActions()).toContainEqual({ type: 'UNDO' });
+    const actions = store
+      .getActions()
+      .filter((a) => a.type === 'UNDO');
+    expect(actions.length).toBe(3);
+  });
+
+  it('calls redo multiple times', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const redoIcon = screen.getByTestId('redo-icon');
+    fireEvent.click(redoIcon);
+    fireEvent.click(redoIcon);
+
+    const actions = store
+      .getActions()
+      .filter((a) => a.type === 'REDO');
+    expect(actions.length).toBe(2);
+  });
+  it('does not dispatch SET_SHOW_ORIGINAL again if mouse stays pressed down and leaves the FlipIcon', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+
+    const flipIcon = screen.getByTestId('flip-icon');
+    fireEvent.mouseDown(flipIcon);
+    fireEvent.mouseUp(flipIcon);
+    fireEvent.mouseLeave(flipIcon);
+
+    const actions = store
+      .getActions()
+      .filter((a) => a.type === 'SET_SHOW_ORIGINAL');
+    expect(actions.length).toBe(3);
+    expect(actions[0].payload).toBe(true);
+    expect(actions[1].payload).toBe(false);
+    expect(actions[2].payload).toBe(false);
+  });
+  it('saves file as JPG correctly', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    fireEvent.change(selectElement, { target: { value: 'jpg' } });
+
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+
+    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
+      'image/jpg'
+    );
+  });
+
+  it('saves file as WEBP correctly', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    fireEvent.change(selectElement, { target: { value: 'webp' } });
+
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+
+    expect(canvasRef.current.toDataURL).toHaveBeenCalledWith(
+      'image/webp'
+    );
+  });
+  it('saves file as SVG correctly', async () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const selectElement = screen.getByRole('combobox');
+    fireEvent.change(selectElement, { target: { value: 'svg' } });
+
+    const saveIcon = screen.getByTestId('save-icon');
+    fireEvent.click(saveIcon);
+
+    await waitFor(() => {
+      expect(saveAs).toHaveBeenCalledTimes(1);
+      const [[blob, filename]] = saveAs.mock.calls;
+      expect(filename).toBe('photoflex.svg');
+      expect(blob.type).toBe('image/svg+xml;charset=utf-8');
+    });
+  });
+  it('opens AuthModal if user is not authenticated and profile icon is clicked', () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Header canvasRef={canvasRef} />
+        </Router>
+      </Provider>
+    );
+    const profileIcon = screen.getByTestId('PersonAddIcon');
+    fireEvent.click(profileIcon);
+
+    // Так как AuthModal замокан, он рендерит простой div.
+    const authModal = screen.getByTestId('auth-modal');
+    expect(authModal).toBeInTheDocument();
   });
 });

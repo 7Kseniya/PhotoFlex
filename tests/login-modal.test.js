@@ -1,6 +1,11 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, fireEvent, screen } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -169,5 +174,61 @@ describe('LoginModal', () => {
     expect(
       screen.getByText('Password must be at least 8 characters long')
     ).toBeInTheDocument();
+  });
+
+  it('dispatches setLogin and setPassword actions on input change', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const loginInput = screen.getByLabelText(
+      'Enter your phone number/email/login'
+    );
+    const passwordInput = screen.getByLabelText(
+      'Enter your password'
+    );
+
+    fireEvent.change(loginInput, {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(passwordInput, {
+      target: { value: 'password123' },
+    });
+
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_LOGIN',
+      payload: 'test@example.com',
+    });
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_PASSWORD',
+      payload: 'password123',
+    });
+  });
+
+  it('calls onSignUpClick when sign up link is clicked', () => {
+    const onSignUpClick = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={onSignUpClick}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const signUpLink = screen.getByTestId('signup-link');
+    fireEvent.click(signUpLink);
+
+    expect(onSignUpClick).toHaveBeenCalled();
   });
 });

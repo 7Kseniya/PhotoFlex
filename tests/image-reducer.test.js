@@ -377,4 +377,96 @@ describe('imageReducer', () => {
 
     expect(imageReducer(state, action)).toEqual(expectedState);
   });
+  it('should keep hasInitializedResize flag after REDO', () => {
+    const nextState = { ...initialState, rotationAngle: 30 };
+    const state = {
+      ...initialState,
+      hasInitializedResize: true,
+      past: [],
+      future: [nextState],
+    };
+
+    const action = { type: 'REDO' };
+    const expectedState = {
+      ...nextState,
+      past: [getPresentState(state)],
+      future: [],
+      hasInitializedResize: true,
+    };
+    expect(imageReducer(state, action)).toEqual(expectedState);
+  });
+
+  it('should return current state for an unknown action type', () => {
+    const action = { type: 'UNKNOWN_ACTION', payload: 123 };
+    expect(imageReducer(initialState, action)).toEqual(initialState);
+  });
+
+  it('should handle SET_IMAGE_BEFORE_REMOVE without changing history if in actionsWithoutHistory (not in list, so adds history)', () => {
+    const previousState = {
+      ...initialState,
+      brushSize: 20,
+      past: [],
+    };
+
+    const testImage = { src: 'before-remove-image-2' };
+    const action = {
+      type: 'SET_IMAGE_BEFORE_REMOVE',
+      payload: testImage,
+    };
+
+    const expectedState = {
+      ...previousState,
+      imageBeforeRemove: testImage,
+      past: [getPresentState(previousState)],
+      future: [],
+    };
+
+    expect(imageReducer(previousState, action)).toEqual(
+      expectedState
+    );
+  });
+  it('should not add to history for actions in actionsWithoutHistory (e.g. SET_IS_DRAG_OVER)', () => {
+    const action = { type: 'SET_IS_DRAG_OVER', payload: true };
+    const expectedState = {
+      ...initialState,
+      isDragOver: true,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should not add to history for actions in actionsWithoutHistory (e.g. SET_IMAGE)', () => {
+    const testImage = { src: 'test-image' };
+    const action = { type: 'SET_IMAGE', payload: testImage };
+    const expectedState = {
+      ...initialState,
+      image: testImage,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+  it('should handle SET_IMAGE_BEFORE_REMOVE action', () => {
+    const testImage = { src: 'before-remove-image' };
+    const action = {
+      type: 'SET_IMAGE_BEFORE_REMOVE',
+      payload: testImage,
+    };
+    const expectedState = {
+      ...initialState,
+      imageBeforeRemove: testImage,
+      past: [getPresentState(initialState)],
+      future: [],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle RESET_STATE action', () => {
+    const modifiedState = {
+      ...initialState,
+      activeTool: 1,
+      mask: [{ x: 10, y: 10 }],
+      past: [{ ...initialState, activeTool: 0 }],
+      future: [{ ...initialState, activeTool: 2 }],
+    };
+    const action = { type: 'RESET_STATE' };
+    expect(imageReducer(modifiedState, action)).toEqual(initialState);
+  });
 });

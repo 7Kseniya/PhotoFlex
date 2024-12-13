@@ -8,34 +8,40 @@ import {
 } from '../../../services/actions/image-actions';
 import { applyMaskToImageData } from '../../../utils/image-utils';
 import AuthRequired from '../auth-required/auth-required';
+
 const ReplaceBgTool = ({ canvasRef }) => {
   const dispatch = useDispatch();
   const { imageBeforeRemove, image, brushSize, mask } = useSelector(
     (state) => state.image
   );
-  const [newImage, setNewImage] = useState(null);
   const isAuth = useSelector((state) => state.auth.isAuthenticated);
+  const [newImage, setNewImage] = useState(null);
 
   const handleReplaceBackground = () => {
-    if (!canvasRef.current || !image) return;
+    if (!canvasRef.current || !image) return; // Если нет canvas или изображения — прерываем
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
     ctx.clearRect(0, 0, width, height);
+    ctx.filter = 'none';
     ctx.drawImage(image, 0, 0, width, height);
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     applyMaskToImageData(imageData, mask);
     ctx.putImageData(imageData, 0, 0);
+
     if (newImage) {
+      // Если есть новый фон
       const img = new Image();
       img.src = URL.createObjectURL(newImage);
       img.onload = () => {
+        ctx.filter = 'none';
         ctx.drawImage(img, 0, 0, width, height);
         const finalImage = ctx.getImageData(0, 0, width, height);
         const finalData = finalImage.data;
 
+        // Накладываем маску обратно на итоговое изображение
         for (let i = 0; i < data.length; i += 4) {
           if (data[i + 3] > 0) {
             finalData[i] = data[i];
@@ -52,15 +58,28 @@ const ReplaceBgTool = ({ canvasRef }) => {
           dispatch(setImage(finalImageElement));
         };
       };
+    } else {
+      // Если новый фон не загружен, просто используем текущее изображение с применённой маской
+      const finalImageUrl = canvas.toDataURL();
+      const finalImageElement = new Image();
+      finalImageElement.src = finalImageUrl;
+      finalImageElement.onload = () => {
+        dispatch(setImage(finalImageElement));
+      };
     }
+
     dispatch(setMask([]));
   };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.type.startsWith('image/')) {
       setNewImage(file);
+    } else {
+      setNewImage(null);
     }
   };
+
   const handleReset = () => {
     if (imageBeforeRemove) {
       dispatch(setImage(imageBeforeRemove));
@@ -111,7 +130,7 @@ const ReplaceBgTool = ({ canvasRef }) => {
           className={styles.button}
           onClick={handleReplaceBackground}
           data-testid="replaceButton"
-          disabled={!newImage}
+          disabled={!newImage && !image}
         >
           Заменить фон
         </button>

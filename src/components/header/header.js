@@ -5,6 +5,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import FlipIcon from '@mui/icons-material/Flip';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +15,7 @@ import {
   redo,
   setShowOriginal,
   undo,
+  resetState,
 } from '../../services/actions/image-actions';
 
 const Header = ({ canvasRef }) => {
@@ -75,6 +77,10 @@ const Header = ({ canvasRef }) => {
     dispatch(redo());
   };
 
+  const handleReset = () => {
+    dispatch(resetState());
+  };
+
   return (
     <div className={styles.mainContainer} data-testid="header">
       <NavLink to={'/'}>
@@ -100,6 +106,11 @@ const Header = ({ canvasRef }) => {
         onMouseUp={() => dispatch(setShowOriginal(false))}
         onMouseLeave={() => dispatch(setShowOriginal(false))}
         data-testid="flip-icon"
+      />
+      <DeleteIcon
+        className={`${styles.icon} ${styles.reset}`}
+        onClick={handleReset}
+        data-testid="reset-icon"
       />
       <div className={styles.saveContainer}>
         <select

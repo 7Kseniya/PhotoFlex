@@ -30,7 +30,6 @@ const initialState = {
 };
 
 const getPresentState = (state) => {
-  // eslint-disable-next-line no-unused-vars
   const { past, future, hasInitializedResize, ...present } = state;
   return present;
 };
@@ -42,8 +41,6 @@ export const imageReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'UNDO': {
-      console.log('UNDO');
-      console.log(state.past.length);
       if (state.past.length === 0) {
         return state;
       }
@@ -58,8 +55,6 @@ export const imageReducer = (state = initialState, action) => {
     }
 
     case 'REDO': {
-      console.log('REDO');
-      console.log(state.past.length);
       if (state.future.length === 0) {
         return state;
       }
@@ -74,8 +69,6 @@ export const imageReducer = (state = initialState, action) => {
     }
 
     case 'SET_RESIZE_DIMENSIONS':
-      console.log('SET_RESIZE_DIMENSIONS');
-      console.log(state.past.length);
       if (!state.hasInitializedResize) {
         return {
           ...state,
@@ -97,8 +90,6 @@ export const imageReducer = (state = initialState, action) => {
       }
 
     case 'SET_ACTIVE_TOOL':
-      console.log('SET_ACTIVE_TOOL');
-      console.log(state.past.length);
       return {
         ...state,
         activeTool: action.payload,
@@ -111,8 +102,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_IMAGE_SRC':
-      console.log('SET_IMAGE_SRC');
-      console.log(state.past.length);
       return {
         ...state,
         imageSrc: action.payload,
@@ -125,8 +114,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_IS_DRAG_OVER':
-      console.log('SET_IS_DRAG_OVER');
-      console.log(state.past.length);
       return {
         ...state,
         isDragOver: action.payload,
@@ -139,8 +126,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_CROP_AREA':
-      console.log('SET_CROP_AREA');
-      console.log(state.past.length);
       return {
         ...state,
         cropArea: action.payload,
@@ -153,8 +138,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_CROP_DIMENSIONS':
-      console.log('SET_CROP_DIMENSIONS');
-      console.log(state.past.length);
       return {
         ...state,
         cropDimensions: action.payload,
@@ -167,8 +150,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_ROTATION_ANGLE':
-      console.log('SET_ROTATION_ANGLE');
-      console.log(state.past.length);
       return {
         ...state,
         rotationAngle: action.payload,
@@ -181,8 +162,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_FILTER':
-      console.log('SET_FILTER');
-      console.log(state.past.length);
       return {
         ...state,
         filter: action.payload,
@@ -195,8 +174,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_BRUSH_SIZE':
-      console.log('SET_BRUSH_SIZE');
-      console.log(state.past.length);
       return {
         ...state,
         brushSize: action.payload,
@@ -209,8 +186,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_MASK':
-      console.log('SET_MASK');
-      console.log(state.past.length);
       return {
         ...state,
         mask: action.payload,
@@ -223,8 +198,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_APPLIED_MASK':
-      console.log('SET_APPLIED_MASK');
-      console.log(state.past.length);
       return {
         ...state,
         appliedMask: action.payload,
@@ -237,8 +210,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_DRAWING':
-      console.log('SET_DRAWING');
-      console.log(state.past.length);
       return {
         ...state,
         drawing: action.payload,
@@ -251,8 +222,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_SHOW_ORIGINAL':
-      console.log('SET_SHOW_ORIGINAL');
-      console.log(state.past.length);
       return {
         ...state,
         showOriginal: action.payload,
@@ -265,8 +234,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_ORIGINAL_IMAGE':
-      console.log('SET_ORIGINAL_IMAGE');
-      console.log(state.past.length);
       return {
         ...state,
         originalImage: action.payload,
@@ -279,8 +246,6 @@ export const imageReducer = (state = initialState, action) => {
       };
 
     case 'SET_IMAGE':
-      console.log('SET_IMAGE');
-      console.log(state.past.length);
       return {
         ...state,
         image: action.payload,
@@ -291,6 +256,7 @@ export const imageReducer = (state = initialState, action) => {
             }
           : {}),
       };
+
     case 'SET_IMAGE_BEFORE_REMOVE':
       return {
         ...state,
@@ -302,7 +268,11 @@ export const imageReducer = (state = initialState, action) => {
             }
           : {}),
       };
-
+    case 'RESET_STATE': {
+      return {
+        ...initialState,
+      };
+    }
     default:
       return state;
   }

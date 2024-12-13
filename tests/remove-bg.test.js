@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import RemoveBgTool from '../src/components/tools/remove-bg-tool/remove-bg-tool';
 import * as imageActions from '../src/services/actions/image-actions';
+import { applyMaskToImageData } from '../src/utils/image-utils';
 
 const mockStore = configureStore([]);
 const renderWithProvider = (component, initialState) => {
