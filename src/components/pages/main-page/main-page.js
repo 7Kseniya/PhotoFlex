@@ -30,6 +30,7 @@ const MainPage = () => {
     originalImage,
     image,
     resizeDimensions,
+    tune,
   } = useSelector((state) => state.image);
 
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ const MainPage = () => {
     mask,
     appliedMask,
     brushSize,
+    tuneSettings: tune,
   });
 
   const handleMouseDown = (e) => {

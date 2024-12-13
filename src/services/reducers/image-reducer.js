@@ -27,6 +27,12 @@ const initialState = {
   past: [],
   future: [],
   hasInitializedResize: false,
+  tune: {
+    brightness: 50,
+    contrast: 50,
+    saturation: 50,
+    sharpness: 50,
+  },
 };
 
 const getPresentState = (state) => {
@@ -272,6 +278,15 @@ export const imageReducer = (state = initialState, action) => {
     case 'RESET_STATE': {
       return {
         ...initialState,
+      };
+    }
+    case 'SET_TUNES': {
+      return {
+        ...state,
+        tune: {
+          ...state.tune,
+          ...action.payload,
+        },
       };
     }
     default:

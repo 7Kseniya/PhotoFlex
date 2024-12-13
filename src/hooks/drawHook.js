@@ -11,6 +11,7 @@ const useImageDrawer = ({
   rotationAngle,
   mask,
   appliedMask,
+  tuneSettings,
 }) => {
   const applyFilters = (ctx, filter) => {
     const filters = {
@@ -23,6 +24,15 @@ const useImageDrawer = ({
       pink: 'hue-rotate(300deg)',
     };
     ctx.filter = filters[filter] || 'none';
+  };
+  const applyTuneSettings = (ctx, tuneSettings) => {
+    const tunes = {
+      brightness: tuneSettings.brightness,
+      contrast: tuneSettings.contrast,
+      saturation: tuneSettings.saturation,
+      sharpness: tuneSettings.sharpness,
+    };
+    ctx.tuneSettings = tunes[tuneSettings] || 'none';
   };
 
   const drawImage = useCallback(() => {
@@ -58,6 +68,7 @@ const useImageDrawer = ({
       const centerY = canvas.height / 2;
 
       applyFilters(ctx, filter);
+      applyTuneSettings(ctx, tuneSettings);
 
       ctx.save();
       ctx.translate(centerX, centerY);

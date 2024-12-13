@@ -72,3 +72,7 @@ export const redo = () => ({
 export const resetState = () => ({
   type: 'RESET_STATE',
 });
+export const setTunes = () => ({
+  type: 'SET_TUNES',
+  // payload: tuneSettings,
+});
