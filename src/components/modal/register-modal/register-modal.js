@@ -84,7 +84,9 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
 
   return (
     <div style={styles.mainContainer} data-testid="register-modal">
-      <DialogTitle sx={styles.modalTitle}>sign up</DialogTitle>
+      <DialogTitle data-testid="sign-up-title" sx={styles.modalTitle}>
+        sign up
+      </DialogTitle>
       <form>
         <Stack spacing={2} sx={styles.stack}>
           <FormControl variant="outlined">
@@ -92,6 +94,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
               Enter your phone number/email/login
             </InputLabel>
             <OutlinedInput
+              data-testid="login-input"
               required
               id="login-input"
               value={loginRegister}
@@ -110,6 +113,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
               Come up with a password
             </InputLabel>
             <OutlinedInput
+              data-testid="password-input"
               required
               id="password-input"
               type={showPassword ? 'text' : 'password'}
@@ -148,6 +152,7 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
             </InputLabel>
             <OutlinedInput
               required
+              data-testid="username-input"
               id="username-input"
               value={username}
               onChange={(e) => dispatch(setUsername(e.target.value))}
@@ -178,10 +183,18 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
             sx={styles.footerStack}
             marginBottom="5px"
           >
-            <Button variant="outlined" sx={styles.socialBtn}>
+            <Button
+              data-testid="social-btn-google"
+              variant="outlined"
+              sx={styles.socialBtn}
+            >
               <GoogleIcon />
             </Button>
-            <Button variant="outlined" sx={styles.socialBtn}>
+            <Button
+              data-testid="social-btn-telegram"
+              variant="outlined"
+              sx={styles.socialBtn}
+            >
               <TelegramIcon />
             </Button>
           </Stack>

@@ -50,7 +50,10 @@ const RemoveBgTool = ({ canvasRef }) => {
     return <AuthRequired />;
   }
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      data-testid="remove-bg-component"
+    >
       <label className={styles.brushSizeLabel} htmlFor="brushSize">
         Размер кисти: {brushSize}
       </label>

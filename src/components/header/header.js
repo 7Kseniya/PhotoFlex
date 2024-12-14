@@ -88,6 +88,7 @@ const Header = ({ canvasRef }) => {
           src={logoImg}
           className={styles.logoContainer}
           alt="logo"
+          data-testid="logo"
         />
       </NavLink>
       <RedoIcon

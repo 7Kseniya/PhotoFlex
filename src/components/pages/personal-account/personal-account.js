@@ -137,16 +137,21 @@ const PersonalAccount = () => {
           />
         </NavLink>
         <EditIcon
+          data-testid="edit-icon"
           className={`${styles.icon} ${styles.edit}`}
           onClick={handleEditClick}
         />
       </div>
-      <div className={styles.userContainer}>
+      <div
+        className={styles.userContainer}
+        data-testid="username-container"
+      >
         <div
           className={`${styles.editSection} ${isEditing ? styles.editing : ''}`}
         >
           {isEditing ? (
             <input
+              data-testid="username-input"
               type="text"
               name="userName"
               value={userData.userName}
@@ -168,6 +173,7 @@ const PersonalAccount = () => {
             <div key={field} className={styles.dataRow}>
               <span>{`${field}:`}</span>
               <input
+                data-testid="user-data"
                 type="text"
                 name={field}
                 value={userData[field]}
@@ -190,8 +196,12 @@ const PersonalAccount = () => {
           ))}
         </div>
       </div>
-      <section className={styles.photosContainer}>
+      <section
+        data-testid="photos-container"
+        className={styles.photosContainer}
+      >
         <ArrowBackIosIcon
+          data-testid="arrow-back"
           style={{ fontSize: '50px', color: 'white' }}
           onClick={handlePrev}
         />
@@ -204,6 +214,7 @@ const PersonalAccount = () => {
           />
         ))}
         <ArrowForwardIosIcon
+          data-testid="arrow-forward"
           style={{ fontSize: '50px', color: 'white' }}
           onClick={handleNext}
         />

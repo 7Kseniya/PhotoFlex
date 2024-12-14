@@ -95,7 +95,10 @@ const ReplaceBgTool = ({ canvasRef }) => {
     return <AuthRequired />;
   }
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      data-testid="replace-bg-component"
+    >
       <label className={styles.brushSizeLabel} htmlFor="brushSize">
         Размер кисти: {brushSize}
       </label>

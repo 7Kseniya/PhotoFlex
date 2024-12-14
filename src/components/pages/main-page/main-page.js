@@ -90,7 +90,7 @@ const MainPage = () => {
     <div className={styles.mainContainer}>
       <Header canvasRef={canvasRef} />
       <div className={styles.toolContainer}>
-        <ToolBar />
+        <ToolBar data-testid="toolbar" />
         <Tools
           canvasRef={canvasRef}
           activeTool={activeTool}

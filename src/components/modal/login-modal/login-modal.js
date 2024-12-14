@@ -108,7 +108,9 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
 
   return (
     <div style={styles.mainContainer} data-testid="login-modal">
-      <DialogTitle sx={styles.modalTitle}>sign in</DialogTitle>
+      <DialogTitle data-testid="sign-in-title" sx={styles.modalTitle}>
+        sign in
+      </DialogTitle>
       <form>
         <Stack spacing={2} sx={styles.stack}>
           <FormControl variant="outlined">
@@ -184,15 +186,20 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
             sx={styles.footerStack}
             marginBottom="5px"
           >
-            <Button variant="outlined" sx={styles.socialBtn}>
+            <Button
+              variant="outlined"
+              sx={styles.socialBtn}
+              data-testid="social-btn-google"
+            >
               <GoogleIcon />
             </Button>
             <Button
+              data-testid="social-btn-telegram"
               variant="outlined"
               sx={styles.socialBtn}
               onClick={() => {
                 window.TelegramLoginWidget.showFrame({
-                  bot_id: '<YOUR_BOT_ID>', // Замените на ваш bot ID
+                  bot_id: '<YOUR_BOT_ID>',
                   size: 'large',
                   corner_radius: 10,
                 });

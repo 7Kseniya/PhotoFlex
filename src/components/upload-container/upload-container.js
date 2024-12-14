@@ -51,7 +51,7 @@ const UploadContainer = () => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       role="button"
-      data-testid={'upload-container'}
+      data-testid="upload-container"
     >
       <p className={styles.uploadText}>choose or drag file</p>
       <input
@@ -61,6 +61,7 @@ const UploadContainer = () => {
         onChange={handleFileSelect}
         style={{ display: 'none' }}
         aria-label="choose or drag file"
+        data-testid="upload-container-button"
       />
       <label htmlFor="fileInput" className={styles.uploadLabel}>
         <CloudUploadIcon className={styles.uploadIcon} />

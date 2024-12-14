@@ -26,6 +26,7 @@ const Filters = () => {
     >
       {filters.map(({ name }, index) => (
         <div
+          data-testid={`filter-${index}`}
           key={index}
           className={`${styles.filterItem} ${
             activeFilter === name ? styles.activeFilter : ''
