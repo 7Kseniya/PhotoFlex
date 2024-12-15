@@ -1,20 +1,20 @@
 .mainContainer {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   background-color: #1e1e1e;
-  width: 100vw;
+  width: 100%;
   border: solid black 1px;
 }
 
 .logoContainer {
   margin-left: 80px;
-  margin-top: 20px;
   width: 300px;
   height: 60px;
 }
 
 .icon.redo {
-  margin-top: 10px;
   margin-left: 150px;
   margin-right: 30px;
   font-size: 70px;
@@ -24,7 +24,6 @@
 }
 
 .icon.reset {
-  margin-top: 10px;
   margin-left: 40px;
   margin-right: 30px;
   font-size: 70px;
@@ -33,7 +32,6 @@
 }
 
 .icon.redoRight {
-  margin-top: 10px;
   margin-left: 0;
   margin-right: 30px;
   font-size: 70px;
@@ -42,7 +40,6 @@
 }
 
 .icon.flip {
-  margin-top: 10px;
   margin-left: 40px;
   margin-right: 30px;
   font-size: 70px;
@@ -60,7 +57,6 @@
 
 .icon.personAdd {
   margin-left: 50px;
-  margin-top: 10px;
   margin-right: 30px;
   font-size: 70px;
   color: #884f9f;
@@ -68,7 +64,6 @@
 
 .saveContainer {
   display: flex;
-  align-items: center;
   margin-left: auto;
   margin-right: 30px;
 }
@@ -92,4 +87,53 @@
 .formatSelect:focus {
   border-color: #aa6fbc;
   box-shadow: 0 0 5px #aa6fbc;
+}
+
+@media (min-width: 2000px) {
+  .mainContainer {
+    width: 100vw;
+    height: 10vh;
+  }
+}
+
+@media (max-width: 1900px) {
+  .mainContainer {
+    width: 100vw;
+    height: 10vh;
+  }
+
+  .logoContainer {
+    margin-top: 20px;
+    margin-left: 80px;
+    width: 200px;
+    height: 50px;
+  }
+
+  .icon.redo {
+    font-size: 50px;
+  }
+
+  .icon.reset {
+    font-size: 50px;
+  }
+
+  .icon.redoRight {
+    font-size: 50px;
+  }
+
+  .icon.flip {
+    font-size: 50px;
+  }
+
+  .icon.save {
+    font-size: 50px;
+  }
+
+  .icon.personAdd {
+    font-size: 50px;
+  }
+
+  .saveContainer {
+    margin-right: 30px;
+  }
 }
