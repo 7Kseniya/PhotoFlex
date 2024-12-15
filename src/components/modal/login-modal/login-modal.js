@@ -107,44 +107,6 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
     }
   };
 
-  const handleTelegramAuth = async (user) => {
-    try {
-      console.log('Telegram Auth Data:', user);
-
-      const response = await axios.get(
-        'http://localhost:4000/telegram-auth',
-        {
-          params: {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            photo_url: user.photo_url,
-            auth_date: user.auth_date,
-            hash: user.hash,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        alert(`Welcome, ${user.first_name}!`);
-        localStorage.setItem('authToken', response.data.token);
-        onSubmited();
-      } else {
-        alert('Ошибка авторизации через Telegram!');
-      }
-    } catch (error) {
-      console.error('Ошибка при авторизации через Telegram:', error);
-      alert('Ошибка при авторизации через Telegram');
-    }
-  };
-
-  useEffect(() => {
-    window.TelegramLoginWidget = {
-      dataOnauth: handleTelegramAuth,
-    };
-  }, []);
-
   return (
     <div style={styles.mainContainer} data-testid="login-modal">
       <DialogTitle data-testid="sign-in-title" sx={styles.modalTitle}>
