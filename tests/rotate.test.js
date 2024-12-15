@@ -71,4 +71,13 @@ describe('Rotate Component', () => {
     const resetButton = resetButtons[0];
     expect(resetButton).toBeInTheDocument();
   });
+  it('handles reset button click', () => {
+    const resetButton = screen.getByTestId('reset-button');
+    fireEvent.click(resetButton);
+
+    const actions = store.getActions();
+    expect(actions).toEqual([
+      { type: 'SET_ROTATION_ANGLE', payload: 0 },
+    ]);
+  });
 });

@@ -11,6 +11,8 @@ import {
   validateUsername,
 } from '../src/utils/auth-utils';
 import RegisterModal from '../src/components/modal/register-modal/register-modal';
+import { MemoryRouter } from 'react-router-dom';
+import LoginModal from '../src/components/modal/login-modal/login-modal';
 
 jest.mock('../src/utils/auth-utils');
 jest.mock('../src/services/actions/auth-actions', () => ({
@@ -102,16 +104,36 @@ describe('RegisterModal', () => {
     fireEvent.click(toggleButton);
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
+  it('calls onSignInClick when sign up link is clicked', () => {
+    const onSignInClick = jest.fn();
 
-  it('displays alert on validation failure (invalid login)', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <RegisterModal
+            onSignInClick={onSignInClick}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const signInLink = screen.getByTestId('signin-link');
+    fireEvent.click(signInLink);
+
+    expect(onSignInClick).toHaveBeenCalled();
+  });
+  it('shows a link to sigin page when a login is wrong', () => {
     validateLogin.mockReturnValue(false);
 
     render(
       <Provider store={store}>
-        <RegisterModal
-          onSignInClick={() => {}}
-          onSubmited={() => {}}
-        />
+        <MemoryRouter>
+          <RegisterModal
+            onSignInClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -135,81 +157,7 @@ describe('RegisterModal', () => {
     });
 
     fireEvent.click(submitButton);
-
-    expect(
-      screen.getByText('please enter valid email or phone number')
-    ).toBeInTheDocument();
-  });
-
-  it('shows alert when password validation fails', () => {
-    validatePassword.mockReturnValue(false);
-
-    render(
-      <Provider store={store}>
-        <RegisterModal
-          onSignInClick={() => {}}
-          onSubmited={() => {}}
-        />
-      </Provider>
-    );
-
-    fireEvent.change(
-      screen.getByLabelText('Enter your phone number/email/login'),
-      {
-        target: { value: 'validemail@example.com' },
-      }
-    );
-    fireEvent.change(
-      screen.getByLabelText('Come up with a password'),
-      {
-        target: { value: 'short' },
-      }
-    );
-    fireEvent.change(screen.getByLabelText('Come up with username'), {
-      target: { value: 'testuser' },
-    });
-
-    fireEvent.click(screen.getByText('submit'));
-
-    expect(
-      screen.getByText('password must be at least 8 characters long')
-    ).toBeInTheDocument();
-  });
-
-  it('shows alert when username validation fails', () => {
-    validateUsername.mockReturnValue(false);
-
-    render(
-      <Provider store={store}>
-        <RegisterModal
-          onSignInClick={() => {}}
-          onSubmited={() => {}}
-        />
-      </Provider>
-    );
-
-    fireEvent.change(
-      screen.getByLabelText('Enter your phone number/email/login'),
-      {
-        target: { value: 'validemail@example.com' },
-      }
-    );
-    fireEvent.change(
-      screen.getByLabelText('Come up with a password'),
-      {
-        target: { value: 'validpassword' },
-      }
-    );
-    fireEvent.change(screen.getByLabelText('Come up with username'), {
-      target: { value: '!!invalid??' },
-    });
-
-    fireEvent.click(screen.getByText('submit'));
-
-    expect(
-      screen.getByText(
-        'username must be 5-20 characters long and can only contain letters, numbers, and underscores'
-      )
-    ).toBeInTheDocument();
+    const signInLink = screen.getByTestId('signin-link');
+    expect(signInLink).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { styles } from './login-modal-styles';
-import React, { useState, useEffect } from 'react';
 import {
   DialogTitle,
   Stack,
@@ -24,10 +24,7 @@ import {
 import {
   handleMouseDownPassword,
   handleMouseUpPassword,
-  validateLogin,
-  validatePassword,
 } from '../../../utils/auth-utils';
-import axios from 'axios';
 
 const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const dispatch = useDispatch();
@@ -36,20 +33,61 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const [alert, setAlert] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
+  const workerRef = useRef(null);
+
+  useEffect(() => {
+    const w = new Worker(
+      new URL('../../../workers/worker.js', import.meta.url)
+    );
+    workerRef.current = w;
+
+    return () => {
+      w.terminate();
+    };
+  }, []);
+
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
+
+  const validateWithWorker = (type, payload) => {
+    return new Promise((resolve) => {
+      if (!workerRef.current) {
+        resolve(null);
+        return;
+      }
+
+      const handleMessage = (e) => {
+        workerRef.current.removeEventListener(
+          'message',
+          handleMessage
+        );
+        resolve(e.data);
+      };
+
+      workerRef.current.addEventListener('message', handleMessage);
+      workerRef.current.postMessage({ type, payload });
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setShowAlert(false);
     setAlert('');
 
-    if (!validateLogin(login)) {
+    const isLoginValid = await validateWithWorker('validateLogin', {
+      login,
+    });
+    if (!isLoginValid) {
       setAlert('Please enter a valid email or phone number');
       setShowAlert(true);
       return;
     }
-    if (!validatePassword(password)) {
+
+    const isPasswordValid = await validateWithWorker(
+      'validatePassword',
+      { password }
+    );
+    if (!isPasswordValid) {
       setAlert('Password must be at least 8 characters long');
       setShowAlert(true);
       return;
@@ -67,44 +105,6 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
       setShowAlert(true);
     }
   };
-
-  const handleTelegramAuth = async (user) => {
-    try {
-      console.log('Telegram Auth Data:', user);
-
-      const response = await axios.get(
-        'http://localhost:4000/telegram-auth',
-        {
-          params: {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            photo_url: user.photo_url,
-            auth_date: user.auth_date,
-            hash: user.hash,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        alert(`Welcome, ${user.first_name}!`);
-        localStorage.setItem('authToken', response.data.token);
-        onSubmited();
-      } else {
-        alert('Ошибка авторизации через Telegram!');
-      }
-    } catch (error) {
-      console.error('Ошибка при авторизации через Telegram:', error);
-      alert('Ошибка при авторизации через Telegram');
-    }
-  };
-
-  useEffect(() => {
-    window.TelegramLoginWidget = {
-      dataOnauth: handleTelegramAuth,
-    };
-  }, []);
 
   return (
     <div style={styles.mainContainer} data-testid="login-modal">
@@ -163,6 +163,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
           </FormControl>
           {showAlert && (
             <Alert
+              data-testid="alert-login"
               severity="warning"
               onClose={() => {
                 console.log('Alert closed');

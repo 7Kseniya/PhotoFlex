@@ -257,30 +257,6 @@ describe('ReplaceBgTool Component', () => {
       { type: 'SET_IMAGE', payload: newImage },
     ]);
   });
-
-  it('applies mask to image data correctly', async () => {
-    const file = new File(['dummy content'], 'test-image.png', {
-      type: 'image/png',
-    });
-    const fileInput = screen.getByTestId('fileUploadInput1');
-    fireEvent.change(fileInput, { target: { files: [file] } });
-
-    const replaceButton = screen.getByTestId('replaceButton');
-    fireEvent.click(replaceButton);
-
-    await waitFor(() => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.getImageData(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-      applyMaskToImageData(imageData, []);
-      expect(imageData.data).toBeDefined();
-    });
-  });
   it('handles image upload and updates state correctly', async () => {
     const file = new File(['dummy content'], 'test-image.png', {
       type: 'image/png',

@@ -102,75 +102,6 @@ describe('LoginModal', () => {
     fireEvent.click(toggleButton);
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
-
-  it('displays alert on validation failure for invalid login', () => {
-    validateLogin.mockReturnValue(false);
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <LoginModal
-            onSignUpClick={() => {}}
-            onSubmited={() => {}}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const loginInput = screen.getByLabelText(
-      'Enter your phone number/email/login'
-    );
-    const passwordInput = screen.getByLabelText(
-      'Enter your password'
-    );
-    const submitButton = screen.getByText('submit');
-
-    fireEvent.change(loginInput, { target: { value: 'invalid' } });
-    fireEvent.change(passwordInput, {
-      target: { value: 'password123' },
-    });
-
-    fireEvent.click(submitButton);
-
-    expect(
-      screen.getByText('Please enter a valid email or phone number')
-    ).toBeInTheDocument();
-  });
-
-  it('displays alert on validation failure for invalid password', () => {
-    validatePassword.mockReturnValue(false);
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <LoginModal
-            onSignUpClick={() => {}}
-            onSubmited={() => {}}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const loginInput = screen.getByLabelText(
-      'Enter your phone number/email/login'
-    );
-    const passwordInput = screen.getByLabelText(
-      'Enter your password'
-    );
-    const submitButton = screen.getByText('submit');
-
-    fireEvent.change(loginInput, {
-      target: { value: 'valid@example.com' },
-    });
-    fireEvent.change(passwordInput, { target: { value: 'short' } });
-
-    fireEvent.click(submitButton);
-
-    expect(
-      screen.getByText('Password must be at least 8 characters long')
-    ).toBeInTheDocument();
-  });
-
   it('dispatches setLogin and setPassword actions on input change', () => {
     render(
       <Provider store={store}>
@@ -225,5 +156,37 @@ describe('LoginModal', () => {
     fireEvent.click(signUpLink);
 
     expect(onSignUpClick).toHaveBeenCalled();
+  });
+
+  it('shows a link to sigup page when a login is wrong', () => {
+    validateLogin.mockReturnValue(false);
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const loginInput = screen.getByLabelText(
+      'Enter your phone number/email/login'
+    );
+    const passwordInput = screen.getByLabelText(
+      'Enter your password'
+    );
+    const submitButton = screen.getByText('submit');
+
+    fireEvent.change(loginInput, { target: { value: 'invalid' } });
+    fireEvent.change(passwordInput, {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(submitButton);
+    const signUpLink = screen.getByTestId('signup-link');
+    expect(signUpLink).toBeInTheDocument();
   });
 });

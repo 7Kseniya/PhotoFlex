@@ -49,7 +49,9 @@ const Crop = () => {
   };
 
   const handleReset = () => {
-    setCropAreaState(() => ({ x: 0, y: 0 }));
+    const defaultCropArea = { x: 0, y: 0 };
+    setCropAreaState(defaultCropArea);
+    dispatch(setCropArea(defaultCropArea));
   };
 
   return (

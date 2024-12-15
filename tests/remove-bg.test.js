@@ -208,4 +208,25 @@ describe('RemoveBgTool Component', () => {
     const actions = store.getActions();
     expect(actions).toHaveLength(0);
   });
+  it('does not overwrite imageBeforeRemove if it is already set', () => {
+    const initialState = {
+      image: {
+        imageBeforeRemove: { src: 'original-image' },
+        image: { src: 'test-image' },
+        brushSize: 10,
+        mask: [],
+      },
+      auth: {
+        isAuthenticated: true,
+      },
+    };
+
+    const spy = jest.spyOn(imageActions, 'setImageBeforeRemove');
+    renderWithProvider(
+      <RemoveBgTool canvasRef={{ current: {} }} />,
+      initialState
+    );
+
+    expect(spy).not.toHaveBeenCalled(); // Проверяем, что setImageBeforeRemove не был вызван
+  });
 });
