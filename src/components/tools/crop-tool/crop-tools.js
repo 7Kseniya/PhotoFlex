@@ -54,7 +54,6 @@ const Crop = () => {
     dispatch(setCropArea(defaultCropArea));
   };
 
-
   return (
     <div style={styles.sharedContainer} data-testid="crop-component">
       <div style={styles.dimensionInputContainer}>
