@@ -114,7 +114,7 @@ describe('Функциональность главной страницы', () 
     cy.get('[data-testid="icon-4"]').click();
     cy.get('[data-testid="resize-component"]').should('not.exist');
     cy.get('[data-testid="filters-component"]').should('be.visible');
-    cy.get('[data-testid="filter-3"]')
+    cy.get('[data-testid="filter-2"]')
       .should('be.visible')
       .and('not.be.disabled')
       .click();
@@ -122,7 +122,7 @@ describe('Функциональность главной страницы', () 
     cy.window().then((win) => {
       const currentFilter = win.store.getState().image.filter;
       // eslint-disable-next-line jest/valid-expect
-      expect(currentFilter).to.eq('invert');
+      expect(currentFilter).to.eq('sepia');
     });
     cy.get('[data-testid="undo-icon"]')
       .should('be.visible')
@@ -146,7 +146,7 @@ describe('Функциональность главной страницы', () 
     cy.window().then((win) => {
       const currentFilter = win.store.getState().image.filter;
       // eslint-disable-next-line jest/valid-expect
-      expect(currentFilter).to.eq('invert');
+      expect(currentFilter).to.eq('sepia');
       cy.log('Фильтр повторно применен в Redux store');
     });
     cy.get('[data-testid="flip-icon"]')

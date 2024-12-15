@@ -34,7 +34,6 @@ const useImageDrawer = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (showOriginal && originalImage) {
-      // Отображаем оригинальное изображение без трансформаций и фильтров
       canvas.width = originalImage.width;
       canvas.height = originalImage.height;
       ctx.drawImage(
@@ -45,7 +44,6 @@ const useImageDrawer = ({
         originalImage.height
       );
     } else {
-      // Рассчитываем итоговые размеры холста с учётом cropArea и resizeDimensions
       const cropX = cropArea?.x || 0;
       const cropY = cropArea?.y || 0;
       const finalWidth = resizeDimensions.width - cropX;

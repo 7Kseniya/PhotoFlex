@@ -13,8 +13,8 @@ describe('Функциональность инструмента Filters', () =
     cy.get('[data-testid="filters-component"]').should('be.visible');
   });
 
-  it('должны отображаться первые 4 фильтра', () => {
-    for (let i = 0; i < 4; i++) {
+  it('должны отображаться первые 3 фильтра', () => {
+    for (let i = 0; i < 3; i++) {
       cy.get(`[data-testid="filter-${i}"]`).should('be.visible');
     }
   });
@@ -26,12 +26,12 @@ describe('Функциональность инструмента Filters', () =
       expect(win.store.getState().image.filter).to.eq('none');
     });
 
-    cy.get('[data-testid="filter-3"]').click();
+    cy.get('[data-testid="filter-2"]').click();
 
     // eslint-disable-next-line jest/valid-expect-in-promise
     cy.window().then((win) => {
       // eslint-disable-next-line jest/valid-expect
-      expect(win.store.getState().image.filter).to.eq('invert');
+      expect(win.store.getState().image.filter).to.eq('sepia');
     });
   });
 

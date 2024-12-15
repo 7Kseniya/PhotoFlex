@@ -18,7 +18,7 @@ const ReplaceBgTool = ({ canvasRef }) => {
   const [newImage, setNewImage] = useState(null);
 
   const handleReplaceBackground = () => {
-    if (!canvasRef.current || !image) return; // Если нет canvas или изображения — прерываем
+    if (!canvasRef.current || !image) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -32,7 +32,6 @@ const ReplaceBgTool = ({ canvasRef }) => {
     ctx.putImageData(imageData, 0, 0);
 
     if (newImage) {
-      // Если есть новый фон
       const img = new Image();
       img.src = URL.createObjectURL(newImage);
       img.onload = () => {
@@ -41,7 +40,6 @@ const ReplaceBgTool = ({ canvasRef }) => {
         const finalImage = ctx.getImageData(0, 0, width, height);
         const finalData = finalImage.data;
 
-        // Накладываем маску обратно на итоговое изображение
         for (let i = 0; i < data.length; i += 4) {
           if (data[i + 3] > 0) {
             finalData[i] = data[i];
@@ -59,7 +57,6 @@ const ReplaceBgTool = ({ canvasRef }) => {
         };
       };
     } else {
-      // Если новый фон не загружен, просто используем текущее изображение с применённой маской
       const finalImageUrl = canvas.toDataURL();
       const finalImageElement = new Image();
       finalImageElement.src = finalImageUrl;
