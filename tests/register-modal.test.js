@@ -12,6 +12,7 @@ import {
 } from '../src/utils/auth-utils';
 import RegisterModal from '../src/components/modal/register-modal/register-modal';
 import { MemoryRouter } from 'react-router-dom';
+import LoginModal from '../src/components/modal/login-modal/login-modal';
 
 jest.mock('../src/utils/auth-utils');
 jest.mock('../src/services/actions/auth-actions', () => ({
@@ -121,5 +122,42 @@ describe('RegisterModal', () => {
     fireEvent.click(signInLink);
 
     expect(onSignInClick).toHaveBeenCalled();
+  });
+  it('shows a link to sigin page when a login is wrong', () => {
+    validateLogin.mockReturnValue(false);
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <RegisterModal
+            onSignInClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const loginInput = screen.getByLabelText(
+      'Enter your phone number/email/login'
+    );
+    const passwordInput = screen.getByLabelText(
+      'Come up with a password'
+    );
+    const usernameInput = screen.getByLabelText(
+      'Come up with username'
+    );
+    const submitButton = screen.getByText('submit');
+
+    fireEvent.change(loginInput, { target: { value: 'invalid' } });
+    fireEvent.change(passwordInput, {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(usernameInput, {
+      target: { value: 'testuser' },
+    });
+
+    fireEvent.click(submitButton);
+    const signInLink = screen.getByTestId('signin-link');
+    expect(signInLink).toBeInTheDocument();
   });
 });

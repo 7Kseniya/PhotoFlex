@@ -25,7 +25,6 @@ import {
   handleMouseDownPassword,
   handleMouseUpPassword,
 } from '../../../utils/auth-utils';
-import axios from 'axios';
 
 const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const dispatch = useDispatch();

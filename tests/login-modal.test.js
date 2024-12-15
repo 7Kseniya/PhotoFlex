@@ -157,4 +157,36 @@ describe('LoginModal', () => {
 
     expect(onSignUpClick).toHaveBeenCalled();
   });
+
+  it('shows a link to sigup page when a login is wrong', () => {
+    validateLogin.mockReturnValue(false);
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const loginInput = screen.getByLabelText(
+      'Enter your phone number/email/login'
+    );
+    const passwordInput = screen.getByLabelText(
+      'Enter your password'
+    );
+    const submitButton = screen.getByText('submit');
+
+    fireEvent.change(loginInput, { target: { value: 'invalid' } });
+    fireEvent.change(passwordInput, {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(submitButton);
+    const signUpLink = screen.getByTestId('signup-link');
+    expect(signUpLink).toBeInTheDocument();
+  });
 });
