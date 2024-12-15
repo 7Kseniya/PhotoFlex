@@ -5,6 +5,7 @@ const actionsWithoutHistory = [
   'SET_ACTIVE_TOOL',
   'SET_SHOW_ORIGINAL',
   'SET_IS_DRAG_OVER',
+  'SET_TUNES',
 ];
 
 const initialState = {
@@ -280,6 +281,15 @@ export const imageReducer = (state = initialState, action) => {
         ...initialState,
       };
     }
+    // case 'SET_TUNES': {
+    //   return {
+    //     ...state,
+    //     tune: {
+    //       ...state.tune,
+    //       ...action.payload,
+    //     },
+    //   };
+    // }
     case 'SET_TUNES': {
       return {
         ...state,
@@ -287,6 +297,12 @@ export const imageReducer = (state = initialState, action) => {
           ...state.tune,
           ...action.payload,
         },
+        ...(shouldAddToHistory
+          ? {
+              past: [...state.past, getPresentState(state)],
+              future: [],
+            }
+          : {}),
       };
     }
     default:
