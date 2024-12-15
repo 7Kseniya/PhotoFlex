@@ -42,7 +42,7 @@ const MainPage = () => {
       img.onload = () => {
         dispatch(setImage(img));
         dispatch(setOriginalImage(img));
-        const resizedDimensions = resizeImageToCanvas(img, 1000, 800);
+        const resizedDimensions = resizeImageToCanvas(img, 700, 500);
         dispatch(setResizeDimensions(resizedDimensions));
       };
     }
@@ -100,8 +100,8 @@ const MainPage = () => {
           {imageSrc ? (
             <div
               style={{
-                width: `${resizeDimensions?.width || 800}px`,
-                height: `${resizeDimensions?.height || 900}px`,
+                width: `${resizeDimensions?.width || 700}px`,
+                height: `${resizeDimensions?.height || 800}px`,
                 overflow: 'hidden',
               }}
             >
