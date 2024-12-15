@@ -11,6 +11,7 @@ import {
   validateUsername,
 } from '../src/utils/auth-utils';
 import RegisterModal from '../src/components/modal/register-modal/register-modal';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('../src/utils/auth-utils');
 jest.mock('../src/services/actions/auth-actions', () => ({
@@ -79,4 +80,46 @@ describe('RegisterModal', () => {
     expect(screen.getByText('sign in')).toBeInTheDocument();
   });
 
+  it('handles password visibility toggle', () => {
+    render(
+      <Provider store={store}>
+        <RegisterModal
+          onSignInClick={() => {}}
+          onSubmited={() => {}}
+        />
+      </Provider>
+    );
+
+    const passwordInput = screen.getByLabelText(
+      'Come up with a password'
+    );
+    const toggleButton = screen.getByLabelText(
+      'toggle password visibility'
+    );
+
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'text');
+
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
+  it('calls onSignInClick when sign up link is clicked', () => {
+    const onSignInClick = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <RegisterModal
+            onSignInClick={onSignInClick}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const signInLink = screen.getByTestId('signin-link');
+    fireEvent.click(signInLink);
+
+    expect(onSignInClick).toHaveBeenCalled();
+  });
 });

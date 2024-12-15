@@ -202,6 +202,7 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
           </FormControl>
           {showAlert && (
             <Alert
+              data-testid="alert-login"
               severity="warning"
               onClose={() => {
                 console.log('Alert closed');

@@ -74,4 +74,87 @@ describe('LoginModal', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('sign up')).toBeInTheDocument();
   });
+
+  it('handles password visibility toggle', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const passwordInput = screen.getByLabelText(
+      'Enter your password'
+    );
+    const toggleButton = screen.getByLabelText(
+      'toggle password visibility'
+    );
+
+    expect(passwordInput).toHaveAttribute('type', 'password');
+
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'text');
+
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
+  it('dispatches setLogin and setPassword actions on input change', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={() => {}}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const loginInput = screen.getByLabelText(
+      'Enter your phone number/email/login'
+    );
+    const passwordInput = screen.getByLabelText(
+      'Enter your password'
+    );
+
+    fireEvent.change(loginInput, {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(passwordInput, {
+      target: { value: 'password123' },
+    });
+
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_LOGIN',
+      payload: 'test@example.com',
+    });
+    expect(store.getActions()).toContainEqual({
+      type: 'SET_PASSWORD',
+      payload: 'password123',
+    });
+  });
+
+  it('calls onSignUpClick when sign up link is clicked', () => {
+    const onSignUpClick = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginModal
+            onSignUpClick={onSignUpClick}
+            onSubmited={() => {}}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const signUpLink = screen.getByTestId('signup-link');
+    fireEvent.click(signUpLink);
+
+    expect(onSignUpClick).toHaveBeenCalled();
+  });
 });
