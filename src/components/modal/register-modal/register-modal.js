@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   DialogTitle,
   Stack,
@@ -17,9 +17,6 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import {
   handleMouseDownPassword,
   handleMouseUpPassword,
-  validateLogin,
-  validatePassword,
-  validateUsername,
 } from '../../../utils/auth-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -39,37 +36,83 @@ const RegisterModal = ({ onSignInClick, onSubmited }) => {
   const [alert, setAlert] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
+  const workerRef = useRef(null);
+
+  useEffect(() => {
+    const w = new Worker(
+      new URL('../../../workers/worker.js', import.meta.url)
+    );
+    workerRef.current = w;
+
+    return () => {
+      w.terminate();
+    };
+  }, []);
+
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
+
+  const validateWithWorker = (type, payload) => {
+    return new Promise((resolve) => {
+      if (!workerRef.current) {
+        resolve(null);
+        return;
+      }
+
+      const handleMessage = (e) => {
+        workerRef.current.removeEventListener(
+          'message',
+          handleMessage
+        );
+        resolve(e.data);
+      };
+
+      workerRef.current.addEventListener('message', handleMessage);
+      workerRef.current.postMessage({ type, payload });
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setShowAlert(false);
     setAlert('');
 
-    if (!validateLogin(loginRegister)) {
+    const isLoginValid = await validateWithWorker('validateLogin', {
+      login: loginRegister,
+    });
+    if (!isLoginValid) {
       setAlert('please enter valid email or phone number');
       setShowAlert(true);
       return;
     }
-    if (!validatePassword(passwordRegister)) {
+
+    const isPasswordValid = await validateWithWorker(
+      'validatePassword',
+      { password: passwordRegister }
+    );
+    if (!isPasswordValid) {
       setAlert('password must be at least 8 characters long');
       setShowAlert(true);
       return;
     }
-    if (!validateUsername(username)) {
+
+    const isUsernameValid = await validateWithWorker(
+      'validateUsername',
+      { username }
+    );
+    if (!isUsernameValid) {
       setAlert(
         'username must be 5-20 characters long and can only contain letters, numbers, and underscores'
       );
       setShowAlert(true);
       return;
     }
+
     try {
       await dispatch(
         registerUser(loginRegister, username, passwordRegister)
       );
       onSubmited();
-      console.log('диспатч есть');
       setAlert('Register successful');
       setShowAlert(true);
       dispatch(setLoginRegister(''));

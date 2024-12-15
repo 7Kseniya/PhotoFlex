@@ -5,6 +5,10 @@ import {
 } from '../utils/auth-utils.js';
 
 self.onmessage = (e) => {
+  if (!e.data) {
+    return;
+  }
+
   const { type, payload } = e.data;
   let result;
 

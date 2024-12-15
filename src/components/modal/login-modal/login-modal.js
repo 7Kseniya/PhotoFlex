@@ -1,5 +1,5 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { styles } from './login-modal-styles';
-import React, { useState, useEffect } from 'react';
 import {
   DialogTitle,
   Stack,
@@ -24,8 +24,6 @@ import {
 import {
   handleMouseDownPassword,
   handleMouseUpPassword,
-  validateLogin,
-  validatePassword,
 } from '../../../utils/auth-utils';
 import axios from 'axios';
 
@@ -36,20 +34,61 @@ const LoginModal = ({ onSignUpClick, onSubmited }) => {
   const [alert, setAlert] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
+  const workerRef = useRef(null);
+
+  useEffect(() => {
+    const w = new Worker(
+      new URL('../../../workers/worker.js', import.meta.url)
+    );
+    workerRef.current = w;
+
+    return () => {
+      w.terminate();
+    };
+  }, []);
+
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
+
+  const validateWithWorker = (type, payload) => {
+    return new Promise((resolve) => {
+      if (!workerRef.current) {
+        resolve(null);
+        return;
+      }
+
+      const handleMessage = (e) => {
+        workerRef.current.removeEventListener(
+          'message',
+          handleMessage
+        );
+        resolve(e.data);
+      };
+
+      workerRef.current.addEventListener('message', handleMessage);
+      workerRef.current.postMessage({ type, payload });
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setShowAlert(false);
     setAlert('');
 
-    if (!validateLogin(login)) {
+    const isLoginValid = await validateWithWorker('validateLogin', {
+      login,
+    });
+    if (!isLoginValid) {
       setAlert('Please enter a valid email or phone number');
       setShowAlert(true);
       return;
     }
-    if (!validatePassword(password)) {
+
+    const isPasswordValid = await validateWithWorker(
+      'validatePassword',
+      { password }
+    );
+    if (!isPasswordValid) {
       setAlert('Password must be at least 8 characters long');
       setShowAlert(true);
       return;
