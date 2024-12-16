@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/PhotoFlex/static/css/main.5c8c700d.css",
-    "main.js": "/PhotoFlex/static/js/main.b169fa6b.js",
+    "main.js": "/PhotoFlex/static/js/main.704913e1.js",
     "static/js/992.4cafb7dd.chunk.js": "/PhotoFlex/static/js/992.4cafb7dd.chunk.js",
     "static/js/611.4cafb7dd.chunk.js": "/PhotoFlex/static/js/611.4cafb7dd.chunk.js",
     "static/media/18.jpeg": "/PhotoFlex/static/media/18.8bfd98571bb4405f0689.jpeg",
@@ -27,12 +27,12 @@
     "static/media/3.jpeg": "/PhotoFlex/static/media/3.f048893af83d1fee0403.jpeg",
     "index.html": "/PhotoFlex/index.html",
     "main.5c8c700d.css.map": "/PhotoFlex/static/css/main.5c8c700d.css.map",
-    "main.b169fa6b.js.map": "/PhotoFlex/static/js/main.b169fa6b.js.map",
+    "main.704913e1.js.map": "/PhotoFlex/static/js/main.704913e1.js.map",
     "992.4cafb7dd.chunk.js.map": "/PhotoFlex/static/js/992.4cafb7dd.chunk.js.map",
     "611.4cafb7dd.chunk.js.map": "/PhotoFlex/static/js/611.4cafb7dd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5c8c700d.css",
-    "static/js/main.b169fa6b.js"
+    "static/js/main.704913e1.js"
   ]
 }
