@@ -483,4 +483,26 @@ describe('ReplaceBgTool Component', () => {
       ).not.toBeInTheDocument();
     });
   });
+  it('does not apply mask when no mask is provided', async () => {
+    const replaceButton = screen.getByTestId('replaceButton');
+    fireEvent.click(replaceButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('previewContainer')
+      ).not.toBeInTheDocument();
+    });
+  });
+  it('sets new image correctly and displays preview', async () => {
+    const file = new File(['dummy content'], 'test-image.png', {
+      type: 'image/png',
+    });
+    const fileInput = screen.getByTestId('fileUploadInput1');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      const previewImage = screen.getByTestId('previewImage');
+      expect(previewImage).toHaveAttribute('src', 'mock-url');
+    });
+  });
 });

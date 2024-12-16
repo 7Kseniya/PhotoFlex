@@ -1,45 +1,84 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Tunes from '../src/components/tools/tune-tool/tunes-tools';
 import React from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import Tunes from '../src/components/tools/tune-tool/tunes-tools';
+import { setTunes } from '../src/services/actions/image-actions';
 
-describe('Tunes component', () => {
-  it('renders all sliders with correct labels', () => {
-    render(<Tunes />);
-    const labels = [
-      'Brightness',
-      'Contrast',
-      'Saturation',
-      'Sharpness',
-    ];
-    labels.forEach((label) => {
-      expect(screen.getByText(label)).toBeInTheDocument();
+const mockStore = configureStore([]);
+
+describe('Tunes Component', () => {
+  let store;
+
+  beforeEach(() => {
+    store = mockStore({
+      image: {
+        tune: {
+          brightness: 50,
+          contrast: 50,
+          saturation: 50,
+          sharpness: 100,
+        },
+      },
     });
+    store.dispatch = jest.fn(); // Mocking the dispatch function
   });
 
-  it('updates settings when sliders are changed', () => {
-    render(<Tunes />);
-    const brightnessSlider = screen.getByRole('slider', {
-      name: /brightness/i,
-    });
-    const contrastSlider = screen.getByRole('slider', {
-      name: /contrast/i,
-    });
-    const saturationSlider = screen.getByRole('slider', {
-      name: /saturation/i,
-    });
-    const sharpnessSlider = screen.getByRole('slider', {
-      name: /sharpness/i,
-    });
+  it('renders all sliders correctly', () => {
+    render(
+      <Provider store={store}>
+        <Tunes />
+      </Provider>
+    );
 
-    expect(brightnessSlider).toHaveValue('50');
-    expect(contrastSlider).toHaveValue('50');
-    expect(saturationSlider).toHaveValue('50');
-    expect(sharpnessSlider).toHaveValue('50');
-    fireEvent.change(brightnessSlider, { target: { value: '80' } });
-    expect(brightnessSlider).toHaveValue('80');
-    expect(contrastSlider).toHaveValue('50');
-    expect(saturationSlider).toHaveValue('50');
-    expect(sharpnessSlider).toHaveValue('50');
+    const sliders = screen.getAllByRole('slider');
+    expect(sliders.length).toBe(4); // 4 sliders
+    expect(sliders[0]).toHaveAttribute('aria-label', 'brightness');
+    expect(sliders[1]).toHaveAttribute('aria-label', 'contrast');
+    expect(sliders[2]).toHaveAttribute('aria-label', 'saturation');
+    expect(sliders[3]).toHaveAttribute('aria-label', 'sharpness');
+  });
+
+  it('dispatches correct action when slider changes', () => {
+    render(
+      <Provider store={store}>
+        <Tunes />
+      </Provider>
+    );
+
+    const brightnessSlider = screen.getByLabelText('brightness');
+    fireEvent.change(brightnessSlider, { target: { value: 70 } });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      setTunes({
+        brightness: 70,
+        contrast: 50,
+        saturation: 50,
+        sharpness: 100,
+      })
+    );
+  });
+
+  it('updates the value of the slider when changed', () => {
+    render(
+      <Provider store={store}>
+        <Tunes />
+      </Provider>
+    );
+
+    const sharpnessSlider = screen.getByLabelText('sharpness');
+    expect(sharpnessSlider).toHaveValue('100'); // Change to a string value
+
+    fireEvent.change(sharpnessSlider, { target: { value: 80 } });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      setTunes({
+        brightness: 50,
+        contrast: 50,
+        saturation: 50,
+        sharpness: 80, // Corrected to a number value
+      })
+    );
   });
 });

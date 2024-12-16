@@ -27,6 +27,12 @@ describe('imageReducer', () => {
     past: [],
     future: [],
     hasInitializedResize: false,
+    tune: {
+      brightness: 50,
+      contrast: 50,
+      saturation: 50,
+      sharpness: 50,
+    },
   };
 
   it('should return the initial state when no action is passed', () => {
@@ -469,5 +475,31 @@ describe('imageReducer', () => {
     };
     const action = { type: 'RESET_STATE' };
     expect(imageReducer(modifiedState, action)).toEqual(initialState);
+  });
+  it('should not alter state if payload is empty for SET_TUNES', () => {
+    const action = {
+      type: 'SET_TUNES',
+      payload: {},
+    };
+    const expectedState = {
+      ...initialState,
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
+  });
+  it('should handle SET_TUNES action and not add to history if action type is in actionsWithoutHistory', () => {
+    const action = {
+      type: 'SET_TUNES',
+      payload: { saturation: 40 },
+    };
+    const expectedState = {
+      ...initialState,
+      tune: {
+        ...initialState.tune,
+        saturation: 40,
+      },
+      past: [], // history is not updated
+      future: [],
+    };
+    expect(imageReducer(initialState, action)).toEqual(expectedState);
   });
 });

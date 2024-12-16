@@ -186,6 +186,30 @@ describe('RemoveBgTool Component', () => {
     expect(screen.getByLabelText('brush size')).toBeInTheDocument();
     expect(screen.getByText('Удалить фон')).toBeInTheDocument();
   });
+  it('renders AuthRequired when the user is not authenticated', () => {
+    const initialState = {
+      image: {
+        imageBeforeRemove: null,
+        image: null,
+        brushSize: 10,
+        mask: [],
+      },
+      auth: {
+        isAuthenticated: false,
+      },
+    };
+
+    renderWithProvider(
+      <RemoveBgTool canvasRef={{ current: {} }} />,
+      initialState
+    );
+    expect(
+      screen.getByText(
+        'Вы должны авторизироваться для использования этого инструмента.'
+      )
+    ).toBeInTheDocument(); // Assuming this is the text in AuthRequired
+  });
+
   it('should do nothing if no image is loaded or canvas is not available', () => {
     const initialState = {
       image: {
