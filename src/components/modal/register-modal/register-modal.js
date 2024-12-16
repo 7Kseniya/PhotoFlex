@@ -1,6 +1,4 @@
-import styles from './register-modal.module.css';
-import Modal from '../modal';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   DialogTitle,
   Stack,
@@ -9,229 +7,256 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Alert,
 } from '@mui/material';
 import FormControl from '@mui/joy/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import {
+  handleMouseDownPassword,
+  handleMouseUpPassword,
+} from '../../../utils/auth-utils';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  registerUser,
+  setLoginRegister,
+  setPasswordRegister,
+  setUsername,
+} from '../../../services/actions/auth-actions';
+import { styles } from './register-modal-styles';
 
-const RegisterModal = () => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
+const RegisterModal = ({ onSignInClick, onSubmited }) => {
+  const dispatch = useDispatch();
+  const { loginRegister, passwordRegister, username } = useSelector(
+    (state) => state.auth
+  );
   const [showPassword, setShowPassword] = useState(false);
+  const [alert, setAlert] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+
+  const workerRef = useRef(null);
+
+  useEffect(() => {
+    const w = new Worker(
+      new URL('../../../workers/worker.js', import.meta.url)
+    );
+    workerRef.current = w;
+
+    return () => {
+      w.terminate();
+    };
+  }, []);
 
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+
+  const validateWithWorker = (type, payload) => {
+    return new Promise((resolve) => {
+      if (!workerRef.current) {
+        resolve(null);
+        return;
+      }
+
+      const handleMessage = (e) => {
+        workerRef.current.removeEventListener(
+          'message',
+          handleMessage
+        );
+        resolve(e.data);
+      };
+
+      workerRef.current.addEventListener('message', handleMessage);
+      workerRef.current.postMessage({ type, payload });
+    });
   };
-  const handleMouseUpPassword = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setShowAlert(false);
+    setAlert('');
+
+    const isLoginValid = await validateWithWorker('validateLogin', {
+      login: loginRegister,
+    });
+    if (!isLoginValid) {
+      setAlert('please enter valid email or phone number');
+      setShowAlert(true);
+      return;
+    }
+
+    const isPasswordValid = await validateWithWorker(
+      'validatePassword',
+      { password: passwordRegister }
+    );
+    if (!isPasswordValid) {
+      setAlert('password must be at least 8 characters long');
+      setShowAlert(true);
+      return;
+    }
+
+    const isUsernameValid = await validateWithWorker(
+      'validateUsername',
+      { username }
+    );
+    if (!isUsernameValid) {
+      setAlert(
+        'username must be 5-20 characters long and can only contain letters, numbers, and underscores'
+      );
+      setShowAlert(true);
+      return;
+    }
+
+    try {
+      await dispatch(
+        registerUser(loginRegister, username, passwordRegister)
+      );
+      onSubmited();
+      setAlert('Register successful');
+      setShowAlert(true);
+      dispatch(setLoginRegister(''));
+      dispatch(setPasswordRegister(''));
+      dispatch(setUsername(''));
+      setShowAlert(false);
+    } catch (error) {
+      setAlert('Registration failed. Please try again.');
+      setShowAlert(true);
+    }
   };
 
   return (
-    <Modal>
-      <div className={styles.mainContainer}>
-        <DialogTitle
-          className={styles.modalTitle}
-          sx={{
-            fontSize: '2rem',
-            marginBottom: '16px',
-          }}
-        >
-          sign up
-        </DialogTitle>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <Stack spacing={2} className={styles.stack}>
-            <FormControl variant="outlined">
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ color: '#fff', marginBottom: '3px' }}
-              >
-                Enter your phone number/email/login
-              </InputLabel>
-              <OutlinedInput
-                required
-                id="outlined-adornment-password"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                label="Login"
-                sx={{
-                  backgroundColor: '#c3c3c3',
-                  borderRadius: '30px',
-                  input: { color: '#191919' },
-                  label: { color: '#686868' },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#686868',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                }}
-              />
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ color: '#fff', marginBottom: '3px' }}
-              >
-                Come up with a password
-              </InputLabel>
-              <OutlinedInput
-                required
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      onMouseUp={handleMouseUpPassword}
-                      edge="end"
-                      className={styles.visability}
-                    >
-                      {showPassword ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-                sx={{
-                  backgroundColor: '#c3c3c3',
-                  borderRadius: '30px',
-                  input: { color: '#191919' },
-                  label: { color: '#686868' },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#686868',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                }}
-              />
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ color: '#fff', marginBottom: '3px' }}
-              >
-                Come up with username
-              </InputLabel>
-              <OutlinedInput
-                required
-                id="outlined-adornment-password"
-                className="text-field"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                label="Username"
-                sx={{
-                  backgroundColor: '#c3c3c3',
-                  borderRadius: '30px',
-                  input: { color: '#191919' },
-                  label: { color: '#686868' },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#686868',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                }}
-              />
-            </FormControl>
+    <div style={styles.mainContainer} data-testid="register-modal">
+      <DialogTitle data-testid="sign-up-title" sx={styles.modalTitle}>
+        sign up
+      </DialogTitle>
+      <form>
+        <Stack spacing={2} sx={styles.stack}>
+          <FormControl variant="outlined">
+            <InputLabel htmlFor="login-input" sx={styles.inputLabel}>
+              Enter your phone number/email/login
+            </InputLabel>
+            <OutlinedInput
+              data-testid="login-input"
+              required
+              id="login-input"
+              value={loginRegister}
+              onChange={(e) =>
+                dispatch(setLoginRegister(e.target.value))
+              }
+              label="Login"
+              sx={styles.loginInputStyle}
+            />
+          </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel
+              htmlFor="password-input"
+              sx={styles.inputLabel}
+            >
+              Come up with a password
+            </InputLabel>
+            <OutlinedInput
+              data-testid="password-input"
+              required
+              id="password-input"
+              type={showPassword ? 'text' : 'password'}
+              value={passwordRegister}
+              onChange={(e) =>
+                dispatch(setPasswordRegister(e.target.value))
+              }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                    sx={styles.visability}
+                  >
+                    {showPassword ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+              sx={styles.passwordInputStyle}
+            />
+          </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel
+              htmlFor="username-input"
+              sx={styles.inputLabel}
+            >
+              Come up with username
+            </InputLabel>
+            <OutlinedInput
+              required
+              data-testid="username-input"
+              id="username-input"
+              value={username}
+              onChange={(e) => dispatch(setUsername(e.target.value))}
+              label="Username"
+              sx={styles.userInputStyle}
+            />
+          </FormControl>
+          {showAlert && (
+            <Alert
+              severity="warning"
+              onClose={() => setShowAlert(false)}
+            >
+              {alert}
+            </Alert>
+          )}
 
+          <Button
+            type="submit"
+            sx={styles.btn}
+            onClick={handleSubmit}
+          >
+            submit
+          </Button>
+          <span style={styles.loginvia}>login via:</span>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={styles.footerStack}
+            marginBottom="5px"
+          >
             <Button
-              type="submit"
-              className={styles.btn}
-              sx={{
-                color: '#c3c3c3',
-              }}
+              data-testid="social-btn-google"
+              variant="outlined"
+              sx={styles.socialBtn}
             >
-              submit
+              <GoogleIcon />
             </Button>
-            <span className={styles.loginvia}>login via:</span>
-            <Stack
-              direction="row"
-              spacing={1}
-              className={styles.footerStack}
-              marginBottom="5px"
+            <Button
+              data-testid="social-btn-telegram"
+              variant="outlined"
+              sx={styles.socialBtn}
             >
-              <Button
-                variant="outlined"
-                className={styles.socialBtn}
-                sx={{
-                  minWidth: '40px',
-                  height: '40px',
-                  borderRadius: '30px',
-                  borderColor: '#c3c3c3',
-                  color: '#c3c3c3',
-                }}
-              >
-                <GoogleIcon />
-              </Button>
-              <Button
-                variant="outlined"
-                className={styles.socialBtn}
-                sx={{
-                  minWidth: '40px',
-                  height: '40px',
-                  borderRadius: '30px',
-                  borderColor: '#c3c3c3',
-                  color: '#c3c3c3',
-                }}
-              >
-                <TelegramIcon />
-              </Button>
-            </Stack>
-            <Stack
-              className={styles.footerStack}
-              direction="row"
-              spacing={1}
-            >
-              <span className={styles.footerText}>
-                already have an account?
-              </span>
-              <Button
-                className={styles.btn}
-                onClick={() => {
-                  /*redirect to sign in form*/
-                }}
-                sx={{
-                  color: '#c3c3c3',
-                }}
-              >
-                sign in
-              </Button>
-            </Stack>
-            <Stack
-              className={styles.footerStack}
-              direction="row"
-              spacing={1}
-            ></Stack>
+              <TelegramIcon />
+            </Button>
           </Stack>
-        </form>
-      </div>
-    </Modal>
+          <Stack sx={styles.footerStack} direction="row" spacing={1}>
+            <span style={styles.footerText}>
+              already have an account?
+            </span>
+            <Button
+              sx={styles.btn}
+              onClick={onSignInClick}
+              data-testid="signin-link"
+            >
+              sign in
+            </Button>
+          </Stack>
+        </Stack>
+      </form>
+    </div>
   );
 };
+
 export default RegisterModal;

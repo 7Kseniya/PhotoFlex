@@ -37,10 +37,6 @@ export const setMask = (mask) => ({
   payload: mask,
 });
 
-export const setAppliedMask = (appliedMask) => ({
-  type: 'SET_APPLIED_MASK',
-  payload: appliedMask,
-});
 export const setDrawing = (drawing) => ({
   type: 'SET_DRAWING',
   payload: drawing,
@@ -60,4 +56,23 @@ export const setOriginalImage = (originalImage) => ({
 export const setImage = (image) => ({
   type: 'SET_IMAGE',
   payload: image,
+});
+
+export const setImageBeforeRemove = (image) => ({
+  type: 'SET_IMAGE_BEFORE_REMOVE',
+  payload: image,
+});
+export const undo = () => ({
+  type: 'UNDO',
+});
+
+export const redo = () => ({
+  type: 'REDO',
+});
+export const resetState = () => ({
+  type: 'RESET_STATE',
+});
+export const setTunes = (tuneSettings) => ({
+  type: 'SET_TUNES',
+  payload: tuneSettings,
 });

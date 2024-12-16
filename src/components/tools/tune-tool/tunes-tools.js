@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Slider } from '@mui/material';
 import styles from './tunes-tools.module.css';
+import { useDispatch } from 'react-redux';
+import { setTunes } from '../../../services/actions/image-actions';
 
 const Tunes = () => {
+  const dispatch = useDispatch();
+
   const tunes = [
     { name: 'brightness', min: 0, max: 100 },
     { name: 'contrast', min: 0, max: 100 },
@@ -13,14 +17,19 @@ const Tunes = () => {
     brightness: 50,
     contrast: 50,
     saturation: 50,
-    sharpness: 50,
+    sharpness: 100,
   });
 
+  // const handleSlider = (optionName) => (event, newValue) => {
+  //   setSettings((prevSettings) => ({
+  //     ...prevSettings,
+  //     [optionName]: newValue,
+  //   }));
+  // };
   const handleSlider = (optionName) => (event, newValue) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      [optionName]: newValue,
-    }));
+    const updatedSettings = { ...settings, [optionName]: newValue };
+    setSettings(updatedSettings);
+    dispatch(setTunes(updatedSettings));
   };
 
   return (

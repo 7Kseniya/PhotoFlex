@@ -1,6 +1,5 @@
-import styles from './login-modal.module.css';
-import Modal from '../modal';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { styles } from './login-modal-styles';
 import {
   DialogTitle,
   Stack,
@@ -9,209 +8,223 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Alert,
 } from '@mui/material';
 import FormControl from '@mui/joy/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  loginUser,
+  setLogin,
+  setPassword,
+} from '../../../services/actions/auth-actions';
+import {
+  handleMouseDownPassword,
+  handleMouseUpPassword,
+} from '../../../utils/auth-utils';
 
-const LoginModal = () => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
+const LoginModal = ({ onSignUpClick, onSubmited }) => {
+  const dispatch = useDispatch();
+  const { login, password } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
+  const [alert, setAlert] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+
+  const workerRef = useRef(null);
+
+  useEffect(() => {
+    const w = new Worker(
+      new URL('../../../workers/worker.js', import.meta.url)
+    );
+    workerRef.current = w;
+
+    return () => {
+      w.terminate();
+    };
+  }, []);
 
   const handleClickShowPassword = () =>
     setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+
+  const validateWithWorker = (type, payload) => {
+    return new Promise((resolve) => {
+      if (!workerRef.current) {
+        resolve(null);
+        return;
+      }
+
+      const handleMessage = (e) => {
+        workerRef.current.removeEventListener(
+          'message',
+          handleMessage
+        );
+        resolve(e.data);
+      };
+
+      workerRef.current.addEventListener('message', handleMessage);
+      workerRef.current.postMessage({ type, payload });
+    });
   };
-  const handleMouseUpPassword = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setShowAlert(false);
+    setAlert('');
+
+    const isLoginValid = await validateWithWorker('validateLogin', {
+      login,
+    });
+    if (!isLoginValid) {
+      setAlert('Please enter a valid email or phone number');
+      setShowAlert(true);
+      return;
+    }
+
+    const isPasswordValid = await validateWithWorker(
+      'validatePassword',
+      { password }
+    );
+    if (!isPasswordValid) {
+      setAlert('Password must be at least 8 characters long');
+      setShowAlert(true);
+      return;
+    }
+
+    try {
+      await dispatch(loginUser(login, password));
+      onSubmited();
+      setAlert('Login successful!');
+      setShowAlert(true);
+      dispatch(setLogin(''));
+      dispatch(setPassword(''));
+    } catch (error) {
+      setAlert(error.message || 'An error occurred during login');
+      setShowAlert(true);
+    }
   };
 
   return (
-    <Modal>
-      <div className={styles.mainContainer}>
-        <DialogTitle
-          className={styles.modalTitle}
-          sx={{
-            fontSize: '2rem',
-            marginBottom: '16px',
-          }}
-        >
-          sign in
-        </DialogTitle>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <Stack spacing={2} className={styles.stack}>
-            <FormControl variant="outlined">
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ color: '#fff', marginBottom: '3px' }}
-              >
-                Enter your phone number/email/login
-              </InputLabel>
-              <OutlinedInput
-                required
-                id="outlined-adornment-password"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                label="Login"
-                sx={{
-                  backgroundColor: '#c3c3c3',
-                  borderRadius: '30px',
-                  input: { color: '#191919' },
-                  label: { color: '#686868' },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#686868',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                }}
-              />
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ color: '#fff', marginBottom: '3px' }}
-              >
-                Enter your password
-              </InputLabel>
-              <OutlinedInput
-                required
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      onMouseUp={handleMouseUpPassword}
-                      edge="end"
-                      className={styles.visability}
-                    >
-                      {showPassword ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-                sx={{
-                  backgroundColor: '#c3c3c3',
-                  borderRadius: '30px',
-                  input: { color: '#191919' },
-                  label: { color: '#686868' },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#686868',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#884f9f',
-                  },
-                }}
-              />
-            </FormControl>
-
-            <Button
-              type="submit"
-              className={styles.btn}
-              sx={{
-                color: '#c3c3c3',
+    <div style={styles.mainContainer} data-testid="login-modal">
+      <DialogTitle data-testid="sign-in-title" sx={styles.modalTitle}>
+        sign in
+      </DialogTitle>
+      <form>
+        <Stack spacing={2} sx={styles.stack}>
+          <FormControl variant="outlined">
+            <InputLabel htmlFor="login-input" sx={styles.inputLabel}>
+              Enter your phone number/email/login
+            </InputLabel>
+            <OutlinedInput
+              required
+              id="login-input"
+              value={login}
+              onChange={(e) => dispatch(setLogin(e.target.value))}
+              label="Login"
+              sx={styles.loginInputStyle}
+            />
+          </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel
+              htmlFor="password-input"
+              sx={styles.inputLabel}
+            >
+              Enter your password
+            </InputLabel>
+            <OutlinedInput
+              required
+              id="password-input"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => dispatch(setPassword(e.target.value))}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                    sx={styles.visability}
+                  >
+                    {showPassword ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+              sx={styles.passwordInputStyle}
+            />
+          </FormControl>
+          {showAlert && (
+            <Alert
+              data-testid="alert-login"
+              severity="warning"
+              onClose={() => {
+                console.log('Alert closed');
+                setShowAlert(false);
               }}
             >
-              submit
+              {alert}
+            </Alert>
+          )}
+          <Button
+            type="submit"
+            sx={styles.btn}
+            onClick={handleSubmit}
+          >
+            submit
+          </Button>
+          <span style={styles.loginvia}>login via:</span>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={styles.footerStack}
+            marginBottom="5px"
+          >
+            <Button
+              variant="outlined"
+              sx={styles.socialBtn}
+              data-testid="social-btn-google"
+            >
+              <GoogleIcon />
             </Button>
-            <span className={styles.loginvia}>login via:</span>
-            <Stack
-              direction="row"
-              spacing={1}
-              className={styles.footerStack}
-              marginBottom="5px"
+            <Button
+              data-testid="social-btn-telegram"
+              variant="outlined"
+              sx={styles.socialBtn}
+              onClick={() => {
+                window.TelegramLoginWidget.showFrame({
+                  bot_id: '<YOUR_BOT_ID>',
+                  size: 'large',
+                  corner_radius: 10,
+                });
+              }}
             >
-              <Button
-                variant="outlined"
-                className={styles.socialBtn}
-                sx={{
-                  minWidth: '40px',
-                  height: '40px',
-                  borderRadius: '30px',
-                  borderColor: '#c3c3c3',
-                  color: '#c3c3c3',
-                }}
-              >
-                <GoogleIcon />
-              </Button>
-              <Button
-                variant="outlined"
-                className={styles.socialBtn}
-                sx={{
-                  minWidth: '40px',
-                  height: '40px',
-                  borderRadius: '30px',
-                  borderColor: '#c3c3c3',
-                  color: '#c3c3c3',
-                }}
-              >
-                <TelegramIcon />
-              </Button>
-            </Stack>
-            <Stack
-              className={styles.footerStack}
-              direction="row"
-              spacing={1}
-            >
-              <span className={styles.footerText}>
-                don&apos;t have an account?
-              </span>
-              <Button
-                className={styles.btn}
-                onClick={() => {
-                  /*redirect to sign up form*/
-                }}
-                sx={{
-                  color: '#c3c3c3',
-                }}
-              >
-                sign up
-              </Button>
-            </Stack>
-            <Stack
-              className={styles.footerStack}
-              direction="row"
-              spacing={1}
-            >
-              <Button
-                className={styles.btn}
-                onClick={() => {
-                  /*redirect to recover password form*/
-                }}
-                sx={{
-                  color: '#c3c3c3',
-                }}
-              >
-                recover password
-              </Button>
-            </Stack>
+              <TelegramIcon />
+            </Button>
           </Stack>
-        </form>
-      </div>
-    </Modal>
+          <Stack sx={styles.footerStack} direction="row" spacing={1}>
+            <span style={styles.footerText}>
+              don&apos;t have an account?
+            </span>
+            <Button
+              sx={styles.btn}
+              onClick={onSignUpClick}
+              data-testid="signup-link"
+            >
+              sign up
+            </Button>
+          </Stack>
+        </Stack>
+      </form>
+    </div>
   );
 };
+
 export default LoginModal;

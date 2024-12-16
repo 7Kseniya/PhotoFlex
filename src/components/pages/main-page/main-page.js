@@ -13,6 +13,8 @@ import {
   setOriginalImage,
   setResizeDimensions,
 } from '../../../services/actions/image-actions';
+import { resizeImageToCanvas } from '../../../utils/image-utils';
+
 const MainPage = () => {
   const {
     imageSrc,
@@ -27,13 +29,13 @@ const MainPage = () => {
     showOriginal,
     originalImage,
     image,
+    resizeDimensions,
+    tune,
   } = useSelector((state) => state.image);
-  const resizeDimensions = useSelector(
-    (state) => state.image.resizeDimensions || { width: 0, height: 0 }
-  );
 
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
+
   useEffect(() => {
     if (imageSrc) {
       const img = new Image();
@@ -41,31 +43,12 @@ const MainPage = () => {
       img.onload = () => {
         dispatch(setImage(img));
         dispatch(setOriginalImage(img));
-        const maxWidth = 1000;
-        const maxHeight = 800;
-        const imgWidth = img.width;
-        const imgHeight = img.height;
-        let width = imgWidth;
-        let height = imgHeight;
-        const aspectRatio = imgWidth / imgHeight;
-        if (imgWidth > maxWidth || imgHeight > maxHeight) {
-          if (aspectRatio > 1) {
-            width = maxWidth;
-            height = maxWidth / aspectRatio;
-          } else {
-            height = maxHeight;
-            width = maxHeight * aspectRatio;
-          }
-        }
-        dispatch(
-          setResizeDimensions({
-            width: Math.round(width),
-            height: Math.round(height),
-          })
-        );
+        const resizedDimensions = resizeImageToCanvas(img, 700, 500);
+        dispatch(setResizeDimensions(resizedDimensions));
       };
     }
   }, [imageSrc, dispatch]);
+
   useImageDrawer({
     canvasRef,
     image,
@@ -78,33 +61,40 @@ const MainPage = () => {
     mask,
     appliedMask,
     brushSize,
+    tuneSettings: tune,
   });
+
   const handleMouseDown = (e) => {
-    if (activeTool !== 5) return;
+    if (activeTool !== 5 && activeTool !== 6) return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     dispatch(setDrawing(true));
-    dispatch(setMask([...mask, { x, y, brushSize: brushSize }]));
+    dispatch(setMask([...mask, { x, y, brushSize }]));
   };
+
   const handleMouseMove = (e) => {
-    if (!drawing || activeTool !== 5) return;
+    if (!drawing || (activeTool !== 5 && activeTool !== 6)) return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    dispatch(setMask([...mask, { x, y, brushSize: brushSize }]));
+    dispatch(setMask([...mask, { x, y, brushSize }]));
   };
+
   const handleMouseUp = () => {
+    if (activeTool !== 5 && activeTool !== 6) return;
     dispatch(setDrawing(false));
   };
+
   return (
     <div className={styles.mainContainer}>
       <Header canvasRef={canvasRef} />
       <div className={styles.toolContainer}>
-        <ToolBar />
+        <ToolBar data-testid="toolbar" />
         <Tools
+          canvasRef={canvasRef}
           activeTool={activeTool}
           data-testid="tools-component"
         />
@@ -112,8 +102,8 @@ const MainPage = () => {
           {imageSrc ? (
             <div
               style={{
-                width: `${resizeDimensions?.width || 800}px`,
-                height: `${resizeDimensions?.height || 900}px`,
+                width: `${resizeDimensions?.width || 700}px`,
+                height: `${resizeDimensions?.height || 800}px`,
                 overflow: 'hidden',
               }}
             >

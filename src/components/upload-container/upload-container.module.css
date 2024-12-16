@@ -33,3 +33,10 @@
   margin-top: 10px;
   font-size: 36px;
 }
+
+@media (max-width: 1900px) {
+  .mainContainer {
+    width: 50vw;
+    height: 40vh;
+  }
+}

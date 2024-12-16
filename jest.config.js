@@ -6,7 +6,7 @@ module.exports = {
     'src/images',
   ],
   transform: {
-    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.[jt]sx?$': 'babel-jest',
   },
   testEnvironment: 'jsdom',
   testMatch: [
@@ -24,10 +24,14 @@ module.exports = {
       statements: 80,
     },
   },
+  setupFiles: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.js',
     '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__mocks__/fileMock.js',
     '^@mui/icons-material/(.*)$':
       '<rootDir>/node_modules/@mui/icons-material/$1',
+    '^axios$': '<rootDir>/__mocks__/axiosMock.js',
+    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
+  transformIgnorePatterns: ['/node_modules/(?!axios)/'],
 };

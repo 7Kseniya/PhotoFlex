@@ -8,14 +8,27 @@ import {
   CropSquare,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setResizeDimensions } from '../../../services/actions/image-actions';
+import {
+  setImageBeforeRemove,
+  setResizeDimensions,
+} from '../../../services/actions/image-actions';
 import styles from './resize-tools-styles';
 const Resize = () => {
   const dispatch = useDispatch();
   const resizeDimensions = useSelector(
     (state) => state.image.resizeDimensions || { width: 0, height: 0 }
   );
-
+  const { imageBeforeRemove, image } = useSelector(
+    (state) => state.image
+  );
+  const originalImage = useSelector(
+    (state) => state.image.originalImage || { width: 0, height: 0 }
+  );
+  useEffect(() => {
+    if (!imageBeforeRemove && image) {
+      dispatch(setImageBeforeRemove(image));
+    }
+  }, [image, imageBeforeRemove, dispatch]);
   const [dimensions, setDimensions] = useState({
     width: resizeDimensions.width,
     height: resizeDimensions.height,
@@ -56,6 +69,13 @@ const Resize = () => {
       );
     }
   };
+
+  const handleReset = () => {
+    const { width, height } = originalImage;
+    setDimensions({ width, height });
+    dispatch(setResizeDimensions({ width, height }));
+  };
+
   return (
     <div
       style={styles.sharedContainer}
@@ -103,6 +123,13 @@ const Resize = () => {
           </div>
         );
       })}
+      <button
+        style={styles.button}
+        onClick={handleReset}
+        data-testid="reset-button"
+      >
+        Сброс
+      </button>
     </div>
   );
 };
