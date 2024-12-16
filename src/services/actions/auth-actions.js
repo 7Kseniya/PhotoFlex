@@ -25,7 +25,7 @@ export const registerUser = (login, username, password) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        'http://localhost:4000/register',
+        'http://9972262fb9b8.vps.myjino.ru:49383/register',
         {
           login,
           username,
@@ -57,7 +57,7 @@ export const loginUser = (login, password) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        'http://localhost:4000/login',
+        'http://9972262fb9b8.vps.myjino.ru:49383/login',
         {
           login,
           password,
