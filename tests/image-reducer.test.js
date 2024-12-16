@@ -27,6 +27,12 @@ describe('imageReducer', () => {
     past: [],
     future: [],
     hasInitializedResize: false,
+    tune: {
+      brightness: 50,
+      contrast: 50,
+      saturation: 50,
+      sharpness: 50,
+    },
   };
 
   it('should return the initial state when no action is passed', () => {

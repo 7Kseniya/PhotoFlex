@@ -38,7 +38,7 @@ const useImageDrawer = ({
     const brightnessFactor = brightness / 50; // Нормализация (50 = стандарт)
     const contrastFactor = contrast / 50; // Нормализация
     const saturationFactor = saturation / 50; // Нормализация
-    const blurFactor = (100 - sharpness) / 10; // Инверсия резкости в размытие
+    const blurFactor = (100 - sharpness) / 50; // Инверсия резкости в размытие
 
     // Применяем фильтры яркости, контраста и насыщенности
     ctx.filter = `
